@@ -318,6 +318,8 @@ source("~/BurkeLab Dropbox/Projects/loss_damage/scripts/working/3c3_calc_total_d
 #colnames(future_forecast_ssp370)[4] <- "diff_lgdp"
 #future_forecast_ssp370 <- subset(future_forecast_ssp370, year >2020)
 
+#write_rds(future_forecast_ssp370, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/future_forecast/future_forecast_ssp370_2300.rds")
+
 # now let us create a sub dataset that extends growth and temperature data onto 
 # 2300 
 #future_forecast_ssp370_2300 <- future_forecast_ssp370 %>% 
@@ -361,6 +363,7 @@ source("~/BurkeLab Dropbox/Projects/loss_damage/scripts/working/3c3_calc_total_d
 #write_rds(future_forecast_ssp370_2300_1pct, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/future_forecast/future_forecast_ssp370_2300_1pct.rds")
 #write_rds(future_forecast_ssp370_2300_2pct, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/future_forecast/future_forecast_ssp370_2300_2pct.rds")
 
+future_forecast_ssp370 <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/future_forecast/future_forecast_ssp370.rds")
 future_forecast_ssp370_2300_1pct <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/future_forecast/future_forecast_ssp370_2300_1pct.rds")
 future_forecast_ssp370_2300_2pct <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/future_forecast/future_forecast_ssp370_2300_2pct.rds")
 future_forecast_ssp370_2300 <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/future_forecast/future_forecast_ssp370_2300.rds")
@@ -398,93 +401,101 @@ future_forecast_ssp119 <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/
 
 ####################### generate country-year panel: #########################
 # first we generate the GDP-temp country-year level panel, 
-gdp_temp_data_k90 <- generate_gdptemp_panel("pooled", 
-                                        future_forecast_ssp370, 
-                                        "1990", 
-                                        "ERA")
-gdp_temp_data_k90_2300 <- generate_gdptemp_panel("pooled", 
-                                                 future_forecast_ssp370_2300, 
-                                                 "1990", 
-                                                 "ERA")
-gdp_temp_data_k90_2300_1pct <- generate_gdptemp_panel("pooled", 
-                                                 future_forecast_ssp370_2300_1pct, 
-                                                 "1990", 
-                                                 "ERA")
-gdp_temp_data_k90_2300_2pct <- generate_gdptemp_panel("pooled", 
-                                                 future_forecast_ssp370_2300_2pct, 
-                                                 "1990", 
-                                                 "ERA")
+#gdp_temp_data_k90 <- generate_gdptemp_panel("pooled", 
+#                                        future_forecast_ssp370, 
+#                                        "1990", 
+#                                        "ERA")
 
-
-gdp_temp_data_k80 <- generate_gdptemp_panel("pooled", 
-                                            future_forecast_ssp370, 
-                                            "1980", 
-                                            "ERA")
-
-gdp_temp_data_k80_2300 <- generate_gdptemp_panel("pooled", 
-                                            future_forecast_ssp370_2300, 
-                                            "1980", 
-                                            "ERA")
-
-#plot(gdp_temp_data_k80_2300$year, gdp_temp_data_k80_2300$diff_lgdP)
-
-
-gdp_temp_data_5lags <- generate_gdptemp_panel_5lags("pooled", 
-                                        future_forecast_ssp370_2300, 
-                                        "1990", 
-                                        "ERA")
+#write_rds(gdp_temp_data_k90, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_k90.rds")
+#gdp_temp_data_k90_2300 <- generate_gdptemp_panel("pooled", 
+#                                                 future_forecast_ssp370_2300, 
+#                                                 "1990", 
+#                                                 "ERA")
+#write_rds(gdp_temp_data_k90_2300, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_k90_2300.rds")
+#gdp_temp_data_k90_2300_1pct <- generate_gdptemp_panel("pooled", 
+#                                                 future_forecast_ssp370_2300_1pct, 
+#                                                 "1990", 
+#                                                 "ERA")
+#write_rds(gdp_temp_data_k90_2300_1pct, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_k90_2300_1pct.rds")
+#gdp_temp_data_k90_2300_2pct <- generate_gdptemp_panel("pooled", 
+#                                                 future_forecast_ssp370_2300_2pct, 
+#                                                 "1990", 
+#                                                 "ERA")
+#write_rds(gdp_temp_data_k90_2300_2pct, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_k90_2300_2pct.rds")
+#
+#gdp_temp_data_k80 <- generate_gdptemp_panel("pooled", 
+#                                            future_forecast_ssp370, 
+#                                            "1980", 
+#                                            "ERA")
+#write_rds(gdp_temp_data_k80, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_k80.rds")
+#gdp_temp_data_k80_2300 <- generate_gdptemp_panel("pooled", 
+#                                            future_forecast_ssp370_2300, 
+#                                            "1980", 
+#                                            "ERA")
+#write_rds(gdp_temp_data_k80_2300, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_k80_2300.rds")
+#gdp_temp_data_5lags <- generate_gdptemp_panel_5lags("pooled", 
+#                                        future_forecast_ssp370_2300, 
+#                                        "1990", 
+#                                        "ERA")
+#write_rds(gdp_temp_data_5lags, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_5lags.rds")
 
 #write_rds(gdp_temp_data, "~/BurkeLab Dropbox/Projects/loss_damage/sherlock_files/data/pre_processed/gdp_temp_data.rds")
 
+
+gdp_temp_data_k90 <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_k90.rds")
+gdp_temp_data_k90_2300 <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_k90_2300.rds")
+gdp_temp_data_k90_2300_1pct <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_k90_2300_1pct.rds")
+gdp_temp_data_k90_2300_2pct <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_k90_2300_2pct.rds")
+gdp_temp_data_k80 <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_k80.rds")
+gdp_temp_data_k80_2300 <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_k80_2300.rds")
+gdp_temp_data_5lags <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_5lags.rds")
+
 ################# generate country-year bootstrapped panel: ##################
-pooledbs <- as.data.frame(readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/pooledregression_boostraps_era.rds"))
-gdp_temp_data_bhmbs <- run_bhm_model("pooled", future_forecast_ssp370_cru, 1990, "CRU")
+pooledbs <- as.data.frame(readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/bhm/pooledregression_boostraps_era.rds"))
+#gdp_temp_data_bhmbs <- generate_gdptemp_panel_bhmbs("pooled", future_forecast_ssp370_cru, 1990, "CRU")
+#write_rds(gdp_temp_data_bhmbs, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_bhmbs.rds")
+gdp_temp_data_bhmbs <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_temp_data_bhmbs.rds")
 
 ################### generate country-year regression model: ##################
 # as well as the regression model
-bhm_era_reg <- run_bhm_model_reg("pooled")
+#bhm_era_reg <- run_bhm_model_reg("pooled")
 
-#bhm_era_reg$coefficients[1] / (-2*(bhm_era_reg$coefficients[2]))
-
+#save(bhm_era_reg, file = "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/bhm/bhm_era_reg.RData")
 #save(bhm_era_reg, file = "~/BurkeLab Dropbox/Projects/loss_damage/sherlock_files/data/pre_processed/bhm_era_reg.RData")
-# code lines for bootstrapped bhm
-#pooledbs <- as.data.frame(readRDS("~/Desktop/distributedlag_bootstraps_era.rds"))
-pooledbs <- as.data.frame(readRDS("~/Desktop/loss_damages/pooledregression_boostraps_era.rds"))
-#pooledbs <- readRDS("~/Desktop/pooledregression_bootstraps_cru.rds")
-#pooledbs <- pooledbs %>% dplyr::select(c("V7", "V8"))
-#colnames(pooledbs)[1]<- "temp"
-#colnames(pooledbs)[2]<- "temp2"
-#gdp_temp_data <- run_bhm_model("pooled", future_forecast_df, 1990)
-#gdp_temp_datac <- run_bhm_model("pooled", future_forecast_df, 1990)
-#gdp_temp_data <- gdp_temp_datac
-#gdp_temp_datab <- run_bhm_model("pooled", future_forecast_df)
-#bhm_cru_reg <- run_bhm_model_reg("pooled")
+bhm_era_reg <- load("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/bhm/bhm_era_reg.RData")
 
+############### generate country-year regression model: richvpoor ##############
 # now we do the same but with the rich/poor. Here rich/poor is constructed by 
 # looking at average of each country's GDP  relative to median of full sample
 # panel...
 #gdp_temp_data <- run_bhm_model("richpoor")
 # model...
 #bhm_cru_reg <- run_bhm_model_reg("richpoor")
+
 ##############################################################################
 ############### calculate the total damages for each scenario ################
 ##############################################################################
 # we need to aggregate the deltat to the country level by weighting by pop
 # so let us read the pop raster and resample it to match coordinates and 
 # convert to a dataframe and then join
-pop <- raster("~/BurkeLab Dropbox/Projects/loss_damage/data/raw/population/gpw_v4_population_count_rev11_2010_1_deg.tif")
-pop <- readAll(pop)
-pop <- resample(pop, master_raster)
-popdf <- as.data.frame(as.matrix(rasterToPoints(pop)))
-
+#pop <- raster("~/BurkeLab Dropbox/Projects/loss_damage/data/raw/population/gpw_v4_population_count_rev11_2010_1_deg.tif")
+#pop <- readAll(pop)
+#pop <- resample(pop, mean_r_raster)
+#popdf <- as.data.frame(as.matrix(rasterToPoints(pop)))
+#
+#write_rds(popdf, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/popdf.rds")
 #write_rds(popdf, "~/BurkeLab Dropbox/Projects/loss_damage/sherlock_files/data/pre_processed/popdf.rds")
-# the other thing we need is to get a country id for each lon-lat combo
-data("wrld_simpl")
-world <- wrld_simpl[,3]
-world <- st_as_sf(world)
-
+#
+## the other thing we need is to get a country id for each lon-lat combo
+#data("wrld_simpl")
+#world <- wrld_simpl[,3]
+#world <- st_as_sf(world)
+#write_sf(world, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/world.shp")
 #write_sf(world, "~/BurkeLab Dropbox/Projects/loss_damage/sherlock_files/data/pre_processed/world.shp")
-# now let us go one by one
+
+popdf <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/popdf.rds")
+world <- read_sf("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/world.shp")
+
 ##################### 1GtCO2/yr experiment ###########################
 # first we need to set up the set of experimenet years to loop over inside the 
 # custom-mmade function
@@ -492,7 +503,7 @@ list_of_exps <- c(1990:2023)
 colnames(fair_exps_1GtCO2)[7] <- "deltaT_preturb"
 colnames(fair_exps_1GtCO2)[6] <- "deltaT_fullemms"
 
-total_damages_1gtCO2 <- calculate_bidamages(master_raster,
+total_damages_1gtCO2 <- calculate_bidamages(mean_r_raster,
                                             fair_exps_1GtCO2, 
                                             list_of_exps, 
                                             1990,
@@ -500,7 +511,7 @@ total_damages_1gtCO2 <- calculate_bidamages(master_raster,
                                             gdp_temp_data,
                                             "ERA")
 
-total_damages_1gtCO2 <- calculate_bidamages(master_raster,
+total_damages_1gtCO2 <- calculate_bidamages(mean_r_raster,
                                             fair_exps_1tco2_2300, 
                                             list_of_exps, 
                                             1990,
@@ -516,7 +527,7 @@ total_damages_1gtCO2 <- calculate_bidamages(master_raster,
 #sum(total_damages_1gtCO2$weighted_damages2_scld[total_damages_1gtCO2$emitter == 2020], na.rm = T) / 1000000000
 
 #list_of_exps <- c(1990:2020)
-#total_damages_1gtCO2 <- calculate_bidamages(master_raster,
+#total_damages_1gtCO2 <- calculate_bidamages(mean_r_raster,
  #                                           fair_exps_1GtCO2_updated, 
   #                                          list_of_exps, 
    #                                         1990,
@@ -537,14 +548,14 @@ gdp_temp_data_bhmbs <- generate_gdptemp_panel_bhmbs("pooled",
                                                     "ERA")
 
 # now let us generate the total damages by bootstrap loop
-total_damages_1tCO2 <- calculate_bidamages_bhmbs(master_raster, 
+total_damages_1tCO2 <- calculate_bidamages_bhmbs(mean_r_raster, 
                                                  fair_exps_1tco2,
                                                  2020,
                                                  1990,
                                                  future_forecast_ssp370,
                                                  gdp_temp_data_bhmbs)
 
-total_damages_1tCO2 <- calculate_bidamages(master_raster, 
+total_damages_1tCO2 <- calculate_bidamages(mean_r_raster, 
                                                  fair_exps_1tco2,
                                                  c(1990:2023),
                                                  1990,
@@ -552,7 +563,7 @@ total_damages_1tCO2 <- calculate_bidamages(master_raster,
                                                  gdp_temp_data_k90,
                                                 "ERA")
 
-total_damages_1tCO2 <- calculate_bidamages(master_raster, 
+total_damages_1tCO2 <- calculate_bidamages(mean_r_raster, 
                                            fair_exps_1tco2,
                                            c(1990:2023),
                                            1990,
@@ -563,7 +574,7 @@ total_damages_1tCO2 <- calculate_bidamages(master_raster,
                                            "normal")
 
 
-total_damages_cc <- calculate_bidamages(master_raster, 
+total_damages_cc <- calculate_bidamages(mean_r_raster, 
                                            fair_exps_cc,
                                            c(2036:2100),
                                            1980,
@@ -614,7 +625,7 @@ processed_dfs <- list()
 for (i in 1:length(unique(fair_exps_1tco2_disagg$num_loop))){
   tic()
   fair_i <- subset(fair_exps_1tco2_disagg, num_loop == i)
-  damages_i <- calculate_bidamages(master_raster,
+  damages_i <- calculate_bidamages(mean_r_raster,
                                    fair_i,
                                    2020,
                                    1990,
@@ -695,7 +706,7 @@ for (i in 938:1000) {
 list_of_exps <- unique(fair_exps_k90_yriso$experiment_iso)
 
 # NOW calculate the total damages
-total_damages_ggdp <- calculate_bidamages_ggdp(master_raster,
+total_damages_ggdp <- calculate_bidamages_ggdp(mean_r_raster,
                                                fair_exps_k90_yriso, 
                                                list_of_exps, 
                                                1990,
@@ -713,7 +724,7 @@ write_rds(total_damages_ggdp,
 
 gdp_temp_data_k80 <- subset(gdp_temp_data_k80, year <= 2020)
 
-total_damages_k80 <- calculate_bidamages_bilateral(master_raster, 
+total_damages_k80 <- calculate_bidamages_bilateral(mean_r_raster, 
                                                    fair_exps_isos_k80, 
                                                    unique(fair_exps_isos_k80$experiment_iso),
                                                    1980, 
@@ -728,7 +739,7 @@ bhm_era_reg$coefficients[1]/(-2*bhm_era_reg$coefficients[2])
 
 gdp_temp_data_k90 <- subset(gdp_temp_data_k90, year <= 2020)
 
-total_damages_k90 <- calculate_bidamages_bilateral(master_raster, 
+total_damages_k90 <- calculate_bidamages_bilateral(mean_r_raster, 
                                                    fair_exps_isos_k90, 
                                                    unique(fair_exps_isos_k90$experiment_iso),
                                                    1990, 
@@ -741,7 +752,7 @@ write_rds(total_damages_k90, "~/Desktop/total_damages_k90_v2022.rds")
 gdp_temp_data_k90 <- subset(gdp_temp_data_k90, year <= 2020)
 
 fair_exps_isos_k90_consump <- subset(fair_exps_isos_k90_consump, !is.na(median_deltat))
-total_damages_k90_consump <- calculate_bidamages_bilateral(master_raster, 
+total_damages_k90_consump <- calculate_bidamages_bilateral(mean_r_raster, 
                                                    fair_exps_isos_k90_consump, 
                                                    unique(fair_exps_isos_k90_consump$experiment_iso),
                                                    1990, 
@@ -763,7 +774,7 @@ ex <- readRDS("~/Desktop/FSE_projects/loss_damages/total_bidamages_k80_0223.rds"
 
 sum(ex$weighted_damages2[ex$emitter == "USA" & ex$weighted_damages2 < 0 ], na.rm = T)
 
-total_damages_k80 <- calculate_bidamages_bilateral(master_raster, 
+total_damages_k80 <- calculate_bidamages_bilateral(mean_r_raster, 
                                                    fair_exps_isos_k80, 
                                                    "USA",
                                                    1980, 
@@ -786,7 +797,7 @@ write_rds(total_damages_k90, "~/Desktop/total_damages_k90_020623.rds")
 
 fair_exps_isos_k90 <- subset(fair_exps_isos_k90, year <= 2020)
 
-total_damages_k90 <- calculate_bidamages_bilateral(master_raster, 
+total_damages_k90 <- calculate_bidamages_bilateral(mean_r_raster, 
                                                    fair_exps_isos_k90, 
                                                    unique(fair_exps_isos_k90$experiment_iso),
                                                    1990, 
@@ -835,7 +846,7 @@ help(hist)
 list_of_exps <- c("USA", "CHN", "DEU", "JPN")
 list_of_exps <- unique(fair_exps_k80$experiment_iso)
 # NOW calculate the total damages
-total_damages_k80 <- calculate_bidamages(master_raster,
+total_damages_k80 <- calculate_bidamages(mean_r_raster,
                                          fair_exps_k80, 
                                          list_of_exps, 
                                          1980,
@@ -846,7 +857,7 @@ sum(total_damages_k80$weighted_damages2_scld, na.rm = T)
 write_rds(total_damages_k80, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/total_bidamages_k80.rds")
 
 # NOW calculate the total damages
-total_damages_k90 <- calculate_bidamages(master_raster,
+total_damages_k90 <- calculate_bidamages(mean_r_raster,
                                          fair_exps_k90, 
                                          list_of_exps, 
                                          1990,
@@ -855,7 +866,7 @@ total_damages_k90 <- calculate_bidamages(master_raster,
 
 write_rds(total_damages_k90, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/total_bidamages_k90.rds")
 
-ex <- calculate_bidamages_bilateral(master_raster,
+ex <- calculate_bidamages_bilateral(mean_r_raster,
                                     fair_exps_isos_k80,
                                     "USA",
                                     1980,
@@ -995,9 +1006,9 @@ for (i in 1:length(list_rasters)){
   toc()
 }
 
-master_raster <- do.call(mean, list_rasters)
+mean_r_raster <- do.call(mean, list_rasters)
 # uncertainty by BHM 
-total_damages_uncertainty_bhm <- calculate_bidamages(master_raster,
+total_damages_uncertainty_bhm <- calculate_bidamages(mean_r_raster,
                                                      fair_exps_1gtc, 
                                                      list_of_exps, 
                                                      1990,
@@ -1010,7 +1021,7 @@ for (numloop in unique(fair_exps_1gtc_disagg$num_loop)){
   tic()
   fair_exps_1gtc_disagg_i <- subset(fair_exps_1gtc_disagg, num_loop == numloop)
   
-  total_damages_1gtC <- calculate_bidamages(master_raster,
+  total_damages_1gtC <- calculate_bidamages(mean_r_raster,
                                             fair_exps_1gtc_disagg_i,
                                             list_of_exps,
                                             1990,
@@ -1027,13 +1038,13 @@ for (numloop in unique(fair_exps_1gtc_disagg$num_loop)){
 write_rds(total_damages_1gtC, "~/Desktop/1gtcyr_exp.rds")
 write_rds(total_damages_1gtC, "~/Desktop/1tcyr_exp.rds")
 
-total_damages_1gtC <- calculate_bidamages(master_raster,
+total_damages_1gtC <- calculate_bidamages(mean_r_raster,
                                           fair_exps_1gtc, 
                                           list_of_exps, 
                                           1980,
                                           future_forecast_df,
                                           gdp_temp_data)
-total_damages_1tC <- calculate_bidamages(master_raster,
+total_damages_1tC <- calculate_bidamages(mean_r_raster,
                                          fair_exps_1tc, 
                                          list_of_exps, 
                                          1980,
@@ -1058,7 +1069,7 @@ sum(total_damages_1tC$weighted_damages2_scld[total_damages_1tC$emitter == 2022],
 
 
 
-total_damages_1gtC <- calculate_bidamages(master_raster,
+total_damages_1gtC <- calculate_bidamages(mean_r_raster,
                                           fair_exps_1gtc, 
                                           list_of_exps, 
                                           1990,
@@ -1067,7 +1078,7 @@ total_damages_1gtC <- calculate_bidamages(master_raster,
 
 
 list_of_exps <- unique(fair_exps_carbon_debt_indent$experiment_iso)
-total_damages_carbon_debt <- calculate_bidamages(master_raster,
+total_damages_carbon_debt <- calculate_bidamages(mean_r_raster,
                                                  fair_exps_carbon_debt_indent, 
                                                  list_of_exps, 
                                                  1990,
@@ -1113,18 +1124,18 @@ class(gdp_temp_data$year)
 gdp_temp_data$year <- as.numeric(as.character(gdp_temp_data$year))
 
 # NOW calculate the total damages
-total_damages_k80_ssp119 <- calculate_bidamages(master_raster,
+total_damages_k80_ssp119 <- calculate_bidamages(mean_r_raster,
                                                 fair_exps_k80_ssp119, 
                                                 list_of_exps, 
                                                 1980,
                                                 future_forecast_df)
-total_damages_k80_ssp126 <- calculate_bidamages(master_raster,
+total_damages_k80_ssp126 <- calculate_bidamages(mean_r_raster,
                                                 fair_exps_k80_ssp126, 
                                                 list_of_exps, 
                                                 1980,
                                                 future_forecast_df)
 
-total_damages_k80_ssp245 <- calculate_bidamages(master_raster,
+total_damages_k80_ssp245 <- calculate_bidamages(mean_r_raster,
                                                 fair_exps_k80_ssp245, 
                                                 list_of_exps, 
                                                 1980,
@@ -1157,7 +1168,7 @@ write_rds(total_damages_k80_ssp119, "~/BurkeLab Dropbox/Projects/loss_damage/dat
 # total damages for ssp 119 if all emmissions post 2020 were 0 
 list_of_exps <- unique(fair_exps_k80_ssp119$experiment_iso)
 list_of_exps <- c("USA", "CHN")
-total_damages_k80_noemms_ssp119 <- calculate_bidamages(master_raster,
+total_damages_k80_noemms_ssp119 <- calculate_bidamages(mean_r_raster,
                                                        fair_exps_k80_ssp119, 
                                                        list_of_exps, 
                                                        1980,
@@ -1171,7 +1182,7 @@ list_of_exps <- c("all")
 
 fair_exps
 
-total_damages_test <- calculate_bidamages(master_raster,
+total_damages_test <- calculate_bidamages(mean_r_raster,
                                           fair_exps,
                                           list_of_exps,
                                           1980,
@@ -1198,7 +1209,7 @@ total_damages_k80_ssp119 <- total_damages_k80_ssp119 %>%
 
 
 list_of_exps <- unique(fair_exps_carbon_debt_op$experiment_iso)
-total_damages_carbon_debt <- calculate_bidamages(master_raster,
+total_damages_carbon_debt <- calculate_bidamages(mean_r_raster,
                                                  fair_exps_carbon_debt_op, 
                                                  list_of_exps, 
                                                  1980,
@@ -1212,7 +1223,7 @@ for (i in 1990:2020){
   tic()
   fair_exps_i <- subset(fair_exps_k90_yriso, exp_yr == i)
   fair_exps_i <- fair_exps_i %>%  dplyr::select(c("year", "experiment_iso", "median_deltat", "exp_yr"))
-  total_damages_i <- calculate_bidamages(master_raster,
+  total_damages_i <- calculate_bidamages(mean_r_raster,
                                          fair_exps_i,
                                          list_of_exps = c("USA", "DEU", "CHN"),
                                          1990,
@@ -1228,58 +1239,8 @@ for (i in 1990:2020){
   toc()
 }
 
-total_damages_i <- calculate_bidamages(master_raster,
-                                       fair_exps_k90_yriso,
-                                       "USA",
-                                       1990,
-                                       future_forecast_df,
-                                       gdp_temp_data,
-                                       1991)
-
-total_damages_i <- calculate_bidamages(master_raster,
-                                       fair_exps_1gtc,
-                                       "1991",
-                                       1990,
-                                       future_forecast_df,
-                                       gdp_temp_data,
-                                       1991)
-
-sum(total_damages_i$weighted_damages2_scld, na.rm = T) / 1370000000
-
-sum(total_damages_i$weighted_damages2_scld, na.rm = T) / 1000000000
-
-
-all_damages <- do.call(rbind, listofdamagedf)
-
-all_damages <- subset(all_damages, experiment_yr == "year_2020") 
-
-unique(all_damages$experiment_yr)
-
-all_damages_pos <- subset(all_damages, weighted_damages2_scld >=0)
-all_damages_neg <- subset(all_damages, weighted_damages2_scld <=0)
-
-# now let us summarize by year of damage
-all_damages_pos <- all_damages_pos %>% dplyr::group_by(emitter, experiment_yr) %>% 
-  dplyr::summarise(total_damages_dr2 = sum(weighted_damages2_scld, na.rm = T))
-all_damages_neg <- all_damages_neg %>% dplyr::group_by(emitter, experiment_yr) %>% 
-  dplyr::summarise(total_damages_dr2 = sum(weighted_damages2_scld, na.rm = T))
-
-
-# now let us summarize by year of damage
-all_damages <- all_damages %>% dplyr::group_by(emitter, experiment_yr) %>% 
-  dplyr::summarise(total_damages_dr2 = sum(weighted_damages2_scld, na.rm = T))
-
-all_damages$year <- as.numeric(as.character(substr(all_damages$experiment_yr, 6,9)))
-
-all_damages <- all_damages %>% dplyr::group_by(year, emitter, experiment_yr) %>% 
-  dplyr::summarise(total_damages_dr2 = sum(weighted_damages2_scld, na.rm = T))
-
-all_damages_by_year <- all_damages %>% dplyr::group_by(experiment_yr, emitter) %>% 
-  dplyr::summarise(total_damages_dr2 = sum(total_damages_dr2, na.rm = T))
-
-
 ##################### Carbon Capture experiment ###########################
-total_damages_cc <- calculate_bidamages(master_raster,
+total_damages_cc <- calculate_bidamages(mean_r_raster,
                                         fair_exps_cc,
                                         c(2020:2100),
                                         2020,
