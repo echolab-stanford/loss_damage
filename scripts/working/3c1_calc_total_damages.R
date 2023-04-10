@@ -392,11 +392,6 @@ calculate_bidamages <- function(ratio_raster, experiment_df, list_of_exps,
                     gdp_ssp370 = (gdp_year * cum_growth_real),
                     damages = gdp_noemms - gdp_ssp370)
     
-    #  bra <- subset(damages_i_t4, ISO3 == "BRA")
-    
-    #  plot(bra$year, bra$diff_lgdp_for_damages)
-  #  lines()
-    
     #damages_i_t4$gdp <- (damages_i_t4$gdp_year * damages_i_t4$cum_growth_real)
     #experiment_year <- unique(damages_i_t4$exp_yr)
     

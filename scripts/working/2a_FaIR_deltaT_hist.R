@@ -114,6 +114,7 @@ process_exp_data_hist <- function(experiment, year_k, aggregating){
       experiment == "hist_fut_bid" | 
       experiment == "hist_fut_noemms_ssp126" | experiment == "hist_fut_noemms_ssp245" |
       experiment == "hist_fut_noemms_ssp119" | experiment == "hist_fut_yriso" | 
+      experiment == "hist_fut_041023_yriso" | 
       experiment == "futssp370_emms" | experiment == "hist_bi_v2022" |
       experiment == "hist_bitt_v2022"| experiment == "hist_biconsump_v2022"|
       experiment == "hist_bitest1_v2022"| experiment == "hist_bitest2_v2022" |
@@ -157,6 +158,7 @@ process_exp_data_hist <- function(experiment, year_k, aggregating){
       experiment == "hist_fut_bid" | 
       experiment == "hist_fut_noemms_ssp126" | experiment == "hist_fut_noemms_ssp245" |
       experiment == "hist_fut_noemms_ssp119" | experiment == "hist_fut_yriso" |
+      experiment == "hist_fut_041023_yriso" |
       experiment == "futssp370_emms" | experiment == "hist_bi_v2022" |
       experiment == "hist_bitt_v2022"| experiment == "hist_biconsump_v2022"|
       experiment == "hist_bitest1_v2022"| experiment == "hist_bitest2_v2022" |
@@ -180,13 +182,13 @@ process_exp_data_hist <- function(experiment, year_k, aggregating){
   # now we need to aggregate this to the country-year level and calculate the 
   # median
   if (aggregating == T){
-    if (experiment == "hist_fut_yriso"){
+    if (experiment == "hist_fut_yriso" | experiment == "hist_fut_041023_yriso"){
       fair_exps <- fair_exps %>% 
         dplyr::group_by(year, experiment_iso, exp_yr) %>% 
         dplyr::summarise(median_deltat = median(deltaT, na.rm = T),
                          .groups = "keep")
     }
-    if (experiment != "hist_fut_yriso"){
+    if (experiment != "hist_fut_yriso" & experiment != "hist_fut_041023_yriso"){
       fair_exps <- fair_exps %>% 
         dplyr::group_by(year, experiment_iso) %>% 
         dplyr::summarise(median_deltat = median(deltaT, na.rm = T),

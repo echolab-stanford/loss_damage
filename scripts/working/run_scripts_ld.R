@@ -251,7 +251,7 @@ fair_exps_1tco2_2300 <- process_exp_data_hist_fut("1tCO2_hist_2300", 1990)
 fair_exps_1tco2_disagg <- process_disagg_exp_data("1tCO2_hist_fut_main", 1990)
 
 # now we need to run the experiment for 1gtco2 instead of 1tco2
-fair_exps_1GtCO2 <- process_exp_data_hist_fut("1GtCO2_hist_fut_main", 1990)
+#fair_exps_1GtCO2 <- process_exp_data_hist_fut("1GtCO2_hist_fut_main", 1990)
 
 ####################### Experiment (Green GDP): ########################
 # this experiment is to estimate the green GDP. In other words, the 
@@ -260,9 +260,10 @@ fair_exps_1GtCO2 <- process_exp_data_hist_fut("1GtCO2_hist_fut_main", 1990)
 fair_exps_k80_yriso <- process_exp_data_hist_fut("hist_fut_yriso", 1980)
 # for year_k = 1990
 fair_exps_k90_yriso <- process_exp_data_hist_fut("hist_fut_yriso", 1990)
+fair_exps_k90_yriso <- process_exp_data_hist_fut("hist_fut_041023_yriso", 1990)
 
 ####################### Experiment (Carbon Capture): ########################
-fair_exps_cc <- process_exp_data_hist_fut("new_cc_hist", 2020)
+fair_exps_cc <- process_exp_data_hist_fut("041023_new_cc_hist", 2020)
 
 ############# Experiment (Future SSP Scenarios emissions): #############
 # this experiment is to estimate the temperature changes that are result 
@@ -366,7 +367,7 @@ source("~/BurkeLab Dropbox/Projects/loss_damage/scripts/working/3c3_calc_total_d
 future_forecast_ssp370 <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/future_forecast/future_forecast_ssp370.rds")
 future_forecast_ssp370_2300_1pct <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/future_forecast/future_forecast_ssp370_2300_1pct.rds")
 future_forecast_ssp370_2300_2pct <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/future_forecast/future_forecast_ssp370_2300_2pct.rds")
-future_forecast_ssp370_2300 <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/future_forecast/future_forecast_ssp370_2300.rds")
+#future_forecast_ssp370_2300 <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/future_forecast/future_forecast_ssp370_2300.rds")
 
 # now let us do the alt run where we have CRU as the temp dataset instead of era
 #future_forecast_ssp370_cru <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_gdp_pop/gdp_crutemp_2021_2100_ssp370.rds")
@@ -462,7 +463,7 @@ gdp_temp_data_bhmbs <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/pro
 
 #save(bhm_era_reg, file = "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/bhm/bhm_era_reg.RData")
 #save(bhm_era_reg, file = "~/BurkeLab Dropbox/Projects/loss_damage/sherlock_files/data/pre_processed/bhm_era_reg.RData")
-bhm_era_reg <- load("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/bhm/bhm_era_reg.RData")
+load("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/bhm/bhm_era_reg.RData")
 
 ############### generate country-year regression model: richvpoor ##############
 # now we do the same but with the rich/poor. Here rich/poor is constructed by 
@@ -499,19 +500,20 @@ world <- read_sf("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/world_g
 ##################### 1GtCO2/yr experiment ###########################
 # first we need to set up the set of experimenet years to loop over inside the 
 # custom-mmade function
-list_of_exps <- c(1990:2023)
-colnames(fair_exps_1GtCO2)[7] <- "deltaT_preturb"
-colnames(fair_exps_1GtCO2)[6] <- "deltaT_fullemms"
+list_of_exps <- c(1990:1995)
+#colnames(fair_exps_1GtCO2)[7] <- "deltaT_preturb"
+#colnames(fair_exps_1GtCO2)[6] <- "deltaT_fullemms"
 
-total_damages_1gtCO2 <- calculate_bidamages(mean_r_raster,
-                                            fair_exps_1GtCO2, 
-                                            list_of_exps, 
-                                            1990,
-                                            future_forecast_ssp370,
-                                            gdp_temp_data,
-                                            "ERA")
+#total_damages_1gtCO2 <- calculate_bidamages(mean_r_raster,
+#                                            fair_exps_1GtCO2, 
+#                                           list_of_exps, 
+#                                           1990,
+#                                           future_forecast_ssp370,
+#                                           gdp_temp_data,
+#                                           "ERA")
 
-total_damages_1gtCO2 <- calculate_bidamages(mean_r_raster,
+# let us run the experiment looking at impacts of emmitting one tonne of co2
+total_damages_1tCO2 <- calculate_bidamages(mean_r_raster,
                                             fair_exps_1tco2_2300, 
                                             list_of_exps, 
                                             1990,
@@ -523,21 +525,7 @@ total_damages_1gtCO2 <- calculate_bidamages(mean_r_raster,
 
 
 #write the output data 
-#write_rds(total_damages_1gtCO2, "~/BurkeLab Dropbox/projects/loss_damage/data/processed/output/1gtco2_yr_exp_damages.rds")
-#sum(total_damages_1gtCO2$weighted_damages2_scld[total_damages_1gtCO2$emitter == 2020], na.rm = T) / 1000000000
-
-#list_of_exps <- c(1990:2020)
-#total_damages_1gtCO2 <- calculate_bidamages(mean_r_raster,
- #                                           fair_exps_1GtCO2_updated, 
-  #                                          list_of_exps, 
-   #                                         1990,
-    #                                        future_forecast_ssp370,
-     #                                       gdp_temp_data)
-
-#write the output data 
-#write_rds(total_damages_1gtCO2, "~/BurkeLab Dropbox/projects/loss_damage/data/processed/output/1gtco2_yr_exp_damages.rds")
-#sum(total_damages_1gtC$weighted_damages2_scld[total_damages_1gtC$emitter == 2020], na.rm = T)
-
+write_rds(total_damages_1tCO2, "~/BurkeLab Dropbox/projects/loss_damage/data/output/total_damages_1tCO2.rds")
 
 ######################## SCC Uncertainty Sources ############################
 ######################## Response function uncertainty
@@ -574,26 +562,7 @@ total_damages_1tCO2 <- calculate_bidamages(mean_r_raster,
                                            "normal")
 
 
-total_damages_cc <- calculate_bidamages(mean_r_raster, 
-                                           fair_exps_cc,
-                                           c(2036:2100),
-                                           1980,
-                                           future_forecast_ssp370_2300,
-                                           gdp_temp_data_k80_2300,
-                                           "ERA",
-                                           bhm_era_reg,
-                                           "no",
-                                           "normal")
 
-#sum(total_damages_1tCO2$weighted_damages2_scld, na.rm= T)
-
-
-#calculate_bidamages()
-
-
-
-#sum(total_damages_1tCO2$weighted_damages2_scld[total_damages_1tCO2$coef_id == 100], na.rm = T)
-# write the dataset 
 #write_rds(total_damages_1tCO2, "~/BurkeLab Dropbox/projects/loss_damage/data/processed/output/1tco2_scc_bhm_uncertainty.rds")
 
 ######################## CGM Models uncertainty
@@ -715,15 +684,13 @@ total_damages_ggdp <- calculate_bidamages_ggdp(mean_r_raster,
 
 # write the dataset 
 write_rds(total_damages_ggdp, 
-          "~/BurkeLab Dropbox/projects/loss_damage/data/processed/output/total_damages_ggdp.rds")
-
-#sum(total_damages_ggdp$weighted_damages2_scld[total_damages_ggdp$exp_yr == 2000 & total_damages_ggdp$emitter == "USA"], na.rm = T)
+          "~/BurkeLab Dropbox/projects/loss_damage/data/output/total_damages_ggdp.rds")
 
 ######################### Country-level bidamages ############################
+# now we canlculate the country level damages attributed to each of the countries 
 
-
+# we start with k = 1980 
 gdp_temp_data_k80 <- subset(gdp_temp_data_k80, year <= 2020)
-
 total_damages_k80 <- calculate_bidamages_bilateral(mean_r_raster, 
                                                    fair_exps_isos_k80, 
                                                    unique(fair_exps_isos_k80$experiment_iso),
@@ -731,14 +698,11 @@ total_damages_k80 <- calculate_bidamages_bilateral(mean_r_raster,
                                                    future_forecast_ssp370,
                                                    gdp_temp_data_k80,
                                                    bhm_era_reg)
+# write teh dataframe in to the output arm of teh directory 
+write_rds(total_damages_k80, "~/BurkeLab Dropbox/Projects/data/output/041023/total_damages_k80_v2022.rds")
 
-write_rds(total_damages_k80, "~/Desktop/total_damages_k80_v2022.rds")
-
-bhm_era_reg$coefficients[1]/(-2*bhm_era_reg$coefficients[2])
-
-
+# now let us do k = 1990 
 gdp_temp_data_k90 <- subset(gdp_temp_data_k90, year <= 2020)
-
 total_damages_k90 <- calculate_bidamages_bilateral(mean_r_raster, 
                                                    fair_exps_isos_k90, 
                                                    unique(fair_exps_isos_k90$experiment_iso),
@@ -746,11 +710,11 @@ total_damages_k90 <- calculate_bidamages_bilateral(mean_r_raster,
                                                    future_forecast_ssp370,
                                                    gdp_temp_data_k90,
                                                    bhm_era_reg)
+# write the dataframe
+write_rds(total_damages_k90, "~/BurkeLab Dropbox/Projects/data/output/041023/total_damages_k90_v2022.rds")
 
-write_rds(total_damages_k90, "~/Desktop/total_damages_k90_v2022.rds")
-
+# now let us just do consumption emissions 
 gdp_temp_data_k90 <- subset(gdp_temp_data_k90, year <= 2020)
-
 fair_exps_isos_k90_consump <- subset(fair_exps_isos_k90_consump, !is.na(median_deltat))
 total_damages_k90_consump <- calculate_bidamages_bilateral(mean_r_raster, 
                                                    fair_exps_isos_k90_consump, 
@@ -760,69 +724,9 @@ total_damages_k90_consump <- calculate_bidamages_bilateral(mean_r_raster,
                                                    gdp_temp_data_k90,
                                                    bhm_era_reg)
 
-write_rds(total_damages_k90_consump, "~/Desktop/total_damages_k90_consump_v2022.rds")
+write_rds(total_damages_k90_consump, "~/BurkeLab Dropbox/Projects/data/output/041023/total_damages_k90_consump_v2022.rds")
 
-sum(total_damages_k90_consump$weighted_damages2[total_damages_k90_consump$emitter == "USA" & total_damages_k90_consump$weighted_damages2 < 0 ], na.rm = T)
-sum(total_damages_k90$weighted_damages2[total_damages_k90$emitter == "USA" & total_damages_k80$weighted_damages2 < 0], na.rm = T)
-sum(total_damages_k80$weighted_damages2[total_damages_k80$emitter == "AUS" & total_damages_k80$weighted_damages2 < 0 ], na.rm = T)
-
-write_rds(total_damages_k90, "~/Desktop/total_damages_k90_v2022.rds")
-
-bhm_era_reg$coefficients[1]/(-2*bhm_era_reg$coefficients[2])
-
-ex <- readRDS("~/Desktop/FSE_projects/loss_damages/total_bidamages_k80_0223.rds")
-
-sum(ex$weighted_damages2[ex$emitter == "USA" & ex$weighted_damages2 < 0 ], na.rm = T)
-
-total_damages_k80 <- calculate_bidamages_bilateral(mean_r_raster, 
-                                                   fair_exps_isos_k80, 
-                                                   "USA",
-                                                   1980, 
-                                                   future_forecast_ssp370,
-                                                   gdp_temp_data_k80,
-                                                   bhm_era_reg)
-
-
-
-
-head(total_damages_k80)
-
-sum(total_damages_k80$weighted_damages2[total_damages_k80$emitter == "USA" & total_damages_k80$year <= 2020 & total_damages_k80$weighted_damages2 < 0 ], na.rm = T)
-
-
-gdp_temp_data_k90 <- subset(gdp_temp_data_k90, year <= 2020)
-
-write_rds(total_damages_k80, "~/Desktop/total_damages_k809_020623.rds")
-write_rds(total_damages_k90, "~/Desktop/total_damages_k90_020623.rds")
-
-fair_exps_isos_k90 <- subset(fair_exps_isos_k90, year <= 2020)
-
-total_damages_k90 <- calculate_bidamages_bilateral(mean_r_raster, 
-                                                   fair_exps_isos_k90, 
-                                                   unique(fair_exps_isos_k90$experiment_iso),
-                                                   1990, 
-                                                   future_forecast_ssp370,
-                                                   gdp_temp_data_k90,
-                                                   bhm_era_reg)
-
-
-#write_rds(total_damages_k80, "~/BurkeLab Dropbox/Projects/loss_damage/data/figs/fig1/total_damages_k80.rds")
-#write_rds(fair_exps_isos_k80, "~/BurkeLab Dropbox/Projects/loss_damage/data/figs/fig1/fair_exps_isos_k80.rds")
-
-colnames(fair_exps_isos_k80)[7] <- "deltaT_preturb"
-colnames(fair_exps_1GtCO2)[6] <- "deltaT_fullemms"
-
-calculate_bidamages()
-max(total_damages$year)
-sum(total_damages_k80$weighted_damages2[total_damages_k80$year <= 2020 & total_damages_k80$weighted_damages2 > 0 ], na.rm = T)
-
-total_damages_neg <- subset(total_damages, weighted_damages2 < 0 )
-total_damages_neg <- subset(total_damages_neg, year < 2021 )
-total_damages_usa <- subset(total_damages, emitter == "USA")
-
-sum(total_damages_neg$weighted_damages2, na.rm = T)
 ######################## Impact of future gdp-ssp ############################
-
 # now we can calculate the bilateral damages. Here, list_of_exps indicate
 #the countries turning off of emissions. In case we want all the countries, 
 # we set list_of_exps = unique(fair_exps$experiment_iso) (i.e. all ISOs)
@@ -1134,7 +1038,6 @@ total_damages_k80_ssp126 <- calculate_bidamages(mean_r_raster,
                                                 list_of_exps, 
                                                 1980,
                                                 future_forecast_df)
-
 total_damages_k80_ssp245 <- calculate_bidamages(mean_r_raster,
                                                 fair_exps_k80_ssp245, 
                                                 list_of_exps, 
@@ -1250,6 +1153,10 @@ total_damages_cc <- calculate_bidamages(mean_r_raster,
                                         bhm_era_reg,
                                         "no", 
                                         "no")
+
+# write the dataframe into the output arm of the directory
+write_rds(total_damages_cc, "~/BurkeLab Dropbox/Projects/loss_damage/data/output/041023/total_damages_cc.rds")
+
 
 ################################################################################
 ######################### PART IV: Visualize data   ############################

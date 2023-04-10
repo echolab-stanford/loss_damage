@@ -9,7 +9,6 @@
 ##############################################################################
 
 #fair_exps_1tCO2 <- process_exp_data("1tCO2_hist_fut_main", 1990)
-
 # we need to calculate the difference in temperature response between an 
 # experiment where we run with full emissions, and where we shut off emissions 
 # from a country
@@ -75,7 +74,7 @@ process_exp_data_hist_fut <- function(experiment, year_k){
   
   #  plot(fes$year, fes$diff*(-1), type = "l")
     
-  if (experiment == "hist_fut_yriso") {
+  if (experiment == "hist_fut_yriso" | experiment == "hist_fut_041023_yriso") {
     fair_exps$exp_yr <- substr(fair_exps$loop, 17,20) 
     fair_exps$experiment_iso <- substr(fair_exps$loop, 10,12) 
   }
@@ -86,7 +85,8 @@ process_exp_data_hist_fut <- function(experiment, year_k){
       experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
       experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" |
       experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" | 
-      experiment == "new_cc_hist") {
+      experiment == "new_cc_hist" | experiment == "041023_1tCO2_hist_2300" |
+      experiment == "041023_new_cc_hist") {
     fair_exps$experiment_iso <- substr(fair_exps$loop, 5,8) 
   }
   if (experiment == "1GtC_hist_fut_ssp245" | experiment == "1GtC_hist_fut_ssp119" ) {
@@ -114,13 +114,13 @@ process_exp_data_hist_fut <- function(experiment, year_k){
   fair_exps$Test <- as.numeric(fair_exps$Test)
   
   #select the needde variables
-  if (experiment == "hist_fut_yriso"){ 
+  if (experiment == "hist_fut_yriso" | experiment == "hist_fut_041023_yriso"){ 
     fair_exps <- fair_exps %>% dplyr::select(c("num_loop", 
                                                "experiment_iso",
                                                "exp_yr",
                                                "year", "Test"))}
   
-  if (experiment != "hist_fut_yriso"){
+  if (experiment != "hist_fut_yriso" & experiment != "hist_fut_041023_yriso"){
     fair_exps <- fair_exps %>% dplyr::select(c("num_loop", 
                                                "experiment_iso",
                                                "year", "Test"))}
@@ -136,7 +136,8 @@ process_exp_data_hist_fut <- function(experiment, year_k){
       experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
       experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" |
       experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" |
-      experiment == "new_cc_hist") {
+      experiment == "new_cc_hist"| experiment == "041023_1tCO2_hist_2300"|
+      experiment == "041023_new_cc_hist") {
     fair_exp_all <- subset(fair_exps, experiment_iso == "loop")
   } 
   if (experiment == "1GtC_hist_fut_ssp245" | experiment == "1GtC_hist_fut_ssp119" ) {
@@ -147,6 +148,7 @@ process_exp_data_hist_fut <- function(experiment, year_k){
       experiment == "hist_fut_ssp370" |
       experiment == "hist_fut_noemms_ssp126" | experiment == "hist_fut_noemms_ssp245" |
       experiment == "hist_fut_noemms_ssp119" | experiment == "hist_fut_yriso" | 
+      experiment == "hist_fut_041023_yriso"|
       experiment == "hist_fut_bilateral" | experiment == "hist_bi_v2022" |
       experiment == "hist_bitt_v2022") 
   {
@@ -176,7 +178,8 @@ process_exp_data_hist_fut <- function(experiment, year_k){
       experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
       experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" | 
       experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" |
-      experiment == "new_cc_hist"){
+      experiment == "new_cc_hist"| experiment == "041023_1tCO2_hist_2300"|
+      experiment == "041023_new_cc_hist"){
     # we subtract FaIR ran with all emissions from the left hand side
     fair_exps <- subset(fair_exps, experiment_iso != "loop")
   }
@@ -188,6 +191,7 @@ process_exp_data_hist_fut <- function(experiment, year_k){
       experiment == "hist_fut_ssp370" |
       experiment == "hist_fut_noemms_ssp126" | experiment == "hist_fut_noemms_ssp245" |
       experiment == "hist_fut_noemms_ssp119" | experiment == "hist_fut_yriso" | 
+      experiment == "hist_fut_041023_yriso" |
       experiment == "hist_fut_bilateral" | experiment == "hist_bi_v2022" |
       experiment == "hist_bitt_v2022" ) {
     fair_exps <- subset(fair_exps, experiment_iso != "all")
@@ -208,7 +212,7 @@ process_exp_data_hist_fut <- function(experiment, year_k){
   
   # now we need to aggregate this to the country-year level and calculate the 
   # median
-  if (experiment == "hist_fut_yriso"){
+  if (experiment == "hist_fut_yriso" | experiment == "hist_fut_041023_yriso"){
     fair_exps <- fair_exps %>% 
       dplyr::group_by(year, experiment_iso, exp_yr) %>% 
       dplyr::summarise(median_deltat = median(deltaT, na.rm = T),
@@ -216,7 +220,7 @@ process_exp_data_hist_fut <- function(experiment, year_k){
                        median_deltat_preturb = median(Test.x, na.rm = T),
                        .groups = "keep")
   }
-  if (experiment != "hist_fut_yriso"){
+  if (experiment != "hist_fut_yriso" & experiment != "hist_fut_041023_yriso"){
     fair_exps <- fair_exps %>% 
       dplyr::group_by(year, experiment_iso) %>% 
       dplyr::summarise(median_deltat_preturb = median(Test.x, na.rm = T),
@@ -231,7 +235,8 @@ process_exp_data_hist_fut <- function(experiment, year_k){
       experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
       experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" |
       experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" |
-      experiment == "new_cc_hist"){
+      experiment == "new_cc_hist"| experiment == "041023_1tCO2_hist_2300" | 
+      experiment == "041023_new_cc_hist"){
     for (i in year_k:2100){
       fair_exps1 <- subset(fair_exps, experiment_iso == i)
       fair_exps1$deltat_fullemms <- fair_exps1$median_deltat_fullemms - fair_exps1$median_deltat_fullemms[fair_exps1$year == 2020]
@@ -245,7 +250,7 @@ process_exp_data_hist_fut <- function(experiment, year_k){
   #unique(fair_exps$exp_yr)
   i <- 2019
   j <- "CHN"
-  if (experiment == "hist_fut_yriso"){
+  if (experiment == "hist_fut_yriso" | experiment == "hist_fut_041023_yriso"){
     for (i in year_k:2020){
       for (j in unique(fair_exps$experiment_iso)){
         
