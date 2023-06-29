@@ -31,7 +31,7 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
   # now bring them together
   deltat_calced_df <- left_join(deltat_df,
                                 fair_exps,
-                                by = c("merge_id"), multiple = "all")
+                                by = c("merge_id"), multiple = "all", relationship = "many-to-many")
   
   # now multuply the grid level warming ratio by median temp response from FaIR
   deltat_calced_df$deltat <- deltat_calced_df$weighted_mean * deltat_calced_df$median_deltat   

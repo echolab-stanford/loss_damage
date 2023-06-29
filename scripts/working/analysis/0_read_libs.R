@@ -39,7 +39,6 @@ packs <- c("tidyr",
            "WDI",
            "wbstats",
            "maptools",
-           "WDI",
            "scales",
            "countrycode",
            "ggalluvial",
@@ -52,13 +51,14 @@ packs <- c("tidyr",
 #  install.packages(packs[[i]])
 #  print(i)
 #}
+
+
+
 # calling the packages
 lapply(packs, 
        library, 
        character.only = TRUE)
 
-# call specific packages from github
-devtools::install_github("vincentarelbundock/WDI")
 
 # run any functions that could be needed in the future
 gt_theme_538 <- function(data,...) {
@@ -99,6 +99,12 @@ gt_theme_538 <- function(data,...) {
     ) 
 }
 
+# set paths 
+dropbox_path <- "~/BurkeLab Dropbox/Projects/loss_damage/"
 
-library("readxl")
+# create a file in the processed data directory 
+dir.create(file.path(paste0("figures/", gsub("-","",Sys.Date()))))
+dir.create(file.path(paste0(dropbox_path, "data/output/", gsub("-","",Sys.Date()))))
+output_path <- paste0(dropbox_path, "data/output/",gsub("-","",Sys.Date()), "/")
 
+# end of script

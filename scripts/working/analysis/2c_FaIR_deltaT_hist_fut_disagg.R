@@ -18,7 +18,7 @@
 # the output from this. The arguments it takes is year k 
 process_disagg_exp_data <- function(date, experiment, year_k){
     # set path and get list of files from directory
-    path <- paste0("FaIR", date)
+    path <- paste0("FaIR/", date)
     #fair_exp <- experiment
     # now let us generate the year k identifier to call the files
     year_k_exp <- paste0("k", substr(year_k, 3,4))
@@ -56,7 +56,8 @@ process_disagg_exp_data <- function(date, experiment, year_k){
     if (experiment == "1GtC_hist_fut_ssp370fnl1" | experiment == "1GtC_hist_fut_sspxxx1" | 
         experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
         experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" |
-        experiment == "1GtCO2_hist_2300" | experiment == "052323_1tCO2_hist_2300") {
+        experiment == "1GtCO2_hist_2300" | experiment == "052323_1tCO2_hist_2300" | 
+        experiment == "1GtCO2_hist_2100") {
       fair_exps$experiment_iso <- substr(fair_exps$loop, 5,8) 
       
     }
@@ -103,10 +104,11 @@ process_disagg_exp_data <- function(date, experiment, year_k){
     #                                            "experiment_iso",
     #                                           "year", "Test"))
     
-    if (experiment == "1GtC_hist_fut_ssp370fnl1"| experiment == "1GtC_hist_fut_sspxxx1" | 
+    if (experiment == "1GtC_hist_fut_ssp370fnl1" | experiment == "1GtC_hist_fut_sspxxx1" | 
         experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
         experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" |
-        experiment == "1GtCO2_hist_2300"| experiment == "052323_1tCO2_hist_2300") {
+        experiment == "1GtCO2_hist_2300" | experiment == "052323_1tCO2_hist_2300" | 
+        experiment == "1GtCO2_hist_2100"){
       fair_exp_all <- subset(fair_exps, experiment_iso == "loop")
     } 
     if (experiment == "1GtC_hist_fut_ssp245" | experiment == "1GtC_hist_fut_ssp119" ) {
@@ -144,10 +146,11 @@ process_disagg_exp_data <- function(date, experiment, year_k){
                            fair_exp_all,
                            by = c("num_loop", "year"))
     
-    if (experiment == "1GtC_hist_fut_ssp370fnl1"| experiment == "1GtC_hist_fut_sspxxx1" | 
+    if (experiment == "1GtC_hist_fut_ssp370fnl1" | experiment == "1GtC_hist_fut_sspxxx1" | 
         experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
-        experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" | 
-        experiment == "1GtCO2_hist_2300"| experiment == "052323_1tCO2_hist_2300"){
+        experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" |
+        experiment == "1GtCO2_hist_2300" | experiment == "052323_1tCO2_hist_2300" | 
+        experiment == "1GtCO2_hist_2100"){
       # we subtract FaIR ran with all emissions from the left hand side
       fair_exps <- subset(fair_exps, experiment_iso != "loop")
     }
@@ -181,10 +184,11 @@ process_disagg_exp_data <- function(date, experiment, year_k){
     colnames(fair_exps)[4] <- "median_deltat_preturb"
     colnames(fair_exps)[6] <- "median_deltat_fullemms"
   
-  if (experiment == "1GtC_hist_fut_ssp370fnl1"| experiment == "1GtC_hist_fut_sspxxx1" | 
-      experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
-      experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" | 
-      experiment == "1GtCO2_hist_2300"| experiment == "052323_1tCO2_hist_2300"){
+    if (experiment == "1GtC_hist_fut_ssp370fnl1" | experiment == "1GtC_hist_fut_sspxxx1" | 
+        experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
+        experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" |
+        experiment == "1GtCO2_hist_2300" | experiment == "052323_1tCO2_hist_2300" | 
+        experiment == "1GtCO2_hist_2100"){
     for (i in year_k:2100){
       fair_exps1 <- subset(fair_exps, experiment_iso == i)
       fair_exps1$deltat_fullemms <- fair_exps1$median_deltat_fullemms - fair_exps1$median_deltat_fullemms[fair_exps1$year == 2020]

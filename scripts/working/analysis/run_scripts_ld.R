@@ -22,6 +22,7 @@
 remove(list=ls())
 gc()
 sf::sf_use_s2(FALSE)
+setwd("~/GitHub/loss_damage")
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -39,6 +40,8 @@ source("scripts/working/analysis/3b0_run_bhm_model.R")
 source("scripts/working/analysis/3c0_calc_total_damages_bilateral.R")
 source("scripts/working/analysis/3c1_calc_total_damages.R")
 source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
+
+setwd(dropbox_path)
 
 ################################################################################
 ###################### PRE1: Read needed data for analysis #####################
@@ -176,18 +179,17 @@ world <- subset(world, !is.na(ISO3))
 fair_exps_1tco2_2100 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2100", 1990, aggregating = T)
 # temperature response through 2300 
 fair_exps_1tco2_2300 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2300", 1990, aggregating = T)
-
 # now let us calc deltat and return all the runs so that we can run 
 # uncertainty analysis
-fair_exps_1tco2_disagg <- process_disagg_exp_data("20230523","1tCO2_hist_2300", 1990)
-
+#fair_exps_1tco2_disagg <- process_disagg_exp_data("20230523","1tCO2_hist_2300", 1990)
+fair_exps_1gtco2_disagg_2100 <- process_disagg_exp_data("20230523","1GtCO2_hist_2100", 1990)
 # now we need to run the experiment for 1gtco2 instead of 1tco2
-fair_exps_1GtCO2 <- process_exp_data_hist_fut("20230523","1GtCO2_hist_2100", 1990, aggregating = T)
+fair_exps_1gtco2_2100 <- process_exp_data_hist_fut("20230523","1GtCO2_hist_2100", 1990, aggregating = T)
 
 ####################### Experiment (Carbon Capture): ########################
 # this experiment is to estimate the damages if we are to capture 1 tCO2 
 # years after emitting it
-fair_exps_cc <- process_exp_data_hist_fut("041023", "cc_hist", 2020)
+fair_exps_cc <- process_exp_data_hist_fut("20230410", "cc_hist", 2020, aggregating = T)
 
 ####################### Experiment (Carbon debt): ######################
 # this experiment is to estimate the deltaT resulting from emissions 
@@ -271,10 +273,10 @@ future_forecast_ssp370_2300_2pct <- readRDS("data/processed/future_forecast/futu
 #                                            "ERA")
 #write_rds(gdp_temp_data_k80_2300, "data/processed/world_gdp_pop/gdp_temp_data_k80_2300.rds")
 
-gdp_temp_data_5lags <- generate_gdptemp_panel_5lags("pooled", 
-                                        future_forecast_ssp370, 
-                                        "1990", 
-                                        "ERA")
+#gdp_temp_data_5lags <- generate_gdptemp_panel_5lags("pooled", 
+#                                        future_forecast_ssp370, 
+#                                        "1990", 
+#                                        "ERA")
 
 #write_rds(gdp_temp_data_5lags, "data/processed/world_gdp_pop/gdp_temp_data_5lags.rds")
 
@@ -292,6 +294,11 @@ gdp_temp_data_5lags <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_5lags
 pooledbs <- as.data.frame(readRDS("data/processed/bhm/pooledregression_boostraps_era.rds"))
 #gdp_temp_data_bhmbs <- generate_gdptemp_panel_bhmbs("pooled", future_forecast_ssp370_cru, 1990, "CRU")
 #write_rds(gdp_temp_data_bhmbs, "data/processed/world_gdp_pop/gdp_temp_data_bhmbs.rds")
+#gdp_temp_data_bhmbs <- generate_gdptemp_panel_bhmbs("pooled",
+#                                                    future_forecast_ssp370,
+#                                                    1990,
+#                                                    "ERA")
+
 gdp_temp_data_bhmbs <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_bhmbs.rds")
 
 ################### generate country-year regression model: ##################
@@ -299,7 +306,6 @@ gdp_temp_data_bhmbs <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_bhmbs
 #bhm_era_reg <- run_bhm_model_reg("pooled")
 
 #save(bhm_era_reg, file = "data/processed/bhm/bhm_era_reg.RData")
-#save(bhm_era_reg, file = "sherlock_files/data/pre_processed/bhm_era_reg.RData")
 load("data/processed/bhm/bhm_era_reg.RData")
 
 ############### generate country-year regression model: richvpoor ##############
@@ -314,191 +320,100 @@ load("data/processed/bhm/bhm_era_reg.RData")
 ############### calculate the total damages for each scenario ################
 ##############################################################################
 
+# we will go over the different scenarios used in the paper. The below 
+# code will produce the data we will report in the paper, as well as the 
+# datasets we will use to visualize. 
+##################### 1GtCO2/tCO2yr experiment ###########################
+# The data produced under this section is used for the following 
+# figures 
 
-#write_sf(world, "data/processed/world_gdp_pop/world.shp")
-#write_sf(world, "sherlock_files/data/pre_processed/world.shp")
 
-#popdf <- readRDS("data/processed/world_gdp_pop/popdf.rds")
-#world <- read_sf("data/processed/world_gdp_pop/world.shp")
+################################################################################ Figures 3a, 3b, s3
 
-##################### 1GtCO2/yr experiment ###########################
 # first we need to set up the set of experimenet years to loop over inside the 
-# custom-mmade function
-list_of_exps <- c(1990:2020)
-#colnames(fair_exps_1GtCO2)[7] <- "deltaT_preturb"
-#colnames(fair_exps_1GtCO2)[6] <- "deltaT_fullemms"
+# custom-made function
+years_of_exps_1990_2020 <- c(1990:2020)
+years_of_exps_1980_2020 <- c(1980:2020)
 
-#total_damages_1gtCO2 <- calculate_bidamages(mean_r_raster,
-#                                            fair_exps_1GtCO2, 
-#                                           list_of_exps, 
-#                                           1990,
-#                                           future_forecast_ssp370,
-#                                           gdp_temp_data,
-#                                           "ERA")
 
-total_damages_1GtCO2 <- calculate_bidamages(mean_r_raster,
-                                           fair_exps_1GtCO2, 
-                                           list_of_exps, 
-                                           1990,
-                                           future_forecast_ssp370,
-                                           gdp_temp_data_k90,
-                                           "ERA",
-                                           "NO",
-                                           1)
-
-#gdp_temp_data_k90$diff_lgdp_for_damages[is.na(gdp_temp_data_k90$diff_lgdp_for_damages)] <- gdp_temp_data_k90$diff_lgdp[is.na(gdp_temp_data_k90$diff_lgdp_for_damages)]
-
-total_damages_1GtCO2 <- calculate_bidamages(mean_r_raster,
-                                            fair_exps_1GtCO2,
-                                            c(1990:1999),
+# ok let us start with the 1gtco2 experiment (6 mins)
+total_damages_1gtco2 <- calculate_damages_pulse(mean_r_raster,
+                                            fair_exps_1gtco2_2100, 
+                                            years_of_exps_1990_2020,
                                             1990,
                                             future_forecast_ssp370,
                                             gdp_temp_data_k90,
                                             "ERA",
                                             bhm_era_reg,
-                                            "NO",
-                                            1)
+                                            "no",
+                                            "no",
+                                            2020)
 
-sum(total_damages_1GtCO2$weighted_damages2_scld, na.rm = T)/1000000000
-
-year2020 <- subset(total_damages_1GtCO2, emitter == 2020)
-
-unique(total_damages_1GtCO2$emitter)
-
-sum(total_damages_1GtCO2$weighted_damages7_scld[total_damages_1GtCO2$emitter == 1990 & total_damages_1GtCO2$year <= 2020], na.rm = T)/1000000000
-sum(total_damages_1GtCO2$weighted_damages2_scld[total_damages_1GtCO2$emitter == 2020], na.rm = T)/1000000000
-sum(total_damages_1GtCO2$weighted_damages2_scld[total_damages_1GtCO2$emitter == 2020], na.rm = T)/1000000000
-
-write_rds(total_damages_1gtco2_a, "~/Desktop/total_damages_final_052323_a.rds")
-total_damages_1GtCO2a <- total_damages_1GtCO2
+write_rds(total_damages_1gtco2, paste0("data/processed/", 
+                                       gsub("-", "", Sys.Date()), 
+                                       "/total_damages_1gtco2_1990_2020.rds"))
 
 
-year_2020 <- subset(total_damages_1GtCO2, year <= 2020)
-# let us run the experiment looking at impacts of emmitting one tonne of co2
-fair_exps_1tco2_2100 <- subset(fair_exps_1tco2_2300, year < 2101)
 
-total_damages_1GtCO2 <- calculate_bidamages(mean_r_raster,
-                                           fair_exps_1GtCO2, 
-                                           list_of_exps, 
-                                           1990,
-                                           future_forecast_ssp370,
-                                           gdp_temp_data_k90,
-                                           "ERA",
-                                           bhm_era_reg,
-                                           "NO",
-                                           1,
-                                           2020)
-
-total_damages_1tCO2 <- calculate_bidamages(mean_r_raster,
-                                            fair_exps_1tCO2_2300, 
-                                            2020, 
-                                            1990,
-                                            future_forecast_ssp370_2300,
-                                            gdp_temp_data_k90_2300,
-                                            "ERA",
-                                           bhm_era_reg,
-                                            "NO",
-                                            1,
-                                           2020)
-
-unique(total_damages_1tCO2$emitter)
-sum(total_damages_1tCO2$weighted_damages2_scld, na.rm = T)
-
-total_damages_1gtco2 <- calculate_bidamages(mean_r_raster,
-                                           fair_exps_1GtCO2, 
-                                           c(1990:2020), 
-                                           1990,
-                                           future_forecast_ssp370,
-                                           gdp_temp_data_k90,
-                                           "ERA",
-                                           bhm_era_reg,
-                                           "NO",
-                                           1,
-                                           2020)
-
-#write the output data 
-write_rds(total_damages_1tCO2, "data/output/total_damages_1tCO2.rds")
+################################################################################ Figures 3c
 
 ######################## SCC Uncertainty Sources ############################
 ######################## Response function uncertainty
 # we need to begin with generating country panel with the bootstraps
-gdp_temp_data_bhmbs <- generate_gdptemp_panel_bhmbs("pooled",
-                                                    future_forecast_ssp370,
-                                                    1990,
-                                                    "ERA")
+num_cores <- detectCores() - 1
+registerDoParallel(num_cores)
+
 
 # now let us generate the total damages by bootstrap loop
-pooledbs <- as.data.frame(readRDS("data/processed/bhm/pooledregression_boostraps_era.rds"))
 pooledbs$coef_id <- 1:nrow(pooledbs)
 pooledbs$merge_id <- 1
 gdp_temp_data_k90$merge_id <- 1
 
-processed_dfs <- list()
-i <- 1
-for (i in 1:length(unique(pooledbs$coef_id))){
-  tic()
+tic()
+# parallelize the loop using foreach (~ 33 minutes) - run this code on a server 
+# where you can exploit multiple CPUs
+total_damages_1gtco2_bhm <- foreach(i=1:300, .combine="rbind")%dopar%{
+
   pooledbs_i <- subset(pooledbs, coef_id == i)
-  
-  
   gdp_temp_data_i <- gdp_temp_data_k90
-  
   gdp_temp_data_i <- left_join(gdp_temp_data_i, 
                                pooledbs_i, 
                                by = c("merge_id"))
   
-  total_damages_1tCO2 <- calculate_bidamages_bhmbs(mean_r_raster, 
-                                                   fair_exps_1tCO2,
-                                                   2020,
-                                                   1990,
-                                                   future_forecast_ssp370,
-                                                   gdp_temp_data_i,
-                                                   "ERA",
-                                                   "NO",
-                                                   "NO",
-                                                   2020)
+  damages_i <- calculate_damages_pulse(mean_r_raster, 
+                                       fair_exps_1gtco2_2100,
+                                       2020,
+                                       1990,
+                                       future_forecast_ssp370,
+                                       gdp_temp_data_i,
+                                       "ERA",
+                                       bhm_era_reg,
+                                       "NO",
+                                       "NO",
+                                       2020)
   
-  processed_dfs[[i]] <- total_damages_1tCO2
-  toc()
-}
+  return(damages_i)
+ }
+toc()
 
-total_damages_1tCO2 <- calculate_bidamages(mean_r_raster, 
-                                                 fair_exps_1tco2,
-                                                 c(1990:2023),
-                                                 1990,
-                                                 future_forecast_ssp370,
-                                                 gdp_temp_data_k90,
-                                                "ERA")
-
-total_damages_1tCO2 <- calculate_bidamages(mean_r_raster, 
-                                           fair_exps_1tco2,
-                                           c(1990:2023),
-                                           1990,
-                                           future_forecast_ssp370,
-                                           gdp_temp_data_k90,
-                                           "ERA",
-                                           "no",
-                                           "normal")
-
-
-
-#write_rds(total_damages_1tCO2, "data/processed/output/1tco2_scc_bhm_uncertainty.rds")
+write_rds(total_damages_1gtco2_bhm, paste0(output_path, "total_damages_1gtco2_bhm.rds"))
 
 ######################## CGM Models uncertainty
 # generate empty list of dataframes to be filled in woth processed dataframes
 processed_dfs <- list()
 for (i in 1:length(list_r_rasters)){
   tic()
-  damages_i <- calculate_bidamages(list_r_rasters[[i]],
-                                   fair_exps_1tCO2,
-                                   2020,
-                                   1990,
-                                   future_forecast_ssp370,
-                                   gdp_temp_data_k90,
-                                   "ERA",
-                                   bhm_era_reg,
-                                   "NO",
-                                   "NO",
-                                   2020)
+  damages_i <- calculate_damages_pulse(list_r_rasters[[i]],
+                                       fair_exps_1gtco2_2100,
+                                       2020,
+                                       1990,
+                                       future_forecast_ssp370,
+                                       gdp_temp_data_k90,
+                                       "ERA",
+                                       bhm_era_reg,
+                                       "NO",
+                                       "NO",
+                                       2020)
   
   damages_i$cgm_id <- i
   processed_dfs[[i]] <- damages_i 
@@ -506,101 +421,73 @@ for (i in 1:length(list_r_rasters)){
 }
 
 # now let us bring all dataframes into one 
-total_damages_1tCO2_cgm <- do.call(rbind, processed_dfs)
+total_damages_1gtco2_cgm <- do.call(rbind, processed_dfs)
 
-#sum(total_damages_1tCO2_cgm$weighted_damages2_scld[total_damages_1tCO2_cgm$fair_id == 2], na.rm = T)
 # write the dataset
-write_rds(total_damages_1tCO2_cgm, "data/output/060223/1tco2_scc_cgm_uncertainty_060223.rds")
+write_rds(total_damages_1gtco2_cgm, paste0(output_path, "total_damages_1gtco2_cgm.rds"))
 
 ######################## FaIR uncertainty
 # in order to calculate the total damages under different FaIR runs
-processed_dfs <- list()
-i <- 30
-for (i in 1:length(unique(fair_exps_1tco2_disagg$num_loop))){
-  tic()
-  
-  fair_i <- subset(fair_exps_1tco2_disagg, num_loop == i)
-  damages_i <- calculate_bidamages(mean_r_raster,
-                                   fair_i,
-                                   2020,
-                                   1990,
-                                   future_forecast_ssp370,
-                                   gdp_temp_data_k90,
-                                   "ERA",
-                                   bhm_era_reg,
-                                   "NO",
-                                   "NO",
-                                   2020)
+
+total_damages_1gtco2_fair <- foreach(i = 1:length(unique(fair_exps_1gtco2_disagg_2100$num_loop)), 
+              .combine = "rbind") %dopar% {
+  fair_i <- subset(fair_exps_1gtco2_disagg_2100, num_loop == i)
+  damages_i <- calculate_damages_pulse(mean_r_raster,
+                                       fair_i,
+                                       2020,
+                                       1990,
+                                       future_forecast_ssp370,
+                                       gdp_temp_data_k90,
+                                       "ERA",
+                                       bhm_era_reg,
+                                       "NO",
+                                       "NO",
+                                       2020)
   damages_i$fair_id <- i
-  processed_dfs[[i]] <- damages_i 
-  print(i)
-  toc()
-}
+  #write_rds(damages_i, paste0("~/Desktop/test/damages_", i, ".rds"))
+  return(damages_i)
+              }
 
-# now let us bring all dataframes into one 
-total_damages_1tCO2_fair <- do.call(rbind, processed_dfs)
-
-#sum(total_damages_1tCO2_fair$weighted_damages2_scld[total_damages_1tCO2_fair$fair_id == 76], na.rm = T)
 # write the dataset
-#write_rds(total_damages_1tCO2_fair, "data/output/060223/1tco2_scc_fair_uncertainty_060223.rds")
-
-save(processed_dfs, file = "data/output/060223/1tco2_scc_bhm_uncertainty_list_060223.RData")
-
+write_rds(total_damages_1gtco2_fair, paste0(output_path, "total_damages_1gtco2_fair.rds"))
 
 ######################## SCC Total Uncertainty ############################
 # now we need to calculate the total uncertainty. In order to execute this 
 # task we need to sample from each of our sources of uncertainty and 
 # calculated the resulting total damages. 
-for (i in 1:1000) {
-  tic()
+tic()
+total_damages_1gtco2_total <- foreach(i = 1:300, .combine = "rbind") %dopar% {
+  fair_exps_1gtc_disagg_i <- subset(fair_exps_1gtco2_disagg_2100, 
+                                    num_loop == sample(unique(fair_exps_1gtco2_disagg_2100$num_loop), 1))
+  pooledbs_i <- subset(pooledbs, coef_id == i)
+  gdp_temp_data_sbstd <- left_join(gdp_temp_data_k90, 
+                                   pooledbs_i, 
+                                   by = c("merge_id"))
+  damages_i <- calculate_damages_pulse(list_r_rasters[[sample(1:29, 1)]],
+                                                fair_exps_1gtc_disagg_i, 
+                                                2020, 
+                                                1990,
+                                                future_forecast_ssp370,
+                                                gdp_temp_data_sbstd,
+                                                "ERA",
+                                                bhm_era_reg,
+                                                "no",
+                                                "no",
+                                                2020)
   
-  fair_exps_1gtc_disagg_i <- subset(fair_exps_1tco2_disagg, 
-                                    num_loop == sample(unique(fair_exps_1tco2_disagg$num_loop), 1))
-  gdp_temp_data_sbstd <- subset(gdp_temp_data_bhmbs, coef_id == sample(1:1000, 1))
-  #gdp_temp_data_sbstd <- subset(gdp_temp_data, coef_id == 1)
-  total_damages_1gtC <- calculate_bidamages(list_rasters[[sample(1:29, 1)]],
-                                            fair_exps_1gtc_disagg_i, 
-                                            2020, 
-                                            1990,
-                                            future_forecast_ssp370,
-                                            gdp_temp_data_sbstd)
-  #sum(total_damages_1gtC$total_damages2, na.rm = T)
-  #list_of_estimates <- rbind(list_of_estimates,
-  #                          total_damages_1gtC)
-  #hist(list_of_estimates$total_damages2)
-  write_rds(total_damages_1gtC, 
-            paste0("data/processed/net_scc_base_111822/net_scc_est_", i, ".rds"))
-  #list_of_estimates[[i]] <- total_damages_1gtC
-  toc()
+  damages_i$iter_id <- i
+  return(damages_i)
+  
 }
+toc()
 
-######################## CRU
-for (i in 938:1000) {
-  tic()
-  
-  fair_exps_1gtc_disagg_i <- subset(fair_exps_1tco2_disagg, 
-                                    num_loop == sample(unique(fair_exps_1tco2_disagg$num_loop), 1))
-  gdp_temp_data_sbstd <- subset(gdp_temp_data_bhmbs, coef_id == sample(1:1000, 1))
-  #gdp_temp_data_sbstd <- subset(gdp_temp_data, coef_id == 1)
-  total_damages_1gtC <- calculate_bidamages(list_rasters[[sample(1:29, 1)]],
-                                            fair_exps_1gtc_disagg_i, 
-                                            2020, 
-                                            1990,
-                                            future_forecast_ssp370_cru,
-                                            gdp_temp_data_sbstd, 
-                                            "CRU")
-  #sum(total_damages_1gtC$total_damages2, na.rm = T)
-  #list_of_estimates <- rbind(list_of_estimates,
-  #                          total_damages_1gtC)
-  #hist(list_of_estimates$total_damages2)
-  write_rds(total_damages_1gtC, 
-            paste0("data/processed/net_scc_cru_112822/net_scc_est_", i, ".rds"))
-  #list_of_estimates[[i]] <- total_damages_1gtC
-  toc()
-}
+write_rds(total_damages_1gtco2_total, paste0(output_path, "total_damages_1gtco2_total.rds"))
 
 ######################### Country-level bidamages ############################
 # now we canlculate the country level damages attributed to each of the countries 
+
+################################################################################ Figures 1, Sankeys (4, S?)
+
 
 # we start with k = 1980 
 gdp_temp_data_k80 <- subset(gdp_temp_data_k80, year <= 2020)
@@ -613,16 +500,12 @@ total_damages_k80 <- calculate_bidamages_bilateral(mean_r_raster,
                                                    bhm_era_reg,
                                                    2020)
 
-sum(total_damages_k80$weighted_damages2[total_damages_k80$emitter == "USA"], na.rm = T)
-sum(total_damages_k80$weighted_damages2[total_damages_k80$emitter == "USA" & total_damages_k80$weighted_damages2 < 0], na.rm = T)
 # write teh dataframe in to the output arm of teh directory 
 write_rds(total_damages_k80, "data/output/041023/total_damages_k80_v2022.rds")
 write_rds(total_damages_k80, "data/output/060223/total_damages_k80_v2022.rds")
 
 # now let us do k = 1990 
 gdp_temp_data_k90 <- subset(gdp_temp_data_k90, year <= 2020)
-
-
 total_damages_k90 <- calculate_bidamages_bilateral(mean_r_raster, 
                                                    fair_exps_isos_k90, 
                                                    unique(fair_exps_isos_k90$experiment_iso),
@@ -632,23 +515,9 @@ total_damages_k90 <- calculate_bidamages_bilateral(mean_r_raster,
                                                    bhm_era_reg,
                                                    2020)
 
-sum(total_damages_k90$weighted_damages2[total_damages_k90$ISO3 == "VEN" & total_damages_k90$weighted_damages2 < 0], na.rm = T)
-sum(total_damages_k90$weighted_damages2[total_damages_k90$weighted_damages2 < 0], na.rm = T)
-
-
 # write the dataframe
 write_rds(total_damages_k90, "data/output/060223/total_damages_k90_v2022.rds")
 write_rds(total_damages_k90, "data/output/041023/total_damages_k90_v2022.rds")
-
-sum(total_damages_k90_consump$weighted_damages2[total_damages_k90_consump$emitter == "USA" & total_damages_k90_consump$weighted_damages2 < 0], na.rm = T)
-sum(total_damages_k90_prod$weighted_damages2[total_damages_k90_prod$emitter == "USA" & total_damages_k90_prod$weighted_damages2 < 0], na.rm = T)
-
-sum(total_damages_k90_consump$weighted_damages2[total_damages_k90_consump$emitter == "SAU" & total_damages_k90_consump$weighted_damages2 < 0], na.rm = T)
-sum(total_damages_k90_prod$weighted_damages2[total_damages_k90_prod$emitter == "SAU" & total_damages_k90_prod$weighted_damages2 < 0], na.rm = T)
-
-
-#sum(total_damages_k90$weighted_damages2[total_damages_k90$emitter == "USA"], na.rm = T)
-#sum(total_damages_k90$weighted_damages2[total_damages_k90$emitter == "USA" & total_damages_k90$weighted_damages2 < 0], na.rm = T)
 
 # now let us just do consumption emissions 
 gdp_temp_data_k90 <- subset(gdp_temp_data_k90, year <= 2020)
@@ -680,28 +549,121 @@ total_damages_k90_prod <- calculate_bidamages_bilateral(mean_r_raster,
 
 write_rds(total_damages_k90_prod, "data/output/060223/total_damages_k90_prod_v2022.rds")
 
+######################## SCC Under Diff Scenarios ############################
+
+################################################################################ Figures S4
+
+scc_2300_2100_growth <- calculate_bidamages(mean_r_raster,
+                                            fair_exps_1tCO2_2300,
+                                            2020,
+                                            1990,
+                                            future_forecast_ssp370_2300,
+                                            gdp_temp_data_k90_2300,
+                                            "ERA",
+                                            bhm_era_reg,
+                                            "NO",
+                                            1 ,
+                                            2020)
+write_rds(scc_2300_2100_growth, paste0(output_path, "scc_2300_2100_growth.rds"))
+
+scc_2300_1pct_growth <- calculate_bidamages(mean_r_raster,
+                                            fair_exps_1tCO2_2300,
+                                            2020,
+                                            1990,
+                                            future_forecast_ssp370_2300_1pct,
+                                            gdp_temp_data_k90_2300_1pct,
+                                            "ERA",
+                                            bhm_era_reg,
+                                            "NO",
+                                            1 ,
+                                            2020)
+write_rds(scc_2300_1pct_growth, paste0(output_path, "scc_2300_1pct_growth.rds"))
+
+scc_2300_2pct_growth <- calculate_bidamages(mean_r_raster,
+                                            fair_exps_1tCO2_2300,
+                                            2020,
+                                            1990,
+                                            future_forecast_ssp370_2300_2pct,
+                                            gdp_temp_data_k90_2300_2pct,
+                                            "ERA",
+                                            bhm_era_reg,
+                                            "NO",
+                                            1 ,
+                                            2020)
+write_rds(scc_2300_2pct_growth, paste0(output_path, "scc_2300_2pct_growth.rds"))
+
+
+
+# now clamping 
+scc_2300_clamped_growth <- calculate_bidamages(mean_r_raster,
+                                               fair_exps_1tCO2_2300,
+                                               2020,
+                                               1990,
+                                               future_forecast_ssp370_2300,
+                                               gdp_temp_data_k90_2300,
+                                               "ERA",
+                                               bhm_era_reg,
+                                               "clamp_growth",
+                                               1,
+                                               2020)
+write_rds(scc_2300_clamped_growth, paste0(output_path, "scc_2300_clamped_growth.rds"))
+
+
+# now 5 lag (this one is lag, let us see how this will go)
+scc_2300_2100_5lag <- calculate_bidamages_5lag(mean_r_raster,
+                                               fair_exps_1tCO2_2300,
+                                               2020,
+                                               1990,
+                                               future_forecast_ssp370_2300,
+                                               gdp_temp_data_5lags,
+                                               "ERA",
+                                               2020)
+write_rds(scc_2300_2100_5lag, paste0(output_path, "scc_2300_2100_5lag.rds"))
+
+
+scc_2300_nog_post_2100 <- calculate_bidamages(mean_r_raster,
+                                              fair_exps_1tCO2_2300,
+                                              2020,
+                                              1990,
+                                              future_forecast_ssp370_2300,
+                                              gdp_temp_data_k90_2300,
+                                              "ERA", 
+                                              bhm_era_reg,
+                                              "no",
+                                              0,
+                                              2020)
+write_rds(scc_2300_nog_post_2100, paste0(output_path, "scc_2300_nog_post_2100.rds"))
+
+# now no effects post 2100 (this is just the original normal run)
+scc_2100 <- calculate_bidamages(mean_r_raster,
+                                fair_exps_1tCO2_2100,
+                                2020,
+                                1990,
+                                future_forecast_ssp370,
+                                gdp_temp_data_k90,
+                                "ERA", 
+                                bhm_era_reg,
+                                "no",
+                                "no",
+                                2020)
+write_rds(scc_2300_nog_post_2100, paste0(output_path, "scc_2100.rds"))
+
+
+
 ##################### Carbon Capture experiment ###########################
-total_damages_cc <- calculate_bidamages(mean_r_raster,
-                                        fair_exps_cc,
-                                        2100,
-                                        2020,
-                                        future_forecast_ssp370, 
-                                        gdp_temp_data_k90, 
-                                        "ERA",
-                                        bhm_era_reg,
-                                        "no", 
-                                        "no",
-                                        2020)
-sum(total_damages_cc$weighted_damages2_scld, na.rm = T)/1000000000
+total_damages_cc <- calculate_damages_pulse(mean_r_raster,
+                                            fair_exps_cc,
+                                            2100,
+                                            2020,
+                                            future_forecast_ssp370, 
+                                            gdp_temp_data_k90, 
+                                            "ERA",
+                                            bhm_era_reg,
+                                            "no", 
+                                            "no",
+                                            2020)
 
 # write the dataframe into the output arm of the directory
-write_rds(total_damages_cc, "data/output/041023/total_damages_cc.rds")
-
-
-#write_sf(world, "sherlock_files_060223/world_sf.shp")
-#writeRaster(pop, "sherlock_files_060223/pop_raster.tiff")
-#write_rds(pop_wdi, "sherlock_files_060223/pop_wdi.rds")
-#write_rds(fair_exps_1tco2_disagg, "sherlock_files_060223/fair_exps_1tco2_disagg.rds")
-#save(list_r_rasters, file = "sherlock_files_060223/list_r_rasters.Rdata")
+write_rds(total_damages_cc, paste0(output_path, "total_damages_cc.rds"))
 
 # end of script 
