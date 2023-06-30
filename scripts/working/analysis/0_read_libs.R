@@ -125,7 +125,7 @@ dir.create(file.path(paste0(dropbox_path, "data/output/", gsub("-","",Sys.Date()
 #dir.create(file.path(paste0(dropbox_path, "data/figures/", gsub("-","",Sys.Date()))))
 dir.create(file.path(paste0(getwd(), "/data/figures/", gsub("-","",Sys.Date()))))
 
-output_path <- paste0(dropbox_path, "data/output/",gsub("-","",Sys.Date()), "/")
-fig_prepped_dta <- paste0(getwd(), "/data/figures/", gsub("-","",Sys.Date()), "/")
+output_path <- paste0(dropbox_path, "data/output/")
+fig_prepped_dta <- paste0(getwd(), "/data/figures/")
 
 # end of script
