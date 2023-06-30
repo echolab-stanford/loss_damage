@@ -73,6 +73,8 @@ world_emissions$total <- (world_emissions$total / 1000)/3.67
 world_minus_us_emms$total <- (world_minus_us_emms$total / 1000)/3.67
 
 #This data is ready for plotting 
+write_rds(world_minus_us_emms, paste0(fig_prepped_dta, "world_minus_us_emms.rds"))
+write_rds(world_emissions, paste0(fig_prepped_dta, "world_emissions.rds"))
 
 ################################################################################
 ################################################################################
@@ -82,7 +84,8 @@ world_minus_us_emms$total <- (world_minus_us_emms$total / 1000)/3.67
 # created function 
 #gtco2_effect <- process_disagg_exp_data("1GtCO2_hist_2300", 1980)
 
-fair_exps_isos_k80 <- process_exp_data_hist_fut("20230411", "hist_biusa_v2022", 1980, aggregating = F)
+fair_exps_isos_k80 <- process_exp_data_hist_fut("20230411", "hist_biusa_v2022", 
+                                                1980, aggregating = F)
 
 # alt: have 1b as the deltaT coming from the emissions of us 
 fair_exps_isos_k80_usa <- subset(fair_exps_isos_k80, experiment_iso == "USA")
@@ -109,6 +112,7 @@ gtc1_fair_exp <- gtc1_fair_exp[order(gtc1_fair_exp$year),]
 gtc1_fair_exp <- as.list(as.data.frame(gtc1_fair_exp))
 gtc1_fair_exp <- as.data.frame(gtc1_fair_exp)
 
+write_rds(gtc1_fair_exp, paste0(fig_prepped_dta, "gtc1_fair_exp.rds"))
 
 ################################################################################
 ################################################################################
@@ -145,9 +149,9 @@ x <- crop(deltat_cgm, ext(world) + 0.1)
 y <- terra::mask(x, world)
 y <- mean(y)
 
-#plot(asinh(y), col= rev(heat.colors(n = 20)), legend=F, axes = FALSE, boxes = T, mar=c(1, 4, 2, 1))
-#lines(v, lwd =0.8)
-#
+# data is ready 
+writeVector(v, paste0(fig_prepped_dta, "v.shp"))
+writeRaster(y, paste0(fig_prepped_dta, "y.tiff"))
 
 
 ################################################################################
@@ -198,8 +202,9 @@ annual_observed <- subset(annual_observed, year <= 2020)
 
 annual_observed$observed - annual_observed$corrected
 
-
 # ready for plotting 
+write_rds(annual_observed, paste0(fig_prepped_dta, "annual_observed.rds"))
+
 ################################################################################
 ################################################################################
 # 1e
@@ -214,29 +219,9 @@ usa_bra <- usa_bra %>% dplyr::select(c("year", "observed_gdp", "counterfactual_g
 #1e
 usa_bra$gdp1 <- usa_bra$observed_gdp / 1000000000
 usa_bra$adjusted_gdp1 <- usa_bra$counterfactual_gdp / 1000000000
-par(mar = c(6,8,4,2))  
-plot(x = usa_bra$year, y = usa_bra$gdp1,
-     type = "l", lty = 1, xlim = range(c(1980, 2020)),
-     xlab = "Year", ylab = "Real GDP (in Bil of $USD) \n",
-     las = 1, lwd = 2, family = "Arial", cex.lab = 2.5, cex.axis = 1.85, 
-     frame.plot = F, col = "red") 
-
-# 3) add info for the other fishery
-lines(x = usa_bra$year, y = usa_bra$adjusted_gdp1, 
-      type = "l", lty = 1, lwd = 2, pch = 16, col = "black")
-
-
-segments(2000, 1000, 2002, 1000, lwd = 2, col = "black")
-segments(2000, 900, 2002, 900, col = "red", lty = 1, lwd = 2)
-
-text(2003,1000, " Oberved GDP", cex = 0.85, adj = 0)
-text(2003,900, " GDP abscent US Emissions \n1980 onward", cex = 0.85, adj = 0)
-
-title("e", adj = 0, line =1, cex.main = 2.5)
-
 
 # ready for plotting
-
+write_rds(usa_bra, paste0(fig_prepped_dta, "usa_bra.rds"))
 
 ################################################################################
 ################################################################################
@@ -246,172 +231,9 @@ usa_bra1 <- subset(usa_bra, year <= 2020)
 sum_usa_bra <- usa_bra1 %>% ungroup() %>% 
   dplyr::mutate(cumsum2 = cumsum(weighted_damages2 * -1))
 
-#sum_usa_bra_only$cumsum2 <- tm.cumsum
+sum_usa_bra$cumsum2 <- (sum_usa_bra$cumsum2) / 1000000000 
 
-#par(mar = c(4,4,2,2)) 
-
-dev.off()
-
-# visualize all together  
-################################################################################
-################################################################################
-
-
-mat <- matrix(c(2,1,2,1),nrow=2, ncol = 3, byrow=T)
-layout(mat)
-ax = 1.5  #scaling for axes
-par(mar=c(4,4,2,1))
-
-dev.off()
-par(mfrow=c(2,3))
-
-
-#1a
-par(mar = c(4,10,4,2))  
-plot(x = world_emissions$year, y = world_emissions$total,
-     type = "l", lty = 1, xlim = range(c(1900, 2020)),
-     xlab = "Year", ylab = "CO2 Emissions (GtCO2)\n",
-     las = 1, lwd = 2, cex.axis = 1.85, cex.lab = 2, 
-     frame.plot = F) 
-
-title("a", adj = 0, line =1, cex.main = 2.5)
-# las = 1 says "turn the y-axis tick labels to be horizontal"
-# 3) add info for the other fishery
-lines(x = world_minus_us_emms$year, y = world_minus_us_emms$total, 
-      type = "l", lty = 2, lwd = 2, pch = 16, col = "red")
-# 4) add the legend
-segments(1975, 2.2, 1980, 2.2, lwd = 2)
-segments(1975, 1, 1980, 1, col = "red", lty = 2, lwd = 2)
-
-text(1981,2.2, " Full Emissions", cex = 1.25, adj = 0)
-text(1981,1, " Full Emissions minus \n US Emissions 1980 Onward", cex = 1.25, 
-     adj = 0)
-
-# legend("bottomleft", legend = c("Full Emissions",
-#                  "Full Emissions w/out USA \nemissions 1980 onward"), 
-#      lty = c(1,2), lwd = c(2,2), bty = "n", 
-#     col = c("black", "red"), cex = 0.85)
-
-#write_rds(world_emissions, "~/Desktop/world_emissions.rds")
-#world_emissions <- read_rds("~/Desktop/world_emissions.rds")
-#write_rds(world_minus_us_emms, "~/Desktop/world_minus_us_emms.rds")
-#world_minus_us_emms <- read_rds("~/Desktop/world_minus_us_emms.rds")
-
-
-
-################################################################################
-################################################################################
-# 1b
-tail(gtc1_fair_exp)
-#gtc1_fair_exp <- subset(gtc1_fair_exp, year <= 2100)
-par(mar = c(4,10,4,2))  
-plot(x = gtc1_fair_exp[,2], y = gtc1_fair_exp[,4],
-     type = "l", lty = 1, xlim = range(c(1980,2100)),
-     ylim = range(0, 0.3),
-     xlab = "Year", ylab = "ΔGMST (C°) \n",
-     las = 1, lwd = 2, cex.lab= 2, cex.axis = 1.85, 
-     frame.plot = F)  
-# las = 1 says "turn the y-axis tick labels to be horizontal"
-
-#newdata <- unlist(newdata)
-
-polygon(c(gtc1_fair_exp[,2],rev(gtc1_fair_exp[,2])),c(gtc1_fair_exp[,3],rev(gtc1_fair_exp[,5])),
-        col="grey", border = NA)
-
-lines(x = gtc1_fair_exp[,2], y = gtc1_fair_exp[,4],
-      type = "l", lty = 1, xlim = range(c(1980,2300)),
-      ylim = range(0, 0.004),
-      xlab = "Year", ylab = "Temperature (c°)",
-      las = 1, lwd = 2, cex.lab = 2.5, cex.axis = 1.85)  # las = 1 says "turn the y-axis tick labels to be horizontal"
-
-title("b", adj = 0, line =1, cex.main = 2.5)
-
-
-################################################################################
-################################################################################
-# 1c
-
-par(mar = c(4,4,10,2))  
-#dev.off()
-plot((y), col= rev(heat.colors(n = 20)), legend = T, 
-     plg=list(shrink=0.85, cex=.8, x = "bottomleft", title = "\nttielk"), 
-     axes = FALSE, boxes = T, mar=c(5, 2, 2, 4))
-
-lines(v, lwd =0.8)
-
-title("\n c", adj = 0, line =1, cex.main = 2.5)
-
-
-
-
-################################################################################
-################################################################################
-# 1d
-
-
-
-par(mar = c(4,10,4,2))  
-plot(x = annual_observed$year, y = annual_observed$observed,
-     type = "l", lty = 1, xlim = range(c(1980, 2020)),
-     ylim = range(c(22,23.5)),
-     xlab = "Year", ylab = "Temperature (C°) \n",
-     las = 1, lwd = 2, cex.lab = 2, cex.axis = 1.85, 
-     frame.plot = F)  
-# las = 1 says "turn the y-axis tick labels to be horizontal"
-# 3) add info for the other fishery
-lines(x = annual_observed$year, y = annual_observed$corrected, 
-      type = "l", lty = 1, lwd = 2, cex.axis = 1.85, cex.lab = 2, 
-      pch = 16, col = "red")
-
-segments(2000, 22.15, 2002, 22.15, lwd = 2)
-segments(2000, 22.05, 2002, 22.05, col = "red", lty = 1, lwd = 2)
-
-text(2003,22.15, "Observed temperature (C°)", cex = 1.25, adj = 0)
-text(2003,22.05, "Observed temperature \nminus ΔT", cex = 1.25, adj = 0)
-
-title("d", adj = 0, line =1, cex.main = 2.5)
-
-################################################################################
-################################################################################
-# 1e
-
-par(mar = c(4,10,4,2))  
-plot(x = usa_bra$year, y = usa_bra$adjusted_gdp1,
-     type = "l", lty = 1, xlim = range(c(1980, 2020)),
-     xlab = "Year", ylab = "Real GDP (in Bil of $USD) \n",
-     las = 1, lwd = 2, #family = "Arial", 
-     cex.lab = 1.85, cex.axis = 1.85, 
-     frame.plot = F, col = "red") 
-
-# 3) add info for the other fishery
-lines(x = usa_bra$year, y = usa_bra$gdp1, 
-      type = "l", lty = 1, lwd = 2, pch = 16, col = "black")
-
-
-segments(2000, 900, 2002, 900, lwd = 2, col = "black")
-segments(2000, 800, 2002, 800, col = "red", lty = 1, lwd = 2)
-
-text(2003,900, " Oberved GDP", cex = 1.25, adj = 0)
-text(2003,800, " GDP abscent US Emissions \n1980 onward", cex = 1.25, adj = 0)
-
-title("e", adj = 0, line =1, cex.main = 2.5)
-
-################################################################################
-################################################################################
-#1f
-
-par(mar = c(4,10,4,2))  
-#sum_usa_bra$cumsum2 <- (sum_usa_bra$cumsum2) / 1000000000 
-#sum_usa_bra$cumsum2 <- (sum_usa_bra$cumsum2) * 1000000000 
-plot(x = sum_usa_bra$year, y = sum_usa_bra$cumsum2,
-     type = "l", lty = 1, xlim = range(c(1980, 2020)),
-     ylim = range(0,500),
-     xlab = "Year", ylab =  "Cumulative Damages \n(in Billions of $USD)\n",
-     las = 1, lwd = 2, cex.lab = 2, cex.axis = 1.85, 
-     frame.plot = F) 
-title("f", adj = 0, line = 1, cex.main = 2.5)
-
-
-
+# ready for plotting 
+write_rds(sum_usa_bra, paste0(fig_prepped_dta, "sum_usa_bra.rds"))
 
 # end of script 

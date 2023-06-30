@@ -372,7 +372,7 @@ gdp_temp_data_k90$merge_id <- 1
 tic()
 # parallelize the loop using foreach (~ 33 minutes) - run this code on a server 
 # where you can exploit multiple CPUs
-total_damages_1gtco2_bhm <- foreach(i=1:300, .combine="rbind")%dopar%{
+total_damages_1gtco2_bhm <- foreach(i=1:500, .combine="rbind")%dopar%{
 
   pooledbs_i <- subset(pooledbs, coef_id == i)
   gdp_temp_data_i <- gdp_temp_data_k90
@@ -388,10 +388,10 @@ total_damages_1gtco2_bhm <- foreach(i=1:300, .combine="rbind")%dopar%{
                                        gdp_temp_data_i,
                                        "ERA",
                                        bhm_era_reg,
+                                       T, 
                                        "NO",
                                        "NO",
                                        2020)
-  
   return(damages_i)
  }
 toc()

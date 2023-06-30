@@ -105,6 +105,10 @@ dropbox_path <- "~/BurkeLab Dropbox/Projects/loss_damage/"
 # create a file in the processed data directory 
 dir.create(file.path(paste0("figures/", gsub("-","",Sys.Date()))))
 dir.create(file.path(paste0(dropbox_path, "data/output/", gsub("-","",Sys.Date()))))
+#dir.create(file.path(paste0(dropbox_path, "data/figures/", gsub("-","",Sys.Date()))))
+dir.create(file.path(paste0(getwd(), "/data/figures/", gsub("-","",Sys.Date()))))
+
 output_path <- paste0(dropbox_path, "data/output/",gsub("-","",Sys.Date()), "/")
+fig_prepped_dta <- paste0(getwd(), "/data/figures/", gsub("-","",Sys.Date()), "/")
 
 # end of script

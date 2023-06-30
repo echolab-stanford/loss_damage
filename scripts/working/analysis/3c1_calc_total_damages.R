@@ -7,8 +7,8 @@
 
 calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps, 
                                     year_k, future_forecast, gdp_temp_dataset, 
-                                    temp_dataset, bhm_model, clamping, 
-                                    growth_past_2100, settlement_year){
+                                    temp_dataset, bhm_model, bootstrapped, 
+                                    clamping, growth_past_2100, settlement_year){
   tic()
   #read raster data for warming ratio 
   deltat_df <- exactextractr::exact_extract(ratio_raster, 
@@ -138,8 +138,14 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
       gdp_temp_data1$cru_mwtemp_fullemms <- gdp_temp_data1$cru_mwtemp_preturb + gdp_temp_data1$deltat  
     }
     
-    gdp_temp_data1$temp <- coef(bhm_model)[1]
-    gdp_temp_data1$temp2 <- coef(bhm_model)[2]
+    if (bootstrapped == T){
+      gdp_temp_data1$temp <- gdp_temp_data1$temp
+      gdp_temp_data1$temp2 <- gdp_temp_data1$temp2
+    }
+    if (bootstrapped == F){
+      gdp_temp_data1$temp <- coef(bhm_model)[1]
+      gdp_temp_data1$temp2 <- coef(bhm_model)[2]
+    }
     
     gdp_temp_data1$era_mwtemp_fullemms[gdp_temp_data1$era_mwtemp_fullemms > 30 & !is.na(gdp_temp_data1$era_mwtemp_fullemms)] <- 30
     gdp_temp_data1$era_mwtemp_preturb[gdp_temp_data1$era_mwtemp_preturb > 30 & !is.na(gdp_temp_data1$era_mwtemp_preturb)] <- 30
