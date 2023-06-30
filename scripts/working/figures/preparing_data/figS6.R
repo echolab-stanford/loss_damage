@@ -20,3 +20,19 @@ fair_exps_cc <- readRDS(paste0(output_path, "20230410/fair_exps_cc.rds"))
 #############################################################################
 #############################################################################
 # prep data 
+tots_cc <- total_damages_cc %>% 
+  dplyr::group_by(emitter) %>% 
+  dplyr::summarise(total_damages = sum(weighted_damages2_scld, na.rm = T))
+
+tots_cc$total_damages <- tots_cc$total_damages*(-1)
+
+fair_exps_cc <- subset(fair_exps_cc, experiment_iso == 2030)
+
+#############################################################################
+#############################################################################
+# write the data in
+write_rds(tots_cc, paste0(fig_prepped_dta, gsub("-", "", Sys.Date()), "/total_cc.rds"))
+write_rds(fair_exps_cc, paste0(fig_prepped_dta,  gsub("-", "", Sys.Date()), "/fair_exps_cc_2300.rds"))
+
+# end of script 
+
