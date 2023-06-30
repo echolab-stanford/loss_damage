@@ -194,6 +194,8 @@ fair_exps_1gtco2_2100 <- process_exp_data_hist_fut("20230523","1GtCO2_hist_2100"
 # this experiment is to estimate the damages if we are to capture 1 tCO2 
 # years after emitting it
 fair_exps_cc <- process_exp_data_hist_fut("20230410", "cc_hist", 2020, aggregating = T)
+# we will need this data saved for plotting cc figure (S6)
+write_rds(fair_exps_cc, paste0(output_path, gsub("-", "", Sys.Date()), "/fair_exps_cc.rds"))
 
 ####################### Experiment (Carbon debt): ######################
 # this experiment is to estimate the deltaT resulting from emissions 
