@@ -37,6 +37,7 @@ source("scripts/working/analysis/3a0_run_gdptemp_panel.R")
 source("scripts/working/analysis/3a1_run_gdptemp_panel_bhmbs.R")
 source("scripts/working/analysis/3a2_run_gdptemp_panel_5lags.R")
 source("scripts/working/analysis/3b0_run_bhm_model.R")
+source("scripts/working/analysis/3b1_run_gdptemp_panel_5lag.R")
 source("scripts/working/analysis/3c0_calc_total_damages_bilateral.R")
 source("scripts/working/analysis/3c1_calc_total_damages.R")
 source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
@@ -70,6 +71,7 @@ world$ISO3 <- countrycode::countrycode(sourcevar = world$iso_a2,origin = "iso2c"
 world <- subset(world, !is.na(ISO3))
 #plot(world["geom"])
 
+minmax_data <- readRDS("data/processed/minmax_data.rds")
 
 #################################################################################
 ##################### PART I: Calculate CGM Warming Ratio #######################
@@ -184,6 +186,8 @@ fair_exps_1tco2_2300 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2300",
 #fair_exps_1tco2_disagg <- process_disagg_exp_data("20230523","1tCO2_hist_2300", 1990)
 fair_exps_1gtco2_disagg_2100 <- process_disagg_exp_data("20230523","1GtCO2_hist_2100", 1990)
 # now we need to run the experiment for 1gtco2 instead of 1tco2
+fair_exps_1gtco2_2100 <- process_exp_data_hist_fut("20230523","1GtCO2_hist_2100", 1990, aggregating = T)
+#2300 
 fair_exps_1gtco2_2100 <- process_exp_data_hist_fut("20230523","1GtCO2_hist_2100", 1990, aggregating = T)
 
 ####################### Experiment (Carbon Capture): ########################
@@ -553,100 +557,105 @@ write_rds(total_damages_k90_prod, "data/output/060223/total_damages_k90_prod_v20
 
 ################################################################################ Figures S4
 
-scc_2300_2100_growth <- calculate_bidamages(mean_r_raster,
-                                            fair_exps_1tCO2_2300,
-                                            2020,
-                                            1990,
-                                            future_forecast_ssp370_2300,
-                                            gdp_temp_data_k90_2300,
-                                            "ERA",
-                                            bhm_era_reg,
-                                            "NO",
-                                            1 ,
-                                            2020)
+scc_2300_2100_growth <- calculate_damages_pulse(mean_r_raster,
+                                                fair_exps_1gtco2_2100,
+                                                2020,
+                                                1990,
+                                                future_forecast_ssp370_2300,
+                                                gdp_temp_data_k90_2300,
+                                                "ERA",
+                                                bhm_era_reg,
+                                                F,
+                                                "NO",
+                                                1 ,
+                                                2020)
 write_rds(scc_2300_2100_growth, paste0(output_path, "scc_2300_2100_growth.rds"))
 
-scc_2300_1pct_growth <- calculate_bidamages(mean_r_raster,
-                                            fair_exps_1tCO2_2300,
-                                            2020,
-                                            1990,
-                                            future_forecast_ssp370_2300_1pct,
-                                            gdp_temp_data_k90_2300_1pct,
-                                            "ERA",
-                                            bhm_era_reg,
-                                            "NO",
-                                            1 ,
-                                            2020)
+scc_2300_1pct_growth <- calculate_damages_pulse(mean_r_raster,
+                                                fair_exps_1tco2_2300,
+                                                2020,
+                                                1990,
+                                                future_forecast_ssp370_2300_1pct,
+                                                gdp_temp_data_k90_2300_1pct,
+                                                "ERA",
+                                                bhm_era_reg,
+                                                F,
+                                                "NO",
+                                                1 ,
+                                                2020)
 write_rds(scc_2300_1pct_growth, paste0(output_path, "scc_2300_1pct_growth.rds"))
 
-scc_2300_2pct_growth <- calculate_bidamages(mean_r_raster,
-                                            fair_exps_1tCO2_2300,
-                                            2020,
-                                            1990,
-                                            future_forecast_ssp370_2300_2pct,
-                                            gdp_temp_data_k90_2300_2pct,
-                                            "ERA",
-                                            bhm_era_reg,
-                                            "NO",
-                                            1 ,
-                                            2020)
+scc_2300_2pct_growth <- calculate_damages_pulse(mean_r_raster,
+                                                fair_exps_1tco2_2300,
+                                                2020,
+                                                1990,
+                                                future_forecast_ssp370_2300_2pct,
+                                                gdp_temp_data_k90_2300_2pct,
+                                                "ERA",
+                                                bhm_era_reg,
+                                                F,
+                                                "NO",
+                                                1 ,
+                                                2020)
 write_rds(scc_2300_2pct_growth, paste0(output_path, "scc_2300_2pct_growth.rds"))
 
-
-
 # now clamping 
-scc_2300_clamped_growth <- calculate_bidamages(mean_r_raster,
-                                               fair_exps_1tCO2_2300,
-                                               2020,
-                                               1990,
-                                               future_forecast_ssp370_2300,
-                                               gdp_temp_data_k90_2300,
-                                               "ERA",
-                                               bhm_era_reg,
-                                               "clamp_growth",
-                                               1,
-                                               2020)
+scc_2300_clamped_growth <- calculate_damages_pulse(mean_r_raster,
+                                                   fair_exps_1tco2_2300,
+                                                   2020,
+                                                   1990,
+                                                   future_forecast_ssp370_2300,
+                                                   gdp_temp_data_k90_2300,
+                                                   "ERA",
+                                                   bhm_era_reg,
+                                                   F, 
+                                                   "clamp_growth",
+                                                   1,
+                                                   2020)
 write_rds(scc_2300_clamped_growth, paste0(output_path, "scc_2300_clamped_growth.rds"))
 
 
+
 # now 5 lag (this one is lag, let us see how this will go)
-scc_2300_2100_5lag <- calculate_bidamages_5lag(mean_r_raster,
-                                               fair_exps_1tCO2_2300,
-                                               2020,
-                                               1990,
-                                               future_forecast_ssp370_2300,
-                                               gdp_temp_data_5lags,
-                                               "ERA",
-                                               2020)
+scc_2300_2100_5lag <- calculate_damages_pulse_5lag(mean_r_raster,
+                                                   fair_exps_1tco2_2300,
+                                                   2020,
+                                                   1990,
+                                                   future_forecast_ssp370_2300,
+                                                   gdp_temp_data_5lags,
+                                                   "ERA",
+                                                   2020)
 write_rds(scc_2300_2100_5lag, paste0(output_path, "scc_2300_2100_5lag.rds"))
 
 
-scc_2300_nog_post_2100 <- calculate_bidamages(mean_r_raster,
-                                              fair_exps_1tCO2_2300,
-                                              2020,
-                                              1990,
-                                              future_forecast_ssp370_2300,
-                                              gdp_temp_data_k90_2300,
-                                              "ERA", 
-                                              bhm_era_reg,
-                                              "no",
-                                              0,
-                                              2020)
+scc_2300_nog_post_2100 <- calculate_damages_pulse(mean_r_raster,
+                                                  fair_exps_1tco2_2300,
+                                                  2020,
+                                                  1990,
+                                                  future_forecast_ssp370_2300,
+                                                  gdp_temp_data_k90_2300,
+                                                  "ERA", 
+                                                  bhm_era_reg,
+                                                  F, 
+                                                  "no",
+                                                  0,
+                                                  2020)
 write_rds(scc_2300_nog_post_2100, paste0(output_path, "scc_2300_nog_post_2100.rds"))
 
 # now no effects post 2100 (this is just the original normal run)
-scc_2100 <- calculate_bidamages(mean_r_raster,
-                                fair_exps_1tCO2_2100,
-                                2020,
-                                1990,
-                                future_forecast_ssp370,
-                                gdp_temp_data_k90,
-                                "ERA", 
-                                bhm_era_reg,
-                                "no",
-                                "no",
-                                2020)
-write_rds(scc_2300_nog_post_2100, paste0(output_path, "scc_2100.rds"))
+scc_2100 <- calculate_damages_pulse(mean_r_raster,
+                                    fair_exps_1tco2_2100,
+                                    2020,
+                                    1990,
+                                    future_forecast_ssp370,
+                                    gdp_temp_data_k90,
+                                    "ERA", 
+                                    bhm_era_reg,
+                                    F, 
+                                    "no",
+                                    "no",
+                                    2020)
+write_rds(scc_2100, paste0(output_path, "scc_2100.rds"))
 
 
 

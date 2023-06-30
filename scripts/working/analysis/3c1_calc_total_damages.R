@@ -206,7 +206,7 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
       
       gdp_temp_data1 <- left_join(gdp_temp_data1,
                                   minmax_data,
-                                  by = c("Income.group" = "Income.group"))
+                                  by = c("Income group" = "Income.group"))
       
       gdp_temp_data1 <- gdp_temp_data1 %>% 
         dplyr::mutate(diff_lgdp_for_damages = case_when(diff_lgdp_for_damages > max_dg ~ max_dg,

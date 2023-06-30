@@ -99,6 +99,23 @@ gt_theme_538 <- function(data,...) {
     ) 
 }
 
+
+
+# create a function to add a unit letter next to the total amount displayed 
+addUnits <- function(n) {
+  labels <- ifelse(n < -1e12, paste0(round(n/-1e12), 'T'), # negative trillions (benefits)
+                   ifelse(n < 1000, n,  # less than thousands
+                          ifelse(n < 1e6, paste0(round(n/1e3), 'k'),  # in thousands
+                                 ifelse(n < 1e9, paste0(round(n/1e6), 'M'),  # in millions
+                                        ifelse(n < 1e12, paste0(round(n/1e9), 'B'), # in billions
+                                               ifelse(n < 1e15, paste0(round(n/1e12), 'T'),# in trillions
+                                                      'too big!'
+                                               ))))))
+  return(labels)
+}
+
+
+
 # set paths 
 dropbox_path <- "~/BurkeLab Dropbox/Projects/loss_damage/"
 
