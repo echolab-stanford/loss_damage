@@ -343,7 +343,7 @@ years_of_exps_1980_2020 <- c(1980:2020)
 
 
 # ok let us start with the 1gtco2 experiment (6 mins)
-total_damages_1gtco2 <- calculate_damages_pulse(mean_r_raster,
+total_damages_1gtco2k_90 <- calculate_damages_pulse(mean_r_raster,
                                             fair_exps_1gtco2_2100, 
                                             years_of_exps_1990_2020,
                                             1990,
@@ -351,13 +351,33 @@ total_damages_1gtco2 <- calculate_damages_pulse(mean_r_raster,
                                             gdp_temp_data_k90,
                                             "ERA",
                                             bhm_era_reg,
+                                            F,
                                             "no",
                                             "no",
                                             2020)
 
-write_rds(total_damages_1gtco2, paste0("data/processed/", 
+write_rds(total_damages_1gtco2_k90, paste0("data/processed/", 
                                        gsub("-", "", Sys.Date()), 
                                        "/total_damages_1gtco2_1990_2020.rds"))
+
+###### k = 1980
+# ok let us start with the 1gtco2 experiment (6 mins)
+total_damages_1gtco2_k80 <- calculate_damages_pulse(mean_r_raster,
+                                                fair_exps_1gtco2_2100, 
+                                                years_of_exps_1980_2020,
+                                                1990,
+                                                future_forecast_ssp370,
+                                                gdp_temp_data_k80,
+                                                "ERA",
+                                                bhm_era_reg,
+                                                F, 
+                                                "no",
+                                                "no",
+                                                2020)
+
+write_rds(total_damages_1gtco2_k80, paste0("data/output/", 
+                                       gsub("-", "", Sys.Date()), 
+                                       "/total_damages_1gtco2_1980_2020.rds"))
 
 
 

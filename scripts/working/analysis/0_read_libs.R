@@ -43,7 +43,12 @@ packs <- c("tidyr",
            "countrycode",
            "ggalluvial",
            "MetBrewer",
-           "RColorBrewer"
+           "RColorBrewer",
+           "shadowtext",
+           "doParallel",
+           "foreach",
+           "gt",
+           "gtable"
            )
 
 
@@ -126,6 +131,8 @@ dir.create(file.path(paste0(dropbox_path, "data/output/", gsub("-","",Sys.Date()
 dir.create(file.path(paste0(getwd(), "/data/figures/", gsub("-","",Sys.Date()))))
 
 output_path <- paste0(dropbox_path, "data/output/")
+processed_path <- paste0(dropbox_path, "data/processed/")
+raw_path <- paste0(dropbox_path, "data/raw/")
 fig_prepped_dta <- paste0(getwd(), "/data/figures/")
 
 # end of script
