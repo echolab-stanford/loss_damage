@@ -50,9 +50,9 @@ setwd(dropbox_path)
 # start of damages, among others 
 replicate <- T # change T to F if you want to create your own data  
 if (replicate == T){
-  run_date <- "20230628"
+  run_date <- "20230523"
 }
-if (replcate == F){
+if (replicate == F){
   run_date <- run_date
 }
 
@@ -69,7 +69,7 @@ list_r_rasters <- readRDS("data/processed/r_cgm/ratio_raster_list.rds")
 # we need to aggregate the deltat to the country level by weighting by pop
 # so let us read the pop raster and resample it to match coordinates and 
 # convert to a dataframe and then join
-pop <- raster(paste0(raw_path, "data/raw/population/gpw_v4_population_count_rev11_2010_1_deg.tif"))
+pop <- raster(paste0(raw_path, "population/gpw_v4_population_count_rev11_2010_1_deg.tif"))
 pop <- readAll(pop)
 pop <- resample(pop, mean_r_raster)
 
@@ -190,27 +190,28 @@ minmax_data <- readRDS("data/processed/minmax_data.rds")
 
 ## 1tCO2 
 # temperature response through 2100 
-fair_exps_1tco2_2100 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2100", 1990, aggregating = T)
-fair_exps_1tco2_2100_k80 <- process_exp_data_hist_fut("20230518", "1GtCO2_hist_2100", 1980, aggregating = T)
-fair_exps_1tco2_2100_k80 <- process_exp_data_hist_fut("20230518", "1tCO2_hist_fut_main", 1980, aggregating = T)
+fair_exps_1tco2_2100 <- process_exp_data_hist_fut(run_date, "1tCO2_hist_2100", 1990, aggregating = T)
+fair_exps_1tco2_2100_k80 <- process_exp_data_hist_fut(run_date, "1GtCO2_hist_2100", 1980, aggregating = T)
+fair_exps_1tco2_2100_k80 <- process_exp_data_hist_fut(run_date, "1tCO2_hist_fut_main", 1980, aggregating = T)
+
 unique(fair_exps_1tco2_2100$experiment_iso)
 #fair_exps_1tco2_2100_k80 <- process_exp_data_hist_fut("20230518", "1tCO2_hist_2300", 1980, aggregating = T)
 
 # temperature response through 2300 
-fair_exps_1tco2_2300 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2300", 1990, aggregating = T)
+fair_exps_1tco2_2300 <- process_exp_data_hist_fut(run_date, "1tCO2_hist_2300", 1990, aggregating = T)
 # now let us calc deltat and return all the runs so that we can run 
 # uncertainty analysis
-#fair_exps_1tco2_disagg <- process_disagg_exp_data("20230523","1tCO2_hist_2300", 1990)
-fair_exps_1gtco2_disagg_2100 <- process_disagg_exp_data("20230523","1GtCO2_hist_2100", 1990)
+#fair_exps_1tco2_disagg <- process_disagg_exp_data(run_date,"1tCO2_hist_2300", 1990)
+fair_exps_1gtco2_disagg_2100 <- process_disagg_exp_data(run_date,"1GtCO2_hist_2100", 1990)
 # now we need to run the experiment for 1gtco2 instead of 1tco2
-fair_exps_1gtco2_2100 <- process_exp_data_hist_fut("20230523","1GtCO2_hist_2100", 1990, aggregating = T)
+fair_exps_1gtco2_2100 <- process_exp_data_hist_fut(run_date,"1GtCO2_hist_2100", 1990, aggregating = T)
 #2300 
-fair_exps_1gtco2_2100 <- process_exp_data_hist_fut("20230523","1GtCO2_hist_2100", 1990, aggregating = T)
+fair_exps_1gtco2_2100 <- process_exp_data_hist_fut(run_date,"1GtCO2_hist_2100", 1990, aggregating = T)
 
 ####################### Experiment (Carbon Capture): ########################
 # this experiment is to estimate the damages if we are to capture 1 tCO2 
 # years after emitting it
-fair_exps_cc <- process_exp_data_hist_fut("20230410", "cc_hist", 2020, aggregating = T)
+fair_exps_cc <- process_exp_data_hist_fut(run_date, "cc_hist", 2020, aggregating = T)
 # we will need this data saved for plotting cc figure (S6)
 write_rds(fair_exps_cc, paste0(output_path, run_date, "/fair_exps_cc.rds"))
 
@@ -226,13 +227,13 @@ write_rds(fair_exps_cc, paste0(output_path, run_date, "/fair_exps_cc.rds"))
 # of the countries.
 
 # for year_k = 1980
-fair_exps_isos_k80 <- process_exp_data_hist("20230411", "hist_bi_v2022", 1980, aggregating = T)
+fair_exps_isos_k80 <- process_exp_data_hist(run_date, "hist_bi_v2022", 1980, aggregating = T)
 # for year_k = 1990
-fair_exps_isos_k90 <- process_exp_data_hist("20230411", "hist_bi_v2022", 1990, aggregating = T)
+fair_exps_isos_k90 <- process_exp_data_hist(run_date, "hist_bi_v2022", 1990, aggregating = T)
 #for year_k = 1990 and only consumption emissions
-fair_exps_isos_k90_consump <- process_exp_data_hist("20230411", "hist_biconsump_v2022", 1990, aggregating = T)
+fair_exps_isos_k90_consump <- process_exp_data_hist(run_date, "hist_biconsump_v2022", 1990, aggregating = T)
 #for year_k = 1990 and only production emissions
-fair_exps_isos_k90_prod <- process_exp_data_hist("20230411", "hist_biprod_v2022", 1990, aggregating = T)
+fair_exps_isos_k90_prod <- process_exp_data_hist(run_date, "hist_biprod_v2022", 1990, aggregating = T)
 
 ################################################################################
 ##################### PART III: Calculate Total Damages ########################

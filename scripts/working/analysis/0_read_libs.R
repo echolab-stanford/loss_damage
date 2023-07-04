@@ -123,6 +123,8 @@ addUnits <- function(n) {
 
 # set paths 
 dropbox_path <- "~/BurkeLab Dropbox/Projects/loss_damage/"
+# get user login 
+user <- as.character(Sys.info()["user"])
 
 # create a file in the processed data directory 
 dir.create(file.path(paste0("figures/", gsub("-","",Sys.Date()))))
