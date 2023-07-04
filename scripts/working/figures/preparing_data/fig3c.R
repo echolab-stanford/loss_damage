@@ -28,10 +28,10 @@ source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
 ################################################################################
 ################################################################################
 # read data 
-total_damages_uncertainty_cgm <- readRDS(paste0(dropbox_path, "data/output/20230628/total_damages_1gtco2_cgm.rds"))
-total_damages_uncertainty_fair <- readRDS(paste0(dropbox_path, "data/output/20230628/total_damages_1gtco2_fair.rds"))
-total_damages_uncertainty_bhm <- readRDS(paste0(dropbox_path, "data/output/20230628/total_damages_1gtco2_bhm.rds"))
-total_damages_uncertainty_total <- readRDS(paste0(dropbox_path, "data/output/20230628/total_damages_1gtco2_total.rds"))
+total_damages_uncertainty_cgm <- readRDS(paste0(fig_prepped_dta, run_date, "/total_damages_1gtco2_cgm.rds"))
+total_damages_uncertainty_fair <- readRDS(paste0(fig_prepped_dta, run_date, "/total_damages_1gtco2_fair.rds"))
+total_damages_uncertainty_bhm <- readRDS(paste0(fig_prepped_dta, run_date, "/total_damages_1gtco2_bhm.rds"))
+total_damages_uncertainty_total <- readRDS(paste0(fig_prepped_dta, run_date, "/total_damages_1gtco2_total.rds"))
 
 # prepare data for plotting
 
@@ -55,10 +55,10 @@ totals_all <- ungroup(totals_all)
 totals_all <- totals_all %>% dplyr::select(-c("emitter"))
 
 # ok now write the data 
-write_rds(totals_all, paste0(fig_prepped_dta, "totals_all.rds"))
-write_rds(totals_bhm, paste0(fig_prepped_dta, "totals_bhm.rds"))
-write_rds(totals_cgm, paste0(fig_prepped_dta, "totals_cgm.rds"))
-write_rds(totals_fair, paste0(fig_prepped_dta, "totals_fair.rds"))
+write_rds(totals_all, paste0(fig_prepped_dta, run_date,"totals_all.rds"))
+write_rds(totals_bhm, paste0(fig_prepped_dta, run_date,"totals_bhm.rds"))
+write_rds(totals_cgm, paste0(fig_prepped_dta, run_date,"totals_cgm.rds"))
+write_rds(totals_fair, paste0(fig_prepped_dta,run_date, "totals_fair.rds"))
 
 # end of script
 

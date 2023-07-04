@@ -73,8 +73,8 @@ world_emissions$total <- (world_emissions$total / 1000)/3.67
 world_minus_us_emms$total <- (world_minus_us_emms$total / 1000)/3.67
 
 #This data is ready for plotting 
-write_rds(world_minus_us_emms, paste0(fig_prepped_dta, "world_minus_us_emms.rds"))
-write_rds(world_emissions, paste0(fig_prepped_dta, "world_emissions.rds"))
+write_rds(world_minus_us_emms, paste0(fig_prepped_dta, run_date,"world_minus_us_emms.rds"))
+write_rds(world_emissions, paste0(fig_prepped_dta, run_date,"world_emissions.rds"))
 
 ################################################################################
 ################################################################################
@@ -84,7 +84,7 @@ write_rds(world_emissions, paste0(fig_prepped_dta, "world_emissions.rds"))
 # created function 
 #gtco2_effect <- process_disagg_exp_data("1GtCO2_hist_2300", 1980)
 
-fair_exps_isos_k80 <- process_exp_data_hist_fut("20230411", "hist_biusa_v2022", 
+fair_exps_isos_k80 <- process_exp_data_hist_fut(run_date, "hist_biusa_v2022", 
                                                 1980, aggregating = F)
 
 # alt: have 1b as the deltaT coming from the emissions of us 
@@ -112,12 +112,12 @@ gtc1_fair_exp <- gtc1_fair_exp[order(gtc1_fair_exp$year),]
 gtc1_fair_exp <- as.list(as.data.frame(gtc1_fair_exp))
 gtc1_fair_exp <- as.data.frame(gtc1_fair_exp)
 
-write_rds(gtc1_fair_exp, paste0(fig_prepped_dta, "gtc1_fair_exp.rds"))
+write_rds(gtc1_fair_exp, paste0(fig_prepped_dta, run_date,"gtc1_fair_exp.rds"))
 
 ################################################################################
 ################################################################################
 # 1c
-raster_cgm <- raster("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/r_cgm/ratio_raster_avgs.tif")
+raster_cgm <- raster(paste0(dropbox_path, "data/processed/r_cgm/ratio_raster_avgs.tif"))
 
 
 world <- spData::world
@@ -150,8 +150,8 @@ y <- terra::mask(x, world)
 y <- mean(y)
 
 # data is ready 
-writeVector(v, paste0(fig_prepped_dta, "v.shp"))
-writeRaster(y, paste0(fig_prepped_dta, "y.tiff"))
+writeVector(v, paste0(fig_prepped_dta, run_date,"v.shp"))
+writeRaster(y, paste0(fig_prepped_dta, run_date,"y.tiff"))
 
 
 ################################################################################
@@ -161,7 +161,7 @@ writeRaster(y, paste0(fig_prepped_dta, "y.tiff"))
 # we need to aggregate the deltat to the country level by weighting by pop
 # so let us read the pop raster and resample it to match coordinates and 
 # convert to a dataframe and then join
-pop <- raster(paste0(dropbox_path, "data/raw/population/gpw_v4_population_count_rev11_2010_1_deg.tif"))
+pop <- raster(paste0(raw_path, "population/gpw_v4_population_count_rev11_2010_1_deg.tif"))
 pop <- readAll(pop)
 pop <- resample(pop, raster_cgm)
 #popdf <- as.data.frame(as.matrix(rasterToPoints(pop)))
@@ -175,7 +175,7 @@ world$ISO3 <- countrycode::countrycode(sourcevar = world$iso_a2,origin = "iso2c"
                                        destination = "iso3c"
 )
 
-fair_exps_isos_k80 <- process_exp_data_hist("20230411", "hist_bi_v2022", 1980, aggregating = T)
+fair_exps_isos_k80 <- process_exp_data_hist(run_date, "hist_bi_v2022", 1980, aggregating = T)
 
 gdp_temp_data_k80 <- readRDS(paste0(dropbox_path, "/data/processed/world_gdp_pop/gdp_temp_data_k80.rds"))
 load(paste0(dropbox_path, "/data/processed/bhm/bhm_era_reg.RData"))
@@ -203,7 +203,7 @@ annual_observed <- subset(annual_observed, year <= 2020)
 annual_observed$observed - annual_observed$corrected
 
 # ready for plotting 
-write_rds(annual_observed, paste0(fig_prepped_dta, "annual_observed.rds"))
+write_rds(annual_observed, paste0(fig_prepped_dta,run_date, "annual_observed.rds"))
 
 ################################################################################
 ################################################################################
@@ -221,7 +221,7 @@ usa_bra$gdp1 <- usa_bra$observed_gdp / 1000000000
 usa_bra$adjusted_gdp1 <- usa_bra$counterfactual_gdp / 1000000000
 
 # ready for plotting
-write_rds(usa_bra, paste0(fig_prepped_dta, "usa_bra.rds"))
+write_rds(usa_bra, paste0(fig_prepped_dta,run_date, "usa_bra.rds"))
 
 ################################################################################
 ################################################################################
@@ -234,6 +234,6 @@ sum_usa_bra <- usa_bra1 %>% ungroup() %>%
 sum_usa_bra$cumsum2 <- (sum_usa_bra$cumsum2) / 1000000000 
 
 # ready for plotting 
-write_rds(sum_usa_bra, paste0(fig_prepped_dta, "sum_usa_bra.rds"))
+write_rds(sum_usa_bra, paste0(fig_prepped_dta,run_date, "sum_usa_bra.rds"))
 
 # end of script 

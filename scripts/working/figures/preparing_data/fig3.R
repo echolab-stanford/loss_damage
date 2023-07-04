@@ -28,7 +28,7 @@ source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
 setwd(dropbox_path)
 #############################################################################
 
-total_damages_1gtco2 <- readRDS(paste0(dropbox_path, "data/output/20230628/total_damages_1gtco2_1990_2020.rds"))
+total_damages_1gtco2 <- readRDS(paste0(output_path, run_date, "/total_damages_1gtco2_1990_2020.rds"))
 total_damages_1gtC1 <- subset(total_damages_1gtco2, emitter <=  2020 & emitter >1989)
 
 total_damages_1gtC1 <- total_damages_1gtC1 %>% 
@@ -185,8 +185,8 @@ test_df_for_table <- left_join(test_df_for_table_2020,
 
 # ok data is ready for plotting 
 setwd("~/GitHub/loss_damage")
-write_rds(test_df_for_table, paste0(getwd(), "/data/figures/20230629/test_df_for_table.rds"))
-write_rds(total_damages_by_pulse_2020_all, paste0(getwd(), "/data/figures/20230629/total_damages_by_pulse_2020.rds"))
-write_rds(total_damages_by_pulse_2100_all, paste0(getwd(), "/data/figures/20230629/total_damages_by_pulse_2100.rds"))
+write_rds(test_df_for_table, paste0(fig_prepped_dta, run_date, "/test_df_for_table.rds"))
+write_rds(total_damages_by_pulse_2020_all, paste0(fig_prepped_dta, run_date, "/total_damages_by_pulse_2020.rds"))
+write_rds(total_damages_by_pulse_2100_all, paste0(fig_prepped_dta, run_date, "/total_damages_by_pulse_2100.rds"))
 
 # end of script
