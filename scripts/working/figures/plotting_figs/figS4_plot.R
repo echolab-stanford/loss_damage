@@ -13,7 +13,7 @@ source("scripts/working/analysis/0_read_libs.R")
 ################################################################################
 ################################################################################
 # read data 
-scc_est <- readRDS(paste0(fig_prepped_dta, "scc_under_diff_scenarios.rds"))
+scc_est <- readRDS(paste0(fig_prepped_dta, run_date,"scc_under_diff_scenarios.rds"))
 
 ################################################################################
 ################################################################################
@@ -45,7 +45,7 @@ scc_est %>%
                    dr_ramsey),
     currency = "USD",
     decimals = F
-  ) %>% gtsave(paste0("figures/", gsub("-", "", Sys.Date()),"/figS4.png"))
+  ) %>% gtsave(paste0("figures/", run_date,"/figS4.png"))
 
-
+#end of script
 

@@ -14,8 +14,8 @@ setwd(dropbox_path)
 #############################################################################
 #############################################################################
 # read data 
-total_damages_1gtco2 <- readRDS(paste0(output_path, 
-                                       "20230628/total_damages_1gtco2_1990_2020.rds"))
+total_damages_1gtco2 <- readRDS(paste0(output_path, run_date,
+                                       "/total_damages_1gtco2_1990_2020.rds"))
 
 #############################################################################
 #############################################################################
@@ -56,8 +56,8 @@ world <- subset(world, !is.na(ISO3))
   
 
 ### data is ready to plot. We can write them into directory
-write_sf(world, paste0(fig_prepped_dta, "20230629/world.shp"))
-write_rds(damages_1990_2020, paste0(fig_prepped_dta, "20230629/1gtco2_damages_1990_2020.rds"))
-write_rds(damages_2021_2100, paste0(fig_prepped_dta, "20230629/1gtco2_damages_2020_2100.rds"))
+write_sf(world, paste0(fig_prepped_dta, run_date, "/world.shp"))
+write_rds(damages_1990_2020, paste0(fig_prepped_dta, run_date, "/1gtco2_damages_1990_2020.rds"))
+write_rds(damages_2021_2100, paste0(fig_prepped_dta, run_date, "/1gtco2_damages_2020_2100.rds"))
 
 # end of script 

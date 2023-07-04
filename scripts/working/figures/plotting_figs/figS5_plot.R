@@ -13,8 +13,8 @@ source("scripts/working/analysis/0_read_libs.R")
 ################################################################################
 ################################################################################
 # read data 
-total_carb_majors_jet <- readRDS(paste0(fig_prepped_dta, "20230629/carbon_debt_majors_hist.rds"))
-all_celebs_tot <- readRDS(paste0(fig_prepped_dta, "20230629/carbon_debt_celebs_fut.rds"))
+total_carb_majors_jet <- readRDS(paste0(fig_prepped_dta, run_date, "/carbon_debt_majors_hist.rds"))
+all_celebs_tot <- readRDS(paste0(fig_prepped_dta, run_date, "/carbon_debt_celebs_fut.rds"))
 
 
 ################################################################################
@@ -187,7 +187,7 @@ figS5 <- ggpubr::ggarrange(figS5a,
                            nrow = 2)
 
 # save the figure 
-ggsave(paste0(getwd(), "/figures/20230629/figS5a.png"), figS5a, width = 14, height = 8)
-ggsave(paste0(getwd(), "/figures/20230629/figS5b.png"), figS5b, width = 14, height = 8)
+ggsave(paste0(getwd(), "/figures/", run_date, "/figS5a.png"), figS5a, width = 14, height = 8)
+ggsave(paste0(getwd(), "/figures/", run_date, "/figS5b.png"), figS5b, width = 14, height = 8)
 
 # end of script 

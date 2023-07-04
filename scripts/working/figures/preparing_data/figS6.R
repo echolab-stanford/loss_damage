@@ -14,8 +14,8 @@ setwd(dropbox_path)
 #############################################################################
 #############################################################################
 # read data 
-total_damages_cc <- readRDS(paste0(output_path, "20230410/total_damages_cc.rds"))
-fair_exps_cc <- readRDS(paste0(output_path, "20230410/fair_exps_cc.rds"))
+total_damages_cc <- readRDS(paste0(output_path, run_date, "/total_damages_cc.rds"))
+fair_exps_cc <- readRDS(paste0(output_path, run_date, "/fair_exps_cc.rds"))
 
 #############################################################################
 #############################################################################
@@ -31,8 +31,8 @@ fair_exps_cc <- subset(fair_exps_cc, experiment_iso == 2030)
 #############################################################################
 #############################################################################
 # write the data in
-write_rds(tots_cc, paste0(fig_prepped_dta, gsub("-", "", Sys.Date()), "/total_cc.rds"))
-write_rds(fair_exps_cc, paste0(fig_prepped_dta,  gsub("-", "", Sys.Date()), "/fair_exps_cc_2300.rds"))
+write_rds(tots_cc, paste0(fig_prepped_dta, run_date, "/total_cc.rds"))
+write_rds(fair_exps_cc, paste0(fig_prepped_dta,  run_date, "/fair_exps_cc_2300.rds"))
 
 # end of script 
 

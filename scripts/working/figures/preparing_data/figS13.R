@@ -108,6 +108,6 @@ listofdfs <- list(totals_2100g_2dr,
                   totals_nog_ramsey)
 
 # write that list into directory 
-save(listofdfs, file = paste0(fig_prepped_dta, "/20230629/listof_scc_est_dfs_figs13.RData"))
+save(listofdfs, file = paste0(fig_prepped_dta, run_date, "/listof_scc_est_dfs_figs13.RData"))
 
 # end of script 

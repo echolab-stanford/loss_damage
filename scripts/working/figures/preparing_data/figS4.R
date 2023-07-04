@@ -18,13 +18,13 @@ setwd(dropbox_path)
 #############################################################################
 #############################################################################
 # read data 
-scc_2300_1pct_growth <- readRDS(paste0(dropbox_path, "data/output/20230629/scc_2300_1pct_growth.rds"))
-scc_2300_2pct_growth <- readRDS(paste0(dropbox_path, "data/output/20230629/scc_2300_2pct_growth.rds"))
-scc_2300_clamped_growth <- readRDS(paste0(dropbox_path, "data/output/20230629/scc_2300_clamped_growth.rds"))
-scc_2300_2100_5lag <- readRDS(paste0(dropbox_path, "data/output/20230629/scc_2300_2100_5lag.rds"))
-scc_2300_nog_post_2100 <- readRDS(paste0(dropbox_path, "data/output/20230629/scc_2300_nog_post_2100.rds"))
-scc_2300_2100_growth <- readRDS(paste0(dropbox_path, "data/output/20230629/scc_2300_2100_growth.rds"))
-scc_2100 <- readRDS(paste0(dropbox_path, "data/output/20230629/scc_2100.rds"))
+scc_2300_1pct_growth <- readRDS(paste0(output_path, run_date,"/scc_2300_1pct_growth.rds"))
+scc_2300_2pct_growth <- readRDS(paste0(output_path, run_date,"/scc_2300_2pct_growth.rds"))
+scc_2300_clamped_growth <- readRDS(paste0(output_path, run_date,"/scc_2300_clamped_growth.rds"))
+scc_2300_2100_5lag <- readRDS(paste0(doutput_path, run_date, "/scc_2300_2100_5lag.rds"))
+scc_2300_nog_post_2100 <- readRDS(paste0(output_path, run_date,"/scc_2300_nog_post_2100.rds"))
+scc_2300_2100_growth <- readRDS(paste0(output_path, run_date,"/scc_2300_2100_growth.rds"))
+scc_2100 <- readRDS(paste0(output_path, run_date, "/scc_2100.rds"))
 
 #############################################################################
 #############################################################################
@@ -110,6 +110,6 @@ ex$regression_model[6] <- "0-lag BHM model"
 ex$regression_model[7] <- "0-lag BHM model"
 
 # ok ready to plot 
-write_rds(ex, paste0(fig_prepped_dta, "scc_under_diff_scenarios.rds"))
+write_rds(ex, paste0(fig_prepped_dta, run_date, "scc_under_diff_scenarios.rds"))
 
 # end of script 

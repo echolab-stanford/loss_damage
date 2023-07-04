@@ -36,7 +36,7 @@ celebs_jet_emissions <- rbind(celebsjet,
                               gatesjet,
                               bezosjet)
 # now let us read in the 1gtc/yr exp data 
-damages_per_1tco2yr <- readRDS(paste0(output_path, "20230628/total_damages_1tco2_1980_2022.rds"))
+damages_per_1tco2yr <- readRDS(paste0(output_path, run_date "/total_damages_1tco2_1980_2022.rds"))
 
 #sum(damages_per_1tco2yr$weighted_damages2_scld[damages_per_1tco2yr$emitter == 2020], na.rm = T)
 
@@ -411,7 +411,7 @@ all_celebs_tot <- all_celebs_tot[order(all_celebs_tot$total_debt_cum),]
 all_celebs_tot$emitter <- factor(all_celebs_tot$emitter, levels = all_celebs_tot$emitter)
 
 # alright data is ready for plotting 
-write_rds(total_carb_majors_jet_ex3, paste0(fig_prepped_dta, "20230629/carbon_debt_majors_hist.rds"))
-write_rds(all_celebs_tot, paste0(fig_prepped_dta, "20230629/carbon_debt_celebs_fut.rds"))
+write_rds(total_carb_majors_jet_ex3, paste0(fig_prepped_dta, run_date,"/carbon_debt_majors_hist.rds"))
+write_rds(all_celebs_tot, paste0(fig_prepped_dta, run_date,"/carbon_debt_celebs_fut.rds"))
 
 # end of script 
