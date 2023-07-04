@@ -42,7 +42,19 @@ source("scripts/working/analysis/3c0_calc_total_damages_bilateral.R")
 source("scripts/working/analysis/3c1_calc_total_damages.R")
 source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
 
+# let us set the path
 setwd(dropbox_path)
+# You have two options. The first option is to replicate the study (i.e. run the 
+# the scripts to produce the data underlying the study). The other option is to 
+# produce new data with updated parameters, such as fair parameters, year of 
+# start of damages, among others 
+replicate <- T # change T to F if you want to create your own data  
+if (replicate == T){
+  run_date <- "20230628"
+}
+if (replcate == F){
+  run_date <- run_date
+}
 
 ################################################################################
 ###################### PRE1: Read needed data for analysis #####################
@@ -57,7 +69,7 @@ list_r_rasters <- readRDS("data/processed/r_cgm/ratio_raster_list.rds")
 # we need to aggregate the deltat to the country level by weighting by pop
 # so let us read the pop raster and resample it to match coordinates and 
 # convert to a dataframe and then join
-pop <- raster("data/raw/population/gpw_v4_population_count_rev11_2010_1_deg.tif")
+pop <- raster(paste0(raw_path, "data/raw/population/gpw_v4_population_count_rev11_2010_1_deg.tif"))
 pop <- readAll(pop)
 pop <- resample(pop, mean_r_raster)
 
@@ -179,6 +191,11 @@ minmax_data <- readRDS("data/processed/minmax_data.rds")
 ## 1tCO2 
 # temperature response through 2100 
 fair_exps_1tco2_2100 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2100", 1990, aggregating = T)
+fair_exps_1tco2_2100_k80 <- process_exp_data_hist_fut("20230518", "1GtCO2_hist_2100", 1980, aggregating = T)
+fair_exps_1tco2_2100_k80 <- process_exp_data_hist_fut("20230518", "1tCO2_hist_fut_main", 1980, aggregating = T)
+unique(fair_exps_1tco2_2100$experiment_iso)
+#fair_exps_1tco2_2100_k80 <- process_exp_data_hist_fut("20230518", "1tCO2_hist_2300", 1980, aggregating = T)
+
 # temperature response through 2300 
 fair_exps_1tco2_2300 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2300", 1990, aggregating = T)
 # now let us calc deltat and return all the runs so that we can run 
@@ -195,7 +212,7 @@ fair_exps_1gtco2_2100 <- process_exp_data_hist_fut("20230523","1GtCO2_hist_2100"
 # years after emitting it
 fair_exps_cc <- process_exp_data_hist_fut("20230410", "cc_hist", 2020, aggregating = T)
 # we will need this data saved for plotting cc figure (S6)
-write_rds(fair_exps_cc, paste0(output_path, gsub("-", "", Sys.Date()), "/fair_exps_cc.rds"))
+write_rds(fair_exps_cc, paste0(output_path, run_date, "/fair_exps_cc.rds"))
 
 ####################### Experiment (Carbon debt): ######################
 # this experiment is to estimate the deltaT resulting from emissions 
@@ -340,12 +357,14 @@ load("data/processed/bhm/bhm_era_reg.RData")
 # custom-made function
 years_of_exps_1990_2020 <- c(1990:2020)
 years_of_exps_1980_2020 <- c(1980:2020)
+years_of_exps_1980_2022 <- c(1980:2022)
+years_of_exps_1990_2022 <- c(1990:2022)
 
 
 # ok let us start with the 1gtco2 experiment (6 mins)
-total_damages_1gtco2k_90 <- calculate_damages_pulse(mean_r_raster,
-                                            fair_exps_1gtco2_2100, 
-                                            years_of_exps_1990_2020,
+total_damages_1gtco2_k90 <- calculate_damages_pulse(mean_r_raster,
+                                            fair_exps_1tco2_2100, 
+                                            years_of_exps_1990_2022,
                                             1990,
                                             future_forecast_ssp370,
                                             gdp_temp_data_k90,
@@ -356,28 +375,28 @@ total_damages_1gtco2k_90 <- calculate_damages_pulse(mean_r_raster,
                                             "no",
                                             2020)
 
+
 write_rds(total_damages_1gtco2_k90, paste0("data/processed/", 
-                                       gsub("-", "", Sys.Date()), 
-                                       "/total_damages_1gtco2_1990_2020.rds"))
+                                           run_date, 
+                                           "/total_damages_1gtco2_1990_2022.rds"))
 
-###### k = 1980
-# ok let us start with the 1gtco2 experiment (6 mins)
-total_damages_1gtco2_k80 <- calculate_damages_pulse(mean_r_raster,
-                                                fair_exps_1gtco2_2100, 
-                                                years_of_exps_1980_2020,
-                                                1990,
-                                                future_forecast_ssp370,
-                                                gdp_temp_data_k80,
-                                                "ERA",
-                                                bhm_era_reg,
-                                                F, 
-                                                "no",
-                                                "no",
-                                                2020)
-
-write_rds(total_damages_1gtco2_k80, paste0("data/output/", 
-                                       gsub("-", "", Sys.Date()), 
-                                       "/total_damages_1gtco2_1980_2020.rds"))
+################################################################################ Figures S5 panel a)
+total_damages_1tco2_k80 <- calculate_damages_pulse(mean_r_raster,
+                                                   fair_exps_1tco2_2100_k80, 
+                                                   years_of_exps_1980_2022,
+                                                   1980,
+                                                   future_forecast_ssp370,
+                                                   gdp_temp_data_k80,
+                                                   "ERA",
+                                                   bhm_era_reg,
+                                                   F, 
+                                                   "no",
+                                                   "no",
+                                                   2020)
+#sum(total_damages_1tco2_k80$weighted_damages2_scld[total_damages_1tco2_k80$emitter == 1980 & total_damages_1tco2_k80$year <2021], na.rm = T)
+write_rds(total_damages_1tco2_k80, paste0("data/output/", 
+                                       run_date, 
+                                       "/total_damages_1tco2_1980_2022.rds"))
 
 
 
