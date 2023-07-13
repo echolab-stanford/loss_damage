@@ -120,20 +120,21 @@ generate_gdptemp_panel <- function(bhm_mode,
         ((gdp_temp_data$cru_mwtemp^2)*(coef(bhm_model)[2]))
     }
     
-    
+    # EDIT (07/13): Instead of 5 year average we are doing 10 year average 
     # we need to create country level annual average for last 5 years of observed 
     # data 
     if (temp_dataset == "ERA"){
       gdp_temp_data <- gdp_temp_data %>% dplyr::group_by(ISO3) %>% 
-        dplyr::mutate(avg_temp_2016_2020 = mean(era_mwtemp[year > 2015 & year <= 2020], na.rm = T))
+        dplyr::mutate(avg_temp_2016_2020 = mean(era_mwtemp[year > 2009 & year <= 2020], na.rm = T))
     }
     if (temp_dataset == "CRU"){
       gdp_temp_data <- gdp_temp_data %>% dplyr::group_by(ISO3) %>% 
-        dplyr::mutate(avg_temp_2016_2020 = mean(cru_mwtemp[year > 2015 & year <= 2020], na.rm = T))
+        dplyr::mutate(avg_temp_2016_2020 = mean(cru_mwtemp[year > 2009 & year <= 2020], na.rm = T))
     }
     
     gdp_temp_data$year <- as.numeric(as.character(gdp_temp_data$year))
     
+    # we need to make some adjustements for some countries calculation to be included
     if (year_k == 1990){
       for(i in unique(gdp_temp_data$ISO3)){
         gdp_temp_data$diff_lgdp_for_damages[gdp_temp_data$ISO3 == i & is.na(gdp_temp_data$diff_lgdp_for_damages) & gdp_temp_data$year == 1990] <- 0

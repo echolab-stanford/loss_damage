@@ -13,8 +13,8 @@ source("scripts/working/analysis/0_read_libs.R")
 ################################################################################
 ################################################################################
 # read data
-fair_exps_cc <- readRDS(paste0(fig_prepped_dta, "20230629/fair_exps_cc_2300.rds"))
-total_cc <- readRDS(paste0(fig_prepped_dta, "20230629/total_cc.rds"))
+fair_exps_cc <- readRDS(paste0(fig_prepped_dta, "20230523/fair_exps_cc_2300.rds"))
+total_cc <- readRDS(paste0(fig_prepped_dta, "20230523/total_cc.rds"))
 
 ################################################################################
 ################################################################################
@@ -35,7 +35,7 @@ par(mfrow = c(2, 1))
 pdf(paste0("figures/20230629/figS6.pdf"), width=6, height=9)
 #gsub("-", "", Sys.Date()) 
 # 1 column figure with 3 plots using relative heights
-layout(matrix(1:3, ncol=1), heights=c(0.38, 0.38, 1))
+layout(matrix(1:4, ncol=1), heights=c(0.38, 0.38, 0.5, 0.8))
 par(oma=c(2, 3, 1, 3), mar=c(4,5,4,5))
 
 ################################################################################ panel a
@@ -126,6 +126,47 @@ points(2030, total_cc$total_damages[total_cc$emitter == 2030]/1000000000, pch = 
 points(2030, total_cc$total_damages[total_cc$emitter == 2030]/1000000000, pch = 19, 
        col = "red", lwd = 3.75)
 
+##### let us add another panel (07/13)
+total_cc$pct_averted <- (total_cc$total_damages[total_cc$emitter == 2100] - total_cc$total_damages)/total_cc$total_damages[total_cc$emitter == 2100]
+
+plot(total_cc$emitter, total_cc$pct_averted*100, type = "l",
+     frame = F, 
+     xlab = "Year",
+     ylab = "", xlim = range(2019:2100),
+     yaxt = "n",
+     cex.axis = 1.75,
+     cex.lab = 2)
+
+
+## Draw the x-axis with no labels.
+axis(side = 2, labels = FALSE)
+
+## Draw the y-axis.
+axis(side = 2,
+     ## Rotate the labels.
+     las = 2,
+     cex.axis = 1.75)
+
+segments(y0 = 0, y1 = 10000, 
+         x0 = 2030, x1 = 2030, 
+         lty = 3, lwd = 1.35)
+
+mtext(side=2, text="% of Damages Averted", line=6, cex = 1.35)
+
+
+segments(y0 = total_cc$pct_averted[total_cc$emitter == 2030]*100, 
+         y1 = total_cc$pct_averted[total_cc$emitter == 2030]*100, 
+         x0 = 2032, x1 = 2040, lty = 1.45)
+
+
+text(2041, total_cc$pct_averted[total_cc$emitter == 2030]*100, 
+     adj = 0, paste0("% of total damages averted"),
+     cex = 1.25)
+
+points(2030, total_cc$pct_averted[total_cc$emitter == 2030]*100, pch = 19, 
+       bg = "red", col = "black", lwd = 5.75)
+points(2030, total_cc$pct_averted[total_cc$emitter == 2030]*100, pch = 19, 
+       col = "red", lwd = 3.75)
 
 dev.off()
 # end of script 
