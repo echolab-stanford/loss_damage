@@ -89,27 +89,27 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
       #  if (i < 2020){
       gdp_temp_data1$era_mwtemp_preturb_pre2020 <- gdp_temp_data1$era_mwtemp - gdp_temp_data1$deltat
       gdp_temp_data1 <- gdp_temp_data1 %>% dplyr::group_by(ISO3) %>% 
-        dplyr::mutate(avg_temp_2016_2020_preturb = mean(era_mwtemp_preturb_pre2020[year > 2015 & year <= 2020], na.rm = T))
+        dplyr::mutate(avg_temp_2010_2020_preturb = mean(era_mwtemp_preturb_pre2020[year > 2009 & year <= 2020], na.rm = T))
     }
     if (temp_dataset == "CRU"){
       gdp_temp_data1$cru_mwtemp[gdp_temp_data1$year >2020] <- NA 
       #  if (i < 2020){
       gdp_temp_data1$cru_mwtemp_preturb_pre2020 <- gdp_temp_data1$cru_mwtemp - gdp_temp_data1$deltat
       gdp_temp_data1 <- gdp_temp_data1 %>% dplyr::group_by(ISO3) %>% 
-        dplyr::mutate(avg_temp_2016_2020_preturb = mean(cru_mwtemp_preturb_pre2020[year > 2015 & year <= 2020], na.rm = T))
+        dplyr::mutate(avg_temp_2010_2020_preturb = mean(cru_mwtemp_preturb_pre2020[year > 2009 & year <= 2020], na.rm = T))
     }
     
     if (temp_dataset == "ERA") {
       gdp_temp_data1 <- gdp_temp_data1 %>%  dplyr::group_by(ISO3, year) %>% 
         dplyr::mutate(
           era_mwtemp_preturb= case_when(!is.na(era_mwtemp) ~ era_mwtemp_preturb_pre2020, 
-                                        is.na(era_mwtemp) & year >2020 ~ avg_temp_2016_2020_preturb + deltat_preturb))
+                                        is.na(era_mwtemp) & year >2020 ~ avg_temp_2010_2020_preturb + deltat_preturb))
     }
     if (temp_dataset == "CRU"){
       gdp_temp_data1 <- gdp_temp_data1 %>%  dplyr::group_by(ISO3, year) %>% 
         dplyr::mutate(
           cru_mwtemp_preturb= case_when(!is.na(cru_mwtemp) ~ cru_mwtemp_preturb_pre2020, 
-                                        is.na(cru_mwtemp) & year >2020 ~ avg_temp_2016_2020_preturb + deltat_preturb))
+                                        is.na(cru_mwtemp) & year >2020 ~ avg_temp_2010_2020_preturb + deltat_preturb))
     }
   
     if (temp_dataset == "ERA"){

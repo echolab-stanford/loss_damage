@@ -8,6 +8,16 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
+replicate <- F# change T to F if you want to create your own data  
+if (replicate == T){
+  run_date <- "20230523"
+}
+if (replicate == F){
+  run_date <- gsub("-","",Sys.Date())
+}
+
+run_date <- "20230713"
+
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 # function for calculating warming ratio CGMs
@@ -48,8 +58,8 @@ emissions_dataset$Year <- as.numeric(emissions_dataset$Year)
 us_emissions <- emissions_dataset %>% 
   subset(`ISO 3166-1 alpha-3` == "USA" & Year >= 1900)
 
-us_emissions$Total[us_emissions$Year < 1980] <- 0
-# now we want to merge US 1980 numbers to total world numbers 
+us_emissions$Total[us_emissions$Year < 1990] <- 0
+# now we want to merge US 1990 numbers to total world numbers 
 world_emissions <- emissions_dataset %>% 
   subset(`ISO 3166-1 alpha-3` == "WLD")
 
@@ -82,17 +92,17 @@ write_rds(world_emissions, paste0(fig_prepped_dta, run_date,"world_emissions.rds
 
 # now let us process the FaIR temperature response to emissions by running the 
 # created function 
-#gtco2_effect <- process_disagg_exp_data("1GtCO2_hist_2300", 1980)
+#gtco2_effect <- process_disagg_exp_data("1GtCO2_hist_2300", 1990)
 
-fair_exps_isos_k80 <- process_exp_data_hist_fut(run_date, "hist_biusa_v2022", 
-                                                1980, aggregating = F)
+fair_exps_isos_k90 <- process_exp_data_hist("20230523", "hist_bi_v2022", 
+                                                1990, aggregating = F)
 
 # alt: have 1b as the deltaT coming from the emissions of us 
-fair_exps_isos_k80_usa <- subset(fair_exps_isos_k80, experiment_iso == "USA")
+fair_exps_isos_k90_usa <- subset(fair_exps_isos_k90, experiment_iso == "USA")
 
 # OK NOW LET US GET max and min
 # now caculate bounds 
-gtc1_fair_exp <- fair_exps_isos_k80_usa %>% dplyr::group_by(year) %>% 
+gtc1_fair_exp <- fair_exps_isos_k90_usa %>% dplyr::group_by(year) %>% 
   dplyr::mutate(p_05 = quantile(deltaT, 0.10, na.rm = T),
                 p_95 = quantile(deltaT, 0.90, na.rm = T))
 
@@ -135,15 +145,15 @@ r <- terra::rast(raster_cgm)
 r2 <- terra::disagg(r, 15)
 v <- world
 
-us_fair_median_dt <- subset(fair_exps_isos_k80, experiment_iso == "USA" & year == 2020)
+us_fair_median_dt <- subset(fair_exps_isos_k90, experiment_iso == "USA" & year == 2020)
 
-fair_exps_isos_k80_usa_2020 <- us_fair_median_dt %>% 
+fair_exps_isos_k90_usa_2020 <- us_fair_median_dt %>% 
   dplyr::group_by(year) %>% 
   dplyr::summarise(median_deltat = median(deltaT, ma.rm = T))
 
-fair_exps_isos_k80_usa_2020 <- subset(fair_exps_isos_k80_usa_2020, year == 2020)
+fair_exps_isos_k90_usa_2020 <- subset(fair_exps_isos_k90_usa_2020, year == 2020)
 
-deltat_cgm <- r2 * fair_exps_isos_k80_usa_2020$median_deltat
+deltat_cgm <- r2 * fair_exps_isos_k90_usa_2020$median_deltat
 #deltat_cgm <- r2
 x <- crop(deltat_cgm, ext(world) + 0.1)
 y <- terra::mask(x, world)
@@ -175,26 +185,26 @@ world$ISO3 <- countrycode::countrycode(sourcevar = world$iso_a2,origin = "iso2c"
                                        destination = "iso3c"
 )
 
-fair_exps_isos_k80 <- process_exp_data_hist(run_date, "hist_bi_v2022", 1980, aggregating = T)
+fair_exps_isos_k90 <- process_exp_data_hist("20230523", "hist_bi_v2022", 1990, aggregating = T)
 
-gdp_temp_data_k80 <- readRDS(paste0(dropbox_path, "/data/processed/world_gdp_pop/gdp_temp_data_k80.rds"))
+gdp_temp_data_k90 <- readRDS(paste0(dropbox_path, "/data/processed/world_gdp_pop/gdp_temp_data_k90.rds"))
 load(paste0(dropbox_path, "/data/processed/bhm/bhm_era_reg.RData"))
 pop_wdi <- readRDS(paste0(dropbox_path, "/data/processed/world_gdp_pop/pop_wdi.rds"))
 future_forecast_ssp370 <- readRDS(paste0(dropbox_path, "/data/processed/future_forecast/future_forecast_ssp370.rds"))
 
 
-total_damages_k80_usa <- calculate_bidamages_bilateral(raster_cgm,
-                                                       fair_exps_isos_k80,
+total_damages_k90_usa <- calculate_bidamages_bilateral(raster_cgm,
+                                                       fair_exps_isos_k90,
                                                        "USA",
-                                                       1980,
+                                                       1990,
                                                        future_forecast = future_forecast_ssp370,
-                                                       gdp_temp_dataset = gdp_temp_data_k80,
+                                                       gdp_temp_dataset = gdp_temp_data_k90,
                                                        bhm_model = bhm_era_reg,
                                                        2020)
 
-total_damages_k80_usa <- subset(total_damages_k80_usa, emitter == "USA" & ISO3 == "BRA")
+total_damages_k90_usa <- subset(total_damages_k90_usa, emitter == "USA" & ISO3 == "BRA")
 
-annual_observed <- total_damages_k80_usa %>% dplyr::group_by(year) %>% 
+annual_observed <- total_damages_k90_usa %>% dplyr::group_by(year) %>% 
   dplyr::summarise(observed = mean(era_mwtemp, na.rm = T),
                    corrected = mean(era_mwtemp - deltat, na.rm = T))
 
@@ -208,7 +218,7 @@ write_rds(annual_observed, paste0(fig_prepped_dta,run_date, "annual_observed.rds
 ################################################################################
 ################################################################################
 # 1e
-usa_bra <- subset(total_damages_k80_usa, ISO3 == "BRA")
+usa_bra <- subset(total_damages_k90_usa, ISO3 == "BRA")
 
 usa_bra$observed_gdp <- usa_bra$NY.GDP.PCAP.KD * usa_bra$SP.POP.TOTL
 usa_bra$counterfactual_gdp <- usa_bra$observed_gdp - usa_bra$weighted_damages2

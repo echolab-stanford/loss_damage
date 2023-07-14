@@ -8,6 +8,15 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
+replicate <- F# change T to F if you want to create your own data  
+if (replicate == T){
+  run_date <- "20230523"
+}
+if (replicate == F){
+  run_date <- gsub("-","",Sys.Date())
+}
+
+
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 # function for calculating warming ratio CGMs
@@ -28,7 +37,7 @@ source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
 setwd(dropbox_path)
 #############################################################################
 
-total_damages_1gtco2 <- readRDS(paste0(output_path, run_date, "/total_damages_1gtco2_1990_2020.rds"))
+total_damages_1gtco2 <- readRDS(paste0(output_path, run_date, "/total_damages_1gtco2_1990_2022.rds"))
 total_damages_1gtC1 <- subset(total_damages_1gtco2, emitter <=  2020 & emitter >1989)
 
 total_damages_1gtC1 <- total_damages_1gtC1 %>% 
@@ -153,10 +162,10 @@ colnames(test_df_for_table_2020)[3] <- "total_damages_2020_dr3"
 colnames(test_df_for_table_2020)[4] <- "total_damages_2020_dr5"
 colnames(test_df_for_table_2020)[5] <- "total_damages_2020_dr7"
 
-test_df_for_table_2020$total_damages_2020_dr2[test_df_for_table_2020$emitter <2015] <- round(test_df_for_table_2020$total_damages_2020_dr2[test_df_for_table_2020$emitter <2015], 0)
-test_df_for_table_2020$total_damages_2020_dr3[test_df_for_table_2020$emitter <2015] <- round(test_df_for_table_2020$total_damages_2020_dr3[test_df_for_table_2020$emitter <2015], 0)
-test_df_for_table_2020$total_damages_2020_dr5[test_df_for_table_2020$emitter <2015] <- round(test_df_for_table_2020$total_damages_2020_dr5[test_df_for_table_2020$emitter <2015], 0)
-test_df_for_table_2020$total_damages_2020_dr7[test_df_for_table_2020$emitter <2015] <- round(test_df_for_table_2020$total_damages_2020_dr7[test_df_for_table_2020$emitter <2015], 0)
+test_df_for_table_2020$total_damages_2020_dr2[test_df_for_table_2020$emitter <2015] <- round(test_df_for_table_2020$total_damages_2020_dr2[test_df_for_table_2020$emitter <2015], 1)
+test_df_for_table_2020$total_damages_2020_dr3[test_df_for_table_2020$emitter <2015] <- round(test_df_for_table_2020$total_damages_2020_dr3[test_df_for_table_2020$emitter <2015], 1)
+test_df_for_table_2020$total_damages_2020_dr5[test_df_for_table_2020$emitter <2015] <- round(test_df_for_table_2020$total_damages_2020_dr5[test_df_for_table_2020$emitter <2015], 1)
+test_df_for_table_2020$total_damages_2020_dr7[test_df_for_table_2020$emitter <2015] <- round(test_df_for_table_2020$total_damages_2020_dr7[test_df_for_table_2020$emitter <2015], 1)
 
 test_df_for_table_2020$total_damages_2020_dr2[test_df_for_table_2020$emitter >= 2015 & test_df_for_table_2020$emitter < 2018] <- round(test_df_for_table_2020$total_damages_2020_dr2[test_df_for_table_2020$emitter >= 2015 & test_df_for_table_2020$emitter < 2018], 1)
 test_df_for_table_2020$total_damages_2020_dr3[test_df_for_table_2020$emitter >= 2015 & test_df_for_table_2020$emitter < 2018] <- round(test_df_for_table_2020$total_damages_2020_dr3[test_df_for_table_2020$emitter >= 2015 & test_df_for_table_2020$emitter < 2018], 1)
@@ -188,5 +197,7 @@ setwd("~/GitHub/loss_damage")
 write_rds(test_df_for_table, paste0(fig_prepped_dta, run_date, "/test_df_for_table.rds"))
 write_rds(total_damages_by_pulse_2020_all, paste0(fig_prepped_dta, run_date, "/total_damages_by_pulse_2020.rds"))
 write_rds(total_damages_by_pulse_2100_all, paste0(fig_prepped_dta, run_date, "/total_damages_by_pulse_2100.rds"))
+
+# end of script 
 
 # end of script

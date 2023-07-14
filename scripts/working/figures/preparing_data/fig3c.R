@@ -8,6 +8,14 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
+replicate <- F# change T to F if you want to create your own data  
+if (replicate == T){
+  run_date <- "20230523"
+}
+if (replicate == F){
+  run_date <- gsub("-","",Sys.Date())
+}
+
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 # function for calculating warming ratio CGMs
@@ -28,10 +36,10 @@ source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
 ################################################################################
 ################################################################################
 # read data 
-total_damages_uncertainty_cgm <- readRDS(paste0(fig_prepped_dta, run_date, "/total_damages_1gtco2_cgm.rds"))
-total_damages_uncertainty_fair <- readRDS(paste0(fig_prepped_dta, run_date, "/total_damages_1gtco2_fair.rds"))
-total_damages_uncertainty_bhm <- readRDS(paste0(fig_prepped_dta, run_date, "/total_damages_1gtco2_bhm.rds"))
-total_damages_uncertainty_total <- readRDS(paste0(fig_prepped_dta, run_date, "/total_damages_1gtco2_total.rds"))
+total_damages_uncertainty_cgm <- readRDS(paste0(output_path, run_date, "/total_damages_1gtco2_cgm.rds"))
+total_damages_uncertainty_fair <- readRDS(paste0(output_path, run_date, "/total_damages_1gtco2_fair.rds"))
+total_damages_uncertainty_bhm <- readRDS(paste0(output_path, run_date, "/total_damages_1gtco2_bhm.rds"))
+total_damages_uncertainty_total <- readRDS(paste0(output_path, run_date, "/total_damages_1gtco2_total.rds"))
 
 # prepare data for plotting
 

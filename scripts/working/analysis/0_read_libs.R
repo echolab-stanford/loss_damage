@@ -131,6 +131,7 @@ dir.create(file.path(paste0("figures/", run_date)))
 dir.create(file.path(paste0(dropbox_path, "data/output/", run_date)))
 #dir.create(file.path(paste0(dropbox_path, "data/figures/", run_date)))
 dir.create(file.path(paste0(getwd(), "/data/figures/", run_date)))
+dir.create(file.path(paste0(dropbox_path, "/data/processed/", run_date)))
 
 output_path <- paste0(dropbox_path, "data/output/")
 processed_path <- paste0(dropbox_path, "data/processed/")

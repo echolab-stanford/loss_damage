@@ -11,6 +11,14 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
+replicate <- F# change T to F if you want to create your own data  
+if (replicate == T){
+  run_date <- "20230523"
+}
+if (replicate == F){
+  run_date <- gsub("-","",Sys.Date())
+}
+
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -21,7 +29,7 @@ setwd(dropbox_path)
 scc_2300_1pct_growth <- readRDS(paste0(output_path, run_date,"/scc_2300_1pct_growth.rds"))
 scc_2300_2pct_growth <- readRDS(paste0(output_path, run_date,"/scc_2300_2pct_growth.rds"))
 scc_2300_clamped_growth <- readRDS(paste0(output_path, run_date,"/scc_2300_clamped_growth.rds"))
-scc_2300_2100_5lag <- readRDS(paste0(doutput_path, run_date, "/scc_2300_2100_5lag.rds"))
+scc_2300_2100_5lag <- readRDS(paste0(output_path, run_date, "/scc_2300_2100_5lag.rds"))
 scc_2300_nog_post_2100 <- readRDS(paste0(output_path, run_date,"/scc_2300_nog_post_2100.rds"))
 scc_2300_2100_growth <- readRDS(paste0(output_path, run_date,"/scc_2300_2100_growth.rds"))
 scc_2100 <- readRDS(paste0(output_path, run_date, "/scc_2100.rds"))

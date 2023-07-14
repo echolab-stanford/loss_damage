@@ -177,7 +177,7 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
 #                         median_deltat_preturb = median(Test.x, na.rm = T),
 #                         .groups = "keep")
 #    }
-    if (experiment != "hist_fut_yriso" & experiment != "hist_fut_060123_yriso"){
+    if (experiment != "hist_fut_yriso" & experiment != "hist_fut_060123_yriso")
       fair_exps <- fair_exps %>% 
         dplyr::group_by(year, experiment_iso) %>% 
         dplyr::summarise(median_deltat_preturb = median(Test.x, na.rm = T),
@@ -185,8 +185,7 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
                          median_deltat = median(deltaT, na.rm = T),
                          .groups = "keep")
     }
-  }
-  
+    
   #plot(fair_exps$year, fair_exps$median_deltat_preturb)
   
   if (experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" | 
@@ -226,8 +225,8 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
   
   
   if (experiment == "ssp370" | experiment == "ssp245" | experiment == "ssp119" | 
-      experiment == "ssp126" | experiment == "hist_fut_bilateral" | experiment == "hist_bi_v2022" |
-      experiment == "hist_bitt_v2022"){
+      experiment == "ssp126" ){ #experiment == "hist_fut_bilateral" | #experiment == "hist_bi_v2022" |
+      #experiment == "hist_bitt_v2022"){
     fair_exps$deltaT_fullemms <- 0
     fair_exps$deltaT_preturb <- 0
     fair_exps$deltaT_fullemms <- fair_exps$median_deltat_fullemms - fair_exps$median_deltat_fullemms[fair_exps$year == 2020]
