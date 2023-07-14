@@ -7,14 +7,15 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
+run_date <- "20230713"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
 ################################################################################
 ################################################################################
 # read data
-fair_exps_cc <- readRDS(paste0(fig_prepped_dta, "20230523/fair_exps_cc_2300.rds"))
-total_cc <- readRDS(paste0(fig_prepped_dta, "20230523/total_cc.rds"))
+fair_exps_cc <- readRDS(paste0(fig_prepped_dta, run_date,"/fair_exps_cc_2300.rds"))
+total_cc <- readRDS(paste0(fig_prepped_dta, run_date,"/total_cc.rds"))
 
 ################################################################################
 ################################################################################
@@ -32,11 +33,11 @@ df$y[df$x == 2030] <- -1
 par(mfrow = c(2, 1))
 
 #dev.off()
-pdf(paste0("figures/20230629/figS6.pdf"), width=6, height=9)
+pdf(paste0("figures/" ,run_date,"/figS6.pdf"), width=6, height=9)
 #gsub("-", "", Sys.Date()) 
 # 1 column figure with 3 plots using relative heights
 layout(matrix(1:4, ncol=1), heights=c(0.38, 0.38, 0.5, 0.8))
-par(oma=c(2, 3, 1, 3), mar=c(4,5,4,5))
+par(oma=c(0.5, 3, 0.5, 3), mar=c(2,5,2,5))
 
 ################################################################################ panel a
 plot(df$x, df$y, type = "l", xlim = range(2019:2100),

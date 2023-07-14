@@ -7,15 +7,16 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
+run_date <- "20230713"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
 ################################################################################
 ################################################################################
 # read data 
-test_df_for_table <- readRDS(paste0(fig_prepped_dta, "test_df_for_table.rds"))
-total_damages_by_pulse_2020_all <- readRDS(paste0(fig_prepped_dta, "total_damages_by_pulse_2020.rds"))
-total_damages_by_pulse_2100_all <- readRDS(paste0(fig_prepped_dta, "total_damages_by_pulse_2100.rds"))
+test_df_for_table <- readRDS(paste0(fig_prepped_dta, run_date, "/test_df_for_table.rds"))
+total_damages_by_pulse_2020_all <- readRDS(paste0(fig_prepped_dta, run_date, "/total_damages_by_pulse_2020.rds"))
+total_damages_by_pulse_2100_all <- readRDS(paste0(fig_prepped_dta, run_date, "/total_damages_by_pulse_2100.rds"))
 
 ################################################################################
 ################################################################################
@@ -58,15 +59,15 @@ test_df_for_table %>%
   # #Make text bold
 #cell_text(weight = "bold")
 #  )) %>% 
-tab_header(
-  title = md("Total Damages from 1GtCO2 Pulse in a Given Year"),
-  subtitle = md("By Year of Pulse (1990-2020) & Discount Rate (2%, 3%, 5%, 7%) ")
-) %>%
-  gtsave(paste0("figures/", gsub("-", "", Sys.Date()),"/figS3.png"))
+#tab_header(
+#  title = md("Total Damages from 1GtCO2 Pulse in a Given Year"),
+#  subtitle = md("By Year of Pulse (1990-2020) & Discount Rate (2%, 3%, 5%, 7%) ")
+#) %>%
+  gtsave(paste0("figures/", run_date,"/figS3.png"))
 
 
 ################################################################################ Figure 3b
-pdf(paste0("figures/", gsub("-", "", Sys.Date()) ,"/fig3a_b.pdf"), width=15, height=6)
+pdf(paste0("figures/", run_date ,"/fig3a_b.pdf"), width=15, height=6)
 par(mfrow = (c(1,2)))
 par(mar = c(4,8,4,4))
 #par(family = "Helvetica")

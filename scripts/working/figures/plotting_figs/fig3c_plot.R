@@ -7,16 +7,18 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
+run_date <- "20230713"
+
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
 ################################################################################
 ################################################################################
 # read data 
-totals_all   <- readRDS(paste0(fig_prepped_dta, "totals_all.rds"))
-totals_bhm   <- readRDS(paste0(fig_prepped_dta, "totals_bhm.rds"))
-totals_cgm   <- readRDS(paste0(fig_prepped_dta, "totals_cgm.rds"))
-totals_fair  <- readRDS(paste0(fig_prepped_dta, "totals_fair.rds"))
+totals_all   <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_all.rds"))
+totals_bhm   <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_bhm.rds"))
+totals_cgm   <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_cgm.rds"))
+totals_fair  <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_fair.rds"))
 
 ################################################################################
 ################################################################################
@@ -43,7 +45,10 @@ for (i in 1:length(listofdfs)) {
   tic()
   df <- listofdfs[[i]]
   colnames(df)[2] <- "total_damages"
-  df$total_damages <- df$total_damages/1000000000
+  if (i !=3){
+    df$total_damages <- df$total_damages/1000000000
+  }
+  
   totals_iqr <- subset(df, total_damages >= (quantile(df$total_damages, c(.25, .75))[1]) &
                          total_damages <= (quantile(df$total_damages, c(.25, .75))[2]))
   assign(paste0("totals_iqr_", unique(df$uncertainty)), totals_iqr)
@@ -61,10 +66,10 @@ for (i in 1:length(listofdfs)) {
 
 all_median <- median(totals_all$total_damages  /1000000000)
 fair_median <- median(totals_fair$total_damages/1000000000)
-cgm_median <- median(totals_cgm$total_damages  /1000000000)
+cgm_median <- median(totals_cgm$total_damages)
 bhm_median <- median(totals_bhm$total_damages  /1000000000)
 
-pdf(paste0("figures/", gsub("-", "", Sys.Date()) ,"/fig3c.pdf"), width=12, height=6)
+pdf(paste0("figures/", run_date,"/fig3c.pdf"), width=12, height=6)
 
 par(mfrow = c(1,1))
 par(mar= c(8,6,2,2))
