@@ -48,7 +48,8 @@ packs <- c("tidyr",
            "doParallel",
            "foreach",
            "gt",
-           "gtable"
+           "gtable",
+           "cowplot"
            )
 
 
@@ -71,7 +72,7 @@ gt_theme_538 <- function(data,...) {
     opt_all_caps()  %>%
     opt_table_font(
       font = list(
-        google_font("Chivo"),
+        "Helvetica",
         default_fonts()
       )
     ) %>%
@@ -105,6 +106,44 @@ gt_theme_538 <- function(data,...) {
 }
 
 
+# run any functions that could be needed in the future
+gt_theme_538_nocaps <- function(data,...) {
+  data %>% 
+    opt_table_font(
+      font = list(
+        "Helvetica",
+        default_fonts()
+      )
+    ) %>%
+    tab_style(
+      style = cell_borders(
+        sides = "bottom", color = "transparent", weight = px(2)
+      ),
+      locations = cells_body(
+        columns = TRUE,
+        # This is a relatively sneaky way of changing the bottom border
+        # Regardless of data size
+        rows = nrow(data$`_data`)
+      )
+    )  %>% 
+    tab_options(
+      column_labels.background.color = "white",
+      table.border.top.width = px(3),
+      table.border.top.color = "transparent",
+      table.border.bottom.color = "transparent",
+      table.border.bottom.width = px(3),
+      column_labels.border.top.width = px(3),
+      column_labels.border.top.color = "transparent",
+      column_labels.border.bottom.width = px(3),
+      column_labels.border.bottom.color = "black",
+      data_row.padding = px(3),
+      source_notes.font.size = 12,
+      table.font.size = 16,
+      heading.align = "right",
+      ...
+    ) 
+}
+
 
 # create a function to add a unit letter next to the total amount displayed 
 addUnits <- function(n) {
@@ -133,7 +172,7 @@ dir.create(file.path(paste0(dropbox_path, "data/output/", run_date)))
 dir.create(file.path(paste0(getwd(), "/data/figures/", run_date)))
 dir.create(file.path(paste0(dropbox_path, "/data/processed/", run_date)))
 
-output_path <- paste0(dropbox_path, "data/output/")
+output_path <- paste0(dropbox_path, "data/output/", run_date)
 processed_path <- paste0(dropbox_path, "data/processed/")
 raw_path <- paste0(dropbox_path, "data/raw/")
 fig_prepped_dta <- paste0(getwd(), "/data/figures/")

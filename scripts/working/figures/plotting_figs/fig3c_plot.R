@@ -45,9 +45,9 @@ for (i in 1:length(listofdfs)) {
   tic()
   df <- listofdfs[[i]]
   colnames(df)[2] <- "total_damages"
-  if (i !=3){
-    df$total_damages <- df$total_damages/1000000000
-  }
+  #if (i !=3){
+  #  df$total_damages <- df$total_damages/1000000000
+  #}
   
   totals_iqr <- subset(df, total_damages >= (quantile(df$total_damages, c(.25, .75))[1]) &
                          total_damages <= (quantile(df$total_damages, c(.25, .75))[2]))
@@ -64,10 +64,10 @@ for (i in 1:length(listofdfs)) {
   toc()
 }
 
-all_median <- median(totals_all$total_damages  /1000000000)
-fair_median <- median(totals_fair$total_damages/1000000000)
+all_median <- median(totals_all$total_damages)
+fair_median <- median(totals_fair$total_damages)
 cgm_median <- median(totals_cgm$total_damages)
-bhm_median <- median(totals_bhm$total_damages  /1000000000)
+bhm_median <- median(totals_bhm$total_damages)
 
 pdf(paste0("figures/", run_date,"/fig3c.pdf"), width=12, height=6)
 
@@ -75,7 +75,7 @@ par(mfrow = c(1,1))
 par(mar= c(8,6,2,2))
 plot(-1,-1,pch = 15, #xlim = range(0,4), 
      ylim = range(0,15), 
-     xlim = range(0,1300),
+     xlim = range(0,2800),
      cex= 0, yaxt = "n",
      frame.plot = F, col = "#d1def0", ylab = "", 
      xlab = "\n \n SCC (per tonne damages in $USD)", cex.lab = 2, cex.axis = 1.25)
@@ -183,76 +183,76 @@ polygon(x = c(cgm_median - 5, cgm_median + 5,
         col = "gold1")  
 
 #legend 
-polygon(x = c(1100, 1200,
-              1200, 1100),
+polygon(x = c(2100, 2300,
+              2300, 2100),
         border = "#581795",      # X-Coordinates of polygon
         y = c(10.5, 10.5,10, 10),                             # Y-Coordinates of polygon
         col = "#581795")  
-polygon(x = c(1100, 1200,
-              1200, 1100),
+polygon(x = c(2100, 2300,
+              2300, 2100),
         border = "#127450",      # X-Coordinates of polygon
         y = c(9.5, 9.5,9, 9),                             # Y-Coordinates of polygon
         col = "#127450")  
 
-polygon(x = c(1100, 1200,
-              1200, 1100),
+polygon(x = c(2100, 2300,
+              2300, 2100),
         border = "#0056b3",      # X-Coordinates of polygon
         y = c(8.5, 8.5,8, 8),                             # Y-Coordinates of polygon
         col = "#0056b3")  
-polygon(x = c(1100, 1200,
-              1200, 1100),
+polygon(x = c(2100, 2300,
+              2300, 2100),
         border = "#990000",      # X-Coordinates of polygon
         y = c(7.5, 7.5,7, 7),                             # Y-Coordinates of polygon
         col = "#990000")  
 
-polygon(x = c(1100, 1200,
-              1200, 1100),
+polygon(x = c(2100, 2300,
+              2300, 2100),
         border = "gold1",      # X-Coordinates of polygon
         y = c(6.5, 6.5,6.25, 6.25),                             # Y-Coordinates of polygon
         col = "gold1")  
 
 
-polygon(x = c(1000, 1300,
-              1300, 1000),
+polygon(x = c(2000, 2400,
+              2400, 2000),
         border = "grey95",      # X-Coordinates of polygon
         y = c(4.75, 4.75,5.25, 5.25),                             # Y-Coordinates of polygon
         col = "grey95")  
-polygon(x = c(1075, 1225,
-              1225, 1075),
+polygon(x = c(2100, 2300,
+              2300, 2100),
         border = "grey",      # X-Coordinates of polygon
         y = c(4.75, 4.75,5.25, 5.25),                             # Y-Coordinates of polygon
         col = "grey")  
 
-polygon(x = c(1125, 1175,
-              1175, 1125),
+polygon(x = c(2150, 2250,
+              2250, 2150),
         border = "black",      # X-Coordinates of polygon
         y = c(4.75, 4.75,5.25, 5.25),                             # Y-Coordinates of polygon
         col = "black")  
 
-segments(x0 = 1300, x1 = 1300, y0 = 4.60, y1 = 1.6)
-segments(x0 = 1000, x1 = 1300, y0 = 1.6, y1 = 1.6)
-segments(x0 = 1000, x1 = 1000, y0 = 1.6, y1 = 4.6)
-segments(x0 = 1150, x1 = 1150, y0 = 1.6, y1 = 1.2)
-text(1150, 1, "95% range", cex = 0.75)
+segments(x0 = 2400, x1 = 2400, y0 = 4.60, y1 = 1.6)
+segments(x0 = 2000, x1 = 2400, y0 = 1.6, y1 = 1.6)
+segments(x0 = 2000, x1 = 2000, y0 = 1.6, y1 = 4.6)
+segments(x0 = 2200, x1 = 2200, y0 = 1.6, y1 = 1.2)
+text(2200, 1, "95% range", cex = 0.75)
 
-segments(x0 = 1225, x1 = 1075, y0 = 2.60, y1 = 2.6)
-segments(x0 = 1075, x1 = 1075, y0 = 4.6, y1 = 2.6)
-segments(x0 = 1225, x1 = 1225, y0 = 2.6, y1 = 4.6)
-segments(x0 = 1150, x1 = 1150, y0 = 2.6, y1 = 2.4)
-text(1150, 2.2, "90% range", cex = 0.75)
+segments(x0 = 2100, x1 = 2300, y0 = 2.60, y1 = 2.6)
+segments(x0 = 2300, x1 = 2300, y0 = 4.6, y1 = 2.6)
+segments(x0 = 2100, x1 = 2100, y0 = 2.6, y1 = 4.6)
+segments(x0 = 2200, x1 = 2200, y0 = 2.6, y1 = 2.4)
+text(2200, 2.2, "90% range", cex = 0.75)
 
 
-segments(x0 = 1175, x1 = 1175, y0 = 4.60, y1 = 3.6)
-segments(x0 = 1125, x1 = 1175, y0 = 3.6, y1 = 3.6)
-segments(x0 = 1125, x1 = 1125, y0 = 3.6, y1 = 4.6)
-segments(x0 = 1150, x1 = 1150, y0 = 3.6, y1 = 3.4)
-text(1150, 3.2, "IQR", cex = 0.75)
+segments(x0 = 2150, x1 = 2150, y0 = 4.60, y1 = 3.6)
+segments(x0 = 2250, x1 = 2150, y0 = 3.6, y1 = 3.6)
+segments(x0 = 2250, x1 = 2250, y0 = 3.6, y1 = 4.6)
+segments(x0 = 2200, x1 = 2200, y0 = 3.6, y1 = 3.4)
+text(2200, 3.2, "IQR", cex = 0.75)
 
-text(1075,10.15, "climate model uncertainty", adj = c(1,0))
-text(1075,9.15, "climate sensitivity uncertainty", adj = c(1,0))
-text(1075,8.15, "regression uncertainty", adj = c(1,0))
-text(1075,7.15, "total uncertainty", adj = c(1,0))
-text(1075,6.35, "median estimate", adj = c(1,0))
+text(2075,10.15, "climate pattern uncertainty", adj = c(1,0))
+text(2075,9.15, "climate sensitivity uncertainty", adj = c(1,0))
+text(2075,8.15, "regression uncertainty", adj = c(1,0))
+text(2075,7.15, "total uncertainty", adj = c(1,0))
+text(2075,6.35, "median estimate", adj = c(1,0))
 
 dev.off()
 # end of script

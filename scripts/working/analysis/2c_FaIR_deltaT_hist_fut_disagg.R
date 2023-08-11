@@ -57,7 +57,7 @@ process_disagg_exp_data <- function(date, experiment, year_k){
         experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
         experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" |
         experiment == "1GtCO2_hist_2300" | experiment == "052323_1tCO2_hist_2300" | 
-        experiment == "1GtCO2_hist_2100") {
+        experiment == "1GtCO2_hist_2100" |  experiment == "1tCO2_hist_2300") {
       fair_exps$experiment_iso <- substr(fair_exps$loop, 5,8) 
       
     }
@@ -108,7 +108,7 @@ process_disagg_exp_data <- function(date, experiment, year_k){
         experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
         experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" |
         experiment == "1GtCO2_hist_2300" | experiment == "052323_1tCO2_hist_2300" | 
-        experiment == "1GtCO2_hist_2100"){
+        experiment == "1GtCO2_hist_2100" |  experiment == "1tCO2_hist_2300"){
       fair_exp_all <- subset(fair_exps, experiment_iso == "loop")
     } 
     if (experiment == "1GtC_hist_fut_ssp245" | experiment == "1GtC_hist_fut_ssp119" ) {
@@ -150,7 +150,7 @@ process_disagg_exp_data <- function(date, experiment, year_k){
         experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
         experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" |
         experiment == "1GtCO2_hist_2300" | experiment == "052323_1tCO2_hist_2300" | 
-        experiment == "1GtCO2_hist_2100"){
+        experiment == "1GtCO2_hist_2100" |  experiment == "1tCO2_hist_2300"){
       # we subtract FaIR ran with all emissions from the left hand side
       fair_exps <- subset(fair_exps, experiment_iso != "loop")
     }
@@ -188,7 +188,7 @@ process_disagg_exp_data <- function(date, experiment, year_k){
         experiment =="1GtC_hist_fut_test1" | experiment =="1tC_hist_fut_test" | 
         experiment =="1GtCO2_hist_fut_main" | experiment =="1tCO2_hist_fut_main" |
         experiment == "1GtCO2_hist_2300" | experiment == "052323_1tCO2_hist_2300" | 
-        experiment == "1GtCO2_hist_2100"){
+        experiment == "1GtCO2_hist_2100" |  experiment == "1tCO2_hist_2300"){
     for (i in year_k:2100){
       fair_exps1 <- subset(fair_exps, experiment_iso == i)
       fair_exps1$deltat_fullemms <- fair_exps1$median_deltat_fullemms - fair_exps1$median_deltat_fullemms[fair_exps1$year == 2020]

@@ -4,14 +4,13 @@
 # Last Edited: April 2023
 #############################################################################
 
-
 run_bhm_model_reg <- function(bhm_mode){
   
   bhm_mode_option <- bhm_mode
   
   gdp_temp_data <- readRDS("data/processed/world_gdp_pop/temp_gdp_world_panel.rds")
   # create the growth variable and set the dataset as a pdataframe
-  gdp_temp_data <- subset(gdp_temp_data, year < 2021)
+  gdp_temp_data <- subset(gdp_temp_data, year < 2020)
   # create the growth variable and set the dataset as a pdataframe
   gdp_temp_data$gdp_pc <- log(gdp_temp_data$NY.GDP.PCAP.KD)
   gdp_temp_data <- plm::pdata.frame(gdp_temp_data, index = c("ISO3","year"))

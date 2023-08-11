@@ -68,7 +68,7 @@ process_exp_data_hist <- function(date, experiment, year_k, aggregating){
       experiment == "hist_fut_ssp126" | experiment == "hist_fut_ssp245" |
       experiment == "hist_fut_noemms_ssp126" | experiment == "hist_fut_noemms_ssp245" |
       experiment == "hist_fut_noemms_ssp119" | experiment == "futssp" | 
-      experiment == "futssp370_emms" | experiment == "hist_bi_v2022" |
+      experiment == "futssp370_emms" | experiment == "hist_bi_v2022" | experiment == "hist_bi_2100" |
       experiment == "hist_bitt_v2022" | experiment == "hist_biconsump_v2022" |
       experiment == "hist_bitest1_v2022" | experiment == "hist_bitest2_v2022" |
       experiment == "hist_bitest3_v2022" | experiment == "hist_bitest4_v2022"|
@@ -119,7 +119,7 @@ process_exp_data_hist <- function(date, experiment, year_k, aggregating){
       experiment == "hist_fut_noemms_ssp126" | experiment == "hist_fut_noemms_ssp245" |
       experiment == "hist_fut_noemms_ssp119" | experiment == "hist_fut_yriso" | 
       experiment == "hist_fut_041023_yriso" | 
-      experiment == "futssp370_emms" | experiment == "hist_bi_v2022" |
+      experiment == "futssp370_emms" | experiment == "hist_bi_v2022" | experiment == "hist_bi_2100" |
       experiment == "hist_bitt_v2022"| experiment == "hist_biconsump_v2022"|
       experiment == "hist_bitest1_v2022"| experiment == "hist_bitest2_v2022" |
       experiment == "hist_bitest3_v2022" | experiment == "hist_bitest4_v2022"|
@@ -164,7 +164,7 @@ process_exp_data_hist <- function(date, experiment, year_k, aggregating){
       experiment == "hist_fut_noemms_ssp126" | experiment == "hist_fut_noemms_ssp245" |
       experiment == "hist_fut_noemms_ssp119" | experiment == "hist_fut_yriso" |
       experiment == "hist_fut_041023_yriso" |
-      experiment == "futssp370_emms" | experiment == "hist_bi_v2022" |
+      experiment == "futssp370_emms" | experiment == "hist_bi_v2022" | experiment == "hist_bi_2100" |
       experiment == "hist_bitt_v2022"| experiment == "hist_biconsump_v2022"|
       experiment == "hist_bitest1_v2022"| experiment == "hist_bitest2_v2022" |
       experiment == "hist_bitest3_v2022" | experiment == "hist_bitest4_v2022"|

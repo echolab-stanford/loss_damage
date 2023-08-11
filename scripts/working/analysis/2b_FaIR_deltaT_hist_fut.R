@@ -59,7 +59,10 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
   if (experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" | 
       experiment == "cc_hist" |
       experiment == "1GtCO2_hist_2100" |
-      experiment == "1tCO2_hist_2100")
+      experiment == "1tCO2_hist_2100"  | experiment == "10tCO2_hist_2300"  | 
+      experiment == "100tCO2_hist_2300" | experiment == "1000tCO2_hist_2300" | 
+      experiment == "1MtCO2_hist_2300"  | experiment == "10GtCO2_hist_2300" | 
+      experiment == "100GtCO2_hist_2300" )
        {
     fair_exps$experiment_iso <- substr(fair_exps$loop, 5,8) 
   }
@@ -101,7 +104,10 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
   if (experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" | 
       experiment == "cc_hist" |
       experiment == "1GtCO2_hist_2100" |
-      experiment == "1tCO2_hist_2100"){
+      experiment == "1tCO2_hist_2100"  | experiment == "10tCO2_hist_2300"  | 
+      experiment == "100tCO2_hist_2300" | experiment == "1000tCO2_hist_2300" | 
+      experiment == "1MtCO2_hist_2300"  | experiment == "10GtCO2_hist_2300" | 
+      experiment == "100GtCO2_hist_2300" ){
     fair_exp_all <- subset(fair_exps, experiment_iso == "loop")
   } 
   if (experiment == "1GtC_hist_fut_ssp245" | experiment == "1GtC_hist_fut_ssp119" ) {
@@ -119,7 +125,8 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
       experiment == "carbon_debt_indent" | experiment == "carbon_debt_indentcelebs") { 
     fair_exp_all <- subset(fair_exps, experiment_iso == "all")
   }
-  if (experiment == "ssp370" | experiment == "ssp245" | experiment == "ssp119" | experiment == "ssp126"){
+  if (experiment == "ssp370" | experiment == "ssp245" | experiment == "ssp119" | 
+      experiment == "ssp126"){
     fair_exp_all <- subset(fair_exps, experiment_iso == "all1")
   }
   
@@ -137,7 +144,10 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
   if (experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" | 
       experiment == "cc_hist" |
       experiment == "1GtCO2_hist_2100" |
-      experiment == "1tCO2_hist_2100"){
+      experiment == "1tCO2_hist_2100"  | experiment == "10tCO2_hist_2300"  | 
+      experiment == "100tCO2_hist_2300" | experiment == "1000tCO2_hist_2300" | 
+      experiment == "1MtCO2_hist_2300"  | experiment == "10GtCO2_hist_2300" | 
+      experiment == "100GtCO2_hist_2300" ){
     # we subtract FaIR ran with all emissions from the left hand side
     fair_exps <- subset(fair_exps, experiment_iso != "loop")
   }
@@ -191,7 +201,10 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
   if (experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" | 
       experiment == "cc_hist" |
       experiment == "1GtCO2_hist_2100" |
-      experiment == "1tCO2_hist_2100"){
+      experiment == "1tCO2_hist_2100"  | experiment == "10tCO2_hist_2300"  | 
+      experiment == "100tCO2_hist_2300" | experiment == "1000tCO2_hist_2300" | 
+      experiment == "1MtCO2_hist_2300"  | experiment == "10GtCO2_hist_2300" | 
+      experiment == "100GtCO2_hist_2300" ){
     for (i in year_k:2100){
       fair_exps1 <- subset(fair_exps, experiment_iso == i)
       fair_exps1$deltat_fullemms <- fair_exps1$median_deltat_fullemms - fair_exps1$median_deltat_fullemms[fair_exps1$year == 2020]

@@ -7,13 +7,14 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
+run_date <- "20230713"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
 ################################################################################
 ################################################################################
 # read data 
-scc_est <- readRDS(paste0(fig_prepped_dta, run_date,"scc_under_diff_scenarios.rds"))
+scc_est <- readRDS(paste0(fig_prepped_dta, run_date,"/scc_under_diff_scenarios.rds"))
 
 ################################################################################
 ################################################################################

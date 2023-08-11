@@ -7,20 +7,21 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
+run_date <- "20230713"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
 # establish a function
 `%not_in%` <- purrr::negate(`%in%`)
 
-
+run_date <- "20230602"
 ################################################################################
 ################################################################################
 # read data 
-damages_and_benefits_k90 <- readRDS(paste0(fig_prepped_dta, "damages_and_benefits_k90.rds"))
-damages_and_benefits_k80 <- readRDS(paste0(fig_prepped_dta, "damages_and_benefits_k80.rds"))
-damages_and_benefits_k90_prod <- readRDS(paste0(fig_prepped_dta, "damages_and_benefits_k90_prod.rds"))
-damages_and_benefits_k90_consump <- readRDS(paste0(fig_prepped_dta, "damages_and_benefits_k90_consump.rds"))
+damages_and_benefits_k90 <- readRDS(paste0(fig_prepped_dta,run_date, "/damages_and_benefits_k90.rds"))
+damages_and_benefits_k80 <- readRDS(paste0(fig_prepped_dta,run_date, "/damages_and_benefits_k80.rds"))
+damages_and_benefits_k90_prod <- readRDS(paste0(fig_prepped_dta, run_date,"/damages_and_benefits_k90_prod.rds"))
+damages_and_benefits_k90_consump <- readRDS(paste0(fig_prepped_dta,run_date, "/damages_and_benefits_k90_consump.rds"))
 
 ################################################################################
 ################################################################################
@@ -41,8 +42,8 @@ damages_and_benefits_k90$year_k <- 1990
 
 # now this is a manual step. But we need to determine which labels we need to 
 # take outside the boxes and send a line to 
-label_out_rect_k90 <- c(1:4, 9:18)
-label_out_rect_right_k90 <- c(1:24, 28:31, 40:46)
+label_out_rect_k90 <- c(9:18)
+label_out_rect_right_k90 <- c(1:31, 37:46)
 
 # now let us plot 
 sankey_k90 <- ggplot(damages_and_benefits_k90,
@@ -70,9 +71,9 @@ sankey_k90 <- ggplot(damages_and_benefits_k90,
   #geom_text(stat="stratum", aes(label=after_stat(deposit)))
   #geom_flow(aes(fill=stratum)) +      + 
   geom_stratum() + 
-  labs(y="Benefits from warming ($USD)                                Damages from warming ($USD)", x="") +
+  labs(y="Benefits from warming ($USD)                                  Damages from warming ($USD)", x="") +
   scale_x_discrete(limits = c("owing_real", "owed_to_real"),
-                   labels=c("owing_real"="Country that owes", "owed_to_real"="Country that is owed")) + 
+                   labels=c("owing_real"="Emitter", "owed_to_real"="Recipient")) + 
   geom_text(stat="stratum", aes(label=ifelse(after_stat(deposit)%not_in%label_out_rect_k90 &after_stat(deposit)%in%label_out_rect_right_k90,
                                              as.character(after_stat(stratum)),"")),
             size=9) +  ggrepel::geom_text_repel(
@@ -143,10 +144,11 @@ sankey_k80 <- ggplot(damages_and_benefits_k80,
   #geom_text(stat="stratum", aes(label=after_stat(deposit)))
   #geom_flow(aes(fill=stratum)) +      + 
   geom_stratum() + 
-  labs(y="Benefits from warming ($USD)                       Damages from warming ($USD)", x="") +
+  labs(y="Benefits from warming ($USD)                         Damages from warming ($USD)", x="") +
   scale_x_discrete(limits = c("owing_real", "owed_to_real"),
-                   labels=c("owing_real"="Country that owes", "owed_to_real"="Country that is owed")) + 
-  geom_text(stat="stratum", aes(label=ifelse(after_stat(deposit)%not_in%label_out_rect_k80 &after_stat(deposit)%in%label_out_rect_right_k80,
+                   labels=c("owing_real"="Emitter", "owed_to_real"="Recipient")) + 
+  geom_text(stat="stratum", 
+            aes(label=ifelse(after_stat(deposit)%not_in%label_out_rect_k80 &after_stat(deposit)%in%label_out_rect_right_k80,
                                              as.character(after_stat(stratum)),"")),
             size=9) +  ggrepel::geom_text_repel(
               stat="stratum", 
@@ -219,7 +221,7 @@ sankey_k90_prod <- ggplot(damages_and_benefits_k90_prod,
   geom_stratum() + 
   labs(y="Benefits from warming ($USD)                       Damages from warming ($USD)", x="") +
   scale_x_discrete(limits = c("owing_real", "owed_to_real"),
-                   labels=c("owing_real"="Country that owes", "owed_to_real"="Country that is owed")) + 
+                   labels=c("owing_real"="Emitter", "owed_to_real"="Recipient")) + 
   geom_text(stat="stratum", aes(label=ifelse(after_stat(deposit)%not_in%label_out_rect_k90 &after_stat(deposit)%in%label_out_rect_right_k90,
                                              as.character(after_stat(stratum)),"")),
             size=9) +  ggrepel::geom_text_repel(
@@ -293,7 +295,7 @@ sankey_k90_consump <- ggplot(damages_and_benefits_k90_consump,
   geom_stratum() + 
   labs(y="Benefits from warming ($USD)                       Damages from warming ($USD)", x="") +
   scale_x_discrete(limits = c("owing_real", "owed_to_real"),
-                   labels=c("owing_real"="Country that owes", "owed_to_real"="Country that is owed")) + 
+                   labels=c("owing_real"="Emitter", "owed_to_real"="Recipient")) + 
   geom_text(stat="stratum", aes(label=ifelse(after_stat(deposit)%not_in%label_out_rect_k90 &after_stat(deposit)%in%label_out_rect_right_k90,
                                              as.character(after_stat(stratum)),"")),
             size=9) +  ggrepel::geom_text_repel(
@@ -327,13 +329,13 @@ sankey_k90_consump <- ggplot(damages_and_benefits_k90_consump,
 ################################################################################
 # write out the figure 
 
-save_plot('figures/20230629/fig4.pdf',plot=sankey_k90, 
+save_plot(paste0('figures/',run_date, '/fig4.pdf'),plot=sankey_k90, 
           base_width=26.5, base_height=28, scale=1.1)
-save_plot('figures/20230629/figS7.pdf',plot=sankey_k80, 
+save_plot(paste0('figures/', run_date, '/figED10.pdf'),plot=sankey_k80, 
           base_width=26.5, base_height=28, scale=1.1)
-save_plot('figures/20230629/figS8.pdf',plot=sankey_k90_prod, 
+save_plot(paste0('figures/', run_date, '/figED12.pdf'),plot=sankey_k90_prod, 
           base_width=26.5, base_height=28, scale=1.1)
-save_plot('figures/20230629/figS9.pdf',plot=sankey_k90_consump, 
+save_plot(paste0('figures/', run_date, '/figED11.pdf'),plot=sankey_k90_consump, 
           base_width=26.5, base_height=28, scale=1.1)
 
 # end of script
