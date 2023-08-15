@@ -56,15 +56,15 @@ par(mfrow = c(1,1))
 par(mar= c(8,6,2,2))
 
 plot(-1,-1,pch = 15, #xlim = range(0,4), 
-     ylim = range(0,15), 
+     ylim = range(0,20), 
      xlim = range(0,8500),
      cex= 0, yaxt = "n",
      frame.plot = F, col = "#d1def0", ylab = "", 
-     xlab = "\n \n SCC (per tonne damages in $USD)", 
+     xlab = "\n \n SC-CO2 (per tonne damages in $USD)", 
      family = "Helvetica",
      cex.lab = 2, cex.axis = 1.25)
 
-title("e SCC estimates with total uncertainty under different scenarios", adj = 0)
+title("e SC-CO2 estimates with total uncertainty under different scenarios", adj = 0)
 
 
 polygon(x = c(min(totals_5_95_ssp_2100_2dr$total_damages), max(totals_5_95_ssp_2100_2dr$total_damages),
@@ -169,8 +169,60 @@ polygon(x = c(totals_median_nogrowth_ramsey - 25, totals_median_nogrowth_ramsey 
         y = c(9.25, 9.25,10.25, 10.25),                             # Y-Coordinates of polygon      
         col = "gold1")  
 
-text(2000, 6, "SSP 2100 growth rates", adj = 0, cex = 1.45, family = "Helvetica")
-text(2000, 12, "No growth post 2100", adj = 0, cex = 1.45, family = "Helvetica")
+
+polygon(x = c(min(totals_5_95_noimpacts_2dr$total_damages), max(totals_5_95_noimpacts_2dr$total_damages),
+              max(totals_5_95_noimpacts_2dr$total_damages), min(totals_5_95_noimpacts_2dr$total_damages)),
+        border = "#ffe6e6",      # X-Coordinates of polygon
+        y = c(13, 13,14, 14),                             # Y-Coordinates of polygon
+        col = "#ffe6e6")  
+
+polygon(x = c(min(totals_10_90_noimpacts_2dr$total_damages), max(totals_10_90_noimpacts_2dr$total_damages),
+              max(totals_10_90_noimpacts_2dr$total_damages), min(totals_10_90_noimpacts_2dr$total_damages)),
+        border = "#ffb3b3",      # X-Coordinates of polygon
+        y = c(13, 13,14, 14),                             # Y-Coordinates of polygon        
+        col = "#ffb3b3")  
+
+polygon(x = c(min(totals_iqr_noimpacts_2dr$total_damages), max(totals_iqr_noimpacts_2dr$total_damages),
+              max(totals_iqr_noimpacts_2dr$total_damages), min(totals_iqr_noimpacts_2dr$total_damages)),
+        border = "#990000",      # X-Coordinates of polygon
+        y = c(13, 13,14, 14),                             # Y-Coordinates of polygon        
+        col = "#990000")  
+
+polygon(x = c(totals_median_noimpacts_2dr - 25, totals_median_noimpacts_2dr + 25,
+              totals_median_noimpacts_2dr + 25, totals_median_noimpacts_2dr - 25),
+        border = "gold1",      # X-Coordinates of polygon
+        y = c(13, 13,14, 14),                             # Y-Coordinates of polygon        
+        col = "gold1")  
+
+
+
+polygon(x = c(min(totals_5_95_noimpacts_ramsey$total_damages), max(totals_5_95_noimpacts_ramsey$total_damages),
+              max(totals_5_95_noimpacts_ramsey$total_damages), min(totals_5_95_noimpacts_ramsey$total_damages)),
+        border = "#efe8f6",      # X-Coordinates of polygon
+        y = c(15.25, 15.25,16.25, 16.25),                             # Y-Coordinates of polygon
+        col = "#efe8f6")  
+
+polygon(x = c(min(totals_10_90_noimpacts_ramsey$total_damages), max(totals_10_90_noimpacts_ramsey$total_damages),
+              max(totals_10_90_noimpacts_ramsey$total_damages), min(totals_10_90_noimpacts_ramsey$total_damages)),
+        border = "#c0a3db",      # X-Coordinates of polygon
+        y = c(15.25, 15.25,16.25, 16.25),                             # Y-Coordinates of polygon
+        col = "#c0a3db")  
+
+polygon(x = c(min(totals_iqr_noimpacts_ramsey$total_damages), max(totals_iqr_noimpacts_ramsey$total_damages),
+              max(totals_iqr_noimpacts_ramsey$total_damages), min(totals_iqr_noimpacts_ramsey$total_damages)),
+        border = "#581795",      # X-Coordinates of polygon
+        y = c(15.25, 15.25,16.25, 16.25),                             # Y-Coordinates of polygon
+        col = "#581795")  
+
+polygon(x = c(totals_median_noimpacts_ramsey - 25, totals_median_noimpacts_ramsey + 25,
+              totals_median_noimpacts_ramsey + 25, totals_median_noimpacts_ramsey - 25),
+        border = "gold1",      # X-Coordinates of polygon
+        y = c(15.25, 15.25,16.25, 16.25),                             # Y-Coordinates of polygon
+        col = "gold1")  
+
+text(2000, 6, "Impacts through 2300", adj = 0, cex = 1.45, family = "Helvetica")
+text(2000, 12, "No growth impacts after 2100", adj = 0, cex = 1.45, family = "Helvetica")
+text(2000, 18, "Impacts through 2100", adj = 0, cex = 1.45, family = "Helvetica")
 
 
 
@@ -280,6 +332,25 @@ text(totals_median_ssp_2100_2dr,
      paste0("$", round(totals_median_ssp_2100_2dr, 0)),
      cex = 1.45,
      lwd = 2.25)
+
+segments(x0 = totals_median_noimpacts_ramsey, 
+         x1 = totals_median_noimpacts_ramsey,
+         y0 = 16.25, y1 = 16.50, lwd = 1.75)
+text(totals_median_noimpacts_ramsey,
+     16.85, 
+     paste0("$", round(totals_median_noimpacts_ramsey, 0)),
+     cex = 1.45,
+     lwd = 2.25)
+
+segments(x0 = totals_median_noimpacts_2dr, 
+         x1 = totals_median_noimpacts_2dr,
+         y0 = 14, y1 = 14.25, lwd = 1.75)
+text(totals_median_noimpacts_2dr,
+     14.6, 
+     paste0("$", round(totals_median_noimpacts_2dr, 0)),
+     cex = 1.45,
+     lwd = 2.25)
+
 
 #segments(x0 = 6850, x1 = 6850, y0 = 3.6, y1 = 3.4)
 

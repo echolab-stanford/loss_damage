@@ -1,7 +1,7 @@
 ##############################################################################
 # Mustafa Zahid, January 7th, 2023
 # This R script reads the data and prepares the necessary data to plots figure
-# 1. Figure 1 demonstrates the different steps taken to calculate teh damages
+# ED1. Figure ED1 demonstrates the different steps taken to calculate teh damages
 #############################################################################
 remove(list=ls())
 gc()

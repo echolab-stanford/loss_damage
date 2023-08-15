@@ -46,7 +46,7 @@ test_df_for_table %>%
              total_damages_2100_dr5 = "5%",
              total_damages_2100_dr7 = "7%") %>% 
   gt_theme_538(table.width = px(550)) %>% 
-  gtsave(paste0("figures/", run_date,"/figS3.png"))
+  gtsave(paste0("figures/", run_date,"/figED4.png"))
 
 
 ################################################################################ Figure 3b

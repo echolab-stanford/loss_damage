@@ -69,7 +69,7 @@ fair_median <- median(totals_fair$total_damages)
 cgm_median <- median(totals_cgm$total_damages)
 bhm_median <- median(totals_bhm$total_damages)
 
-pdf(paste0("figures/", run_date,"/fig3c.pdf"), width=12, height=6)
+pdf(paste0("figures/", run_date,"/figED13.pdf"), width=12, height=6)
 
 par(mfrow = c(1,1))
 par(mar= c(8,6,2,2))
@@ -78,7 +78,7 @@ plot(-1,-1,pch = 15, #xlim = range(0,4),
      xlim = range(0,2800),
      cex= 0, yaxt = "n",
      frame.plot = F, col = "#d1def0", ylab = "", 
-     xlab = "\n \n SCC (per tonne damages in $USD)", cex.lab = 2, cex.axis = 1.25)
+     xlab = "\n \n SC-CO2 (per tonne damages in $USD)", cex.lab = 2, cex.axis = 1.25)
 
 
 polygon(x = c(min(totals_5_95_all$total_damages), max(totals_5_95_all$total_damages),
@@ -205,11 +205,11 @@ polygon(x = c(2100, 2300,
         y = c(7.5, 7.5,7, 7),                             # Y-Coordinates of polygon
         col = "#990000")  
 
-polygon(x = c(2100, 2300,
-              2300, 2100),
-        border = "gold1",      # X-Coordinates of polygon
-        y = c(6.5, 6.5,6.25, 6.25),                             # Y-Coordinates of polygon
-        col = "gold1")  
+#polygon(x = c(2100, 2300,
+#              2300, 2100),
+#        border = "gold1",      # X-Coordinates of polygon
+#        y = c(6.5, 6.5,6.25, 6.25),                             # Y-Coordinates of polygon
+#        col = "gold1")  
 
 
 polygon(x = c(2000, 2400,
@@ -228,6 +228,15 @@ polygon(x = c(2150, 2250,
         border = "black",      # X-Coordinates of polygon
         y = c(4.75, 4.75,5.25, 5.25),                             # Y-Coordinates of polygon
         col = "black")  
+
+polygon(x = c(2195, 2205,
+              2205, 2195),
+        border = "gold1",      # X-Coordinates of polygon
+        y = c(4.75, 4.75,5.25, 5.25),                             # Y-Coordinates of polygon
+        col = "gold1")  
+
+segments(x0 = 2200, x1 = 2200, y0 = 5.25, y1 = 5.5)
+text(2200,5.8, "median")
 
 segments(x0 = 2400, x1 = 2400, y0 = 4.60, y1 = 1.6)
 segments(x0 = 2000, x1 = 2400, y0 = 1.6, y1 = 1.6)
@@ -252,7 +261,7 @@ text(2075,10.15, "climate pattern uncertainty", adj = c(1,0))
 text(2075,9.15, "climate sensitivity uncertainty", adj = c(1,0))
 text(2075,8.15, "regression uncertainty", adj = c(1,0))
 text(2075,7.15, "total uncertainty", adj = c(1,0))
-text(2075,6.35, "median estimate", adj = c(1,0))
+#text(2075,6.35, "median estimate", adj = c(1,0))
 
 dev.off()
 # end of script

@@ -63,11 +63,11 @@ test_df_for_table %>%
 #  title = md("Total Damages from 1GtCO2 Pulse in a Given Year"),
 #  subtitle = md("By Year of Pulse (1990-2020) & Discount Rate (2%, 3%, 5%, 7%) ")
 #) %>%
-  gtsave(paste0("figures/", run_date,"/figS3.png"))
+  gtsave(paste0("figures/", run_date,"/figED4.png"))
 
 
 ################################################################################ Figure 3b
-pdf(paste0("figures/", run_date ,"/fig3a_b.pdf"), width=15, height=6)
+pdf(paste0("figures/", run_date ,"/fig2a_b.pdf"), width=15, height=6)
 par(mfrow = (c(1,2)))
 par(mar = c(4,8,4,4))
 #par(family = "Helvetica")

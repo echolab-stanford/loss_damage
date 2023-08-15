@@ -2,6 +2,7 @@
 # Mustafa Zahid, January 26th, 2023
 # This R script is to produce the best sankey diagram to every grace the 
 # universie. This is only possible due to Jeff's help. 
+# this script prep data for figurs 4, and ED10,11,12
 # Input(s): bilateral damages dataset, 
 # Output(s): a sankey diagram
 ##############################################################################

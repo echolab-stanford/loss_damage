@@ -33,7 +33,7 @@ df$y[df$x == 2030] <- -1
 par(mfrow = c(2, 1))
 
 #dev.off()
-pdf(paste0("figures/" ,run_date,"/figS6.pdf"), width=6, height=9)
+pdf(paste0("figures/" ,run_date,"/figED9.pdf"), width=6, height=9)
 #gsub("-", "", Sys.Date()) 
 # 1 column figure with 3 plots using relative heights
 layout(matrix(1:4, ncol=1), heights=c(0.38, 0.38, 0.5, 0.8))

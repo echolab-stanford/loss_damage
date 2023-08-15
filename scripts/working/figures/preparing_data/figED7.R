@@ -4,7 +4,8 @@
 # estimating damages up to 2300, and up to 2100. For up to 2300, we are running
 # model where we set post 2100 growth at 2100 levels, the other is to assume 
 # 1 and 2 % growth rates moving beyond 2100., and then one where we clamp growth 
-# to observed levels pre 2021, and another where we run a 5 lag BHM model 
+# to observed levels pre 2021, and another where we run a 5 lag BHM model. 
+# This script prepares data for fig ED7
 ##############################################################################
 remove(list=ls())
 gc()

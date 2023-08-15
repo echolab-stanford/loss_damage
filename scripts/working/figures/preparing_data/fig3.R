@@ -2,7 +2,7 @@
 # Mustafa Zahid, November 15th, 2022
 # This R script brings in the SCC numbers and calculate the carbon debt for 
 # specific emitters. the groups of emissions data include carbon majors and 
-# celebreities private jet usage
+# celebreities private jet usage this script prep data for figure 3
 # Input(s): processed SCC data per year of emmission
 # Output(s): cumulative carbon debt to the end of century
 ##############################################################################

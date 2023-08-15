@@ -1,6 +1,6 @@
 ##############################################################################
 # Mustafa Zahid, June 29th, 2023
-# prep the data for the carbon capture figure (figS6). 
+# prep the data for the carbon capture figure (figED9). 
 ##############################################################################
 remove(list=ls())
 gc()

@@ -798,8 +798,6 @@ scc_2300_2100_growth <- calculate_damages_pulse(median_raster,
                                                 1 ,
                                                 2020)
 
-sum(scc_2300_2100_growth$weighted_damages_ramsey_scld, na.rm = T)
-
 write_rds(scc_2300_2100_growth, paste0(output_path, "/scc_2300_2100_growth.rds"))
 
 scc_2300_1pct_growth <- calculate_damages_pulse(mean_r_raster,
@@ -884,8 +882,8 @@ sum(scc_2300_nog_post_2100$weighted_damages2_scld, na.rm = T)
 write_rds(scc_2300_nog_post_2100, paste0(output_path, "/scc_2300_nog_post_2100.rds"))
 
 # now no effects post 2100 (this is just the original normal run)
-scc_2100 <- calculate_damages_pulse(mean_r_raster,
-                                    fair_exps_1tco2_2100_k90,
+scc_2100 <- calculate_damages_pulse(median_raster,
+                                    fair_exps_1tco2_2300_k90,
                                     2020,
                                     1990,
                                     future_forecast_ssp370,
@@ -896,6 +894,8 @@ scc_2100 <- calculate_damages_pulse(mean_r_raster,
                                     "no",
                                     "no",
                                     2020)
+
+sum(scc_2100$weighted_damages2_scld, na.rm = T)
 write_rds(scc_2100, paste0(output_path, "/scc_2100.rds"))
 
 

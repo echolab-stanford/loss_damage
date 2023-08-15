@@ -46,7 +46,7 @@ scc_est %>%
                    dr_ramsey),
     currency = "USD",
     decimals = F
-  ) %>% gtsave(paste0("figures/", run_date,"/figS4.png"))
+  ) %>% gtsave(paste0("figures/", run_date,"/figED7.png"))
 
 #end of script
 
