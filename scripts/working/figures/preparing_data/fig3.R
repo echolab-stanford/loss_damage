@@ -19,7 +19,7 @@ if (replicate == F){
   run_date <- gsub("-","",Sys.Date())
 }
 
-run_date <- "20230713"
+run_date <- "20230821"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 options(scipen = 999)
@@ -232,8 +232,8 @@ total_carb_majors$rev[total_carb_majors$emitter == "Petroliam Nasional Berhad (P
 total_carb_majors$rev <- total_carb_majors$rev / 1000000000000
 
 # ok now let us do the math 
-total_carb_majors$total_debt_cum <- total_carb_majors$total_debt_cum/1000000000
-total_carb_majors$total_debt_cum_2020  <- total_carb_majors$total_debt_cum_2020/1000000000
+#total_carb_majors$total_debt_cum <- total_carb_majors$total_debt_cum/1000000000
+#total_carb_majors$total_debt_cum_2020  <- total_carb_majors$total_debt_cum_2020/1000000000
 
 total_carb_majors$pct <- total_carb_majors$total_debt_cum / total_carb_majors$rev
 total_carb_majors$pct_2020 <- total_carb_majors$total_debt_cum_2020 / total_carb_majors$rev
@@ -249,6 +249,7 @@ total_carb_majors_ex3 <- total_carb_majors_ex3 %>%
                                     TRUE ~ paste0(emitter, " ($", round(rev, 2), "T, %",
                                                   round(pct_2020*100, 0), ")")))
 
+total_carb_majors_ex3$total_debt_cum_2021_2100 <- total_carb_majors_ex3$total_debt_cum - total_carb_majors_ex3$total_debt_cum_2020
 
 #### scope 1 only 
 
@@ -418,8 +419,8 @@ total_carb_majors_scp1$rev <- total_carb_majors_scp1$rev / 1000000000000
 
 # ok now let us do the math 
 # ok now let us do the math 
-total_carb_majors_scp1$total_debt_cum <- total_carb_majors_scp1$total_debt_cum/1000000000
-total_carb_majors_scp1$total_debt_cum_2020  <- total_carb_majors_scp1$total_debt_cum_2020/1000000000
+#total_carb_majors_scp1$total_debt_cum <- total_carb_majors_scp1$total_debt_cum/1000000000
+#total_carb_majors_scp1$total_debt_cum_2020  <- total_carb_majors_scp1$total_debt_cum_2020/1000000000
 
 total_carb_majors_scp1$pct <- total_carb_majors_scp1$total_debt_cum / total_carb_majors_scp1$rev
 total_carb_majors_scp1$pct_2020 <- total_carb_majors_scp1$total_debt_cum_2020 / total_carb_majors_scp1$rev
@@ -435,192 +436,193 @@ total_carb_majors_scp1_ex3 <- total_carb_majors_scp1_ex3 %>%
                                     TRUE ~ paste0(emitter, " ($", round(rev, 2), "T, %",
                                                   round(pct_2020*100, 0), ")")))
 
+total_carb_majors_scp1_ex3$total_debt_cum_2021_2100 <- total_carb_majors_scp1_ex3$total_debt_cum - total_carb_majors_scp1_ex3$total_debt_cum_2020
 
 #### scope 3 only 
 ################################################################################ majors emissions
 #take out non-entity parties 
-carb_majors_scp3 <- carb_majors_scp3 %>% 
-  subset(., emitter != "China (Coal)" & emitter != "Russia (Coal)" & emitter != "Poland Coal")
-
-
-#damages_per_1tco2yr <- total_damages_1tCO2
-# now let calculate total carbon deby by year and emitter
-damages_per_1tco2yr_sum <- damages_per_1tco2yr %>% 
-  dplyr::group_by(emitter, year) %>% 
-  dplyr::summarise(total_damages = sum(weighted_damages2_scld, na.rm = T))
-colnames(damages_per_1tco2yr_sum)[1] <- "emission_year"
-
-# now we have the estimates for each 1tco2 / yr, let us bring in the 
-carb_majors_scp3 <- subset(carb_majors_scp3, years >= 1988 & years <= 2015)
-carb_majors_scp3 <- left_join(carb_majors_scp3, damages_per_1tco2yr_sum,
-                              by = c("years" = "emission_year"),
-                              relationship = "many-to-many")
-carb_majors_scp31 <- carb_majors_scp3 %>% 
-  dplyr::mutate(debt = (emissions*1000000) * total_damages) %>% 
-  dplyr::group_by(years, year, emitter) %>% 
-  dplyr::summarise(total_debt = sum(debt, na.rm = T))
-
-# now let us calculate total debt by year and emitter
-carb_majors_scp32 <- carb_majors_scp31 %>% 
-  dplyr::group_by(year, emitter) %>% 
-  dplyr::summarise(total_debt = sum(total_debt, na.rm = T)) 
-
-# noe let us calculate cumulative debt 
-carb_majors_scp32 <- carb_majors_scp32 %>% 
-  dplyr::group_by(emitter) %>% 
-  dplyr::mutate(total_debt_cum = cumsum(total_debt))
-
-# we want to ficus on the top 15, since there are 100 of them
-total_by_emitter <- carb_majors_scp32 %>% dplyr::group_by(emitter) %>% 
-  dplyr::summarise(total_debt = sum(total_debt, na.rm = T))
-total_by_emitter <- total_by_emitter[order(-total_by_emitter$total_debt),] 
-total_by_emitter$rank <- 1:nrow(total_by_emitter)
-total_by_emitter <- total_by_emitter %>% dplyr::select(c("emitter", "rank"))
-carb_majors_scp32 <- left_join(total_by_emitter, carb_majors_scp32, by = c("emitter"))
-carb_majors_scp32 <- subset(carb_majors_scp32, rank <= 17)
-carb_majors_scp32 <- subset(carb_majors_scp32)
-
-# let us try tp plot a bar plot 
-total_carb_majors_scp3 <- subset(carb_majors_scp32, year == 2100)
-carb_majors_scp32_2020 <- subset(carb_majors_scp32, year == 2020)
-carb_majors_scp32_2020 <- carb_majors_scp32_2020 %>% dplyr::select(c("emitter", 
-                                                                     "total_debt_cum"))
-colnames(carb_majors_scp32_2020) <- c("emitter", "total_debt_cum_2020")
-total_carb_majors_scp3 <- left_join(total_carb_majors_scp3,
-                                    carb_majors_scp32_2020,
-                                    by = c("emitter"))
-
-total_carb_majors_scp3 <- total_carb_majors_scp3[order(total_carb_majors_scp3$total_debt_cum),] 
-total_carb_majors_scp3$emitter <- factor(total_carb_majors_scp3$emitter, levels = total_carb_majors_scp3$emitter)
-
-total_carb_majors_scp3$total_debt_cum <- total_carb_majors_scp3$total_debt_cum / 1000000000000
-total_carb_majors_scp3$total_debt_cum_2020 <- total_carb_majors_scp3$total_debt_cum_2020 / 1000000000000 
-
-# first we are going to read in all the revenus
-oil_majors_rev <- read_csv(paste0(raw_path, "emissions/NRGI-NOCdatabase-ExploreByIndicator-2.csv"))
-
-oil_majors_rev <- oil_majors_rev %>% dplyr::select(c("company",
-                                                     "2011",
-                                                     "2012",
-                                                     "2013",
-                                                     "2014",
-                                                     "2015",
-                                                     "2016",
-                                                     "2017",
-                                                     "2018",
-                                                     "2019",
-                                                     "2020",
-                                                     "2021"))
-
-oil_majors_rev_long <- reshape2::melt(oil_majors_rev, id = c("company"))
-oil_majors_rev_long <- subset(oil_majors_rev_long, !is.na(oil_majors_rev_long$value))
-oil_majors_rev_long$value <- oil_majors_rev_long$value * 1000000
-
-# now let us read the american companies data 
-exxon_oil_rev <- read_excel("~/Downloads/statistic_id264119_exxonmobils-operating-revenue-2001-2021.xlsx", 
-                            sheet = 2)
-exxon_oil_rev <- exxon_oil_rev[-1:-2,]
-colnames(exxon_oil_rev) <- c("year", "rev")
-exxon_oil_rev$rev <- exxon_oil_rev$rev * 1000000
-exxon_oil_rev$company <- "ExxonMobil"
-
-chevron_oil_rev <- read_excel("~/Downloads/statistic_id269079_chevrons-operating-revenue-2008-2021.xlsx",
-                              sheet = 2)
-chevron_oil_rev <- chevron_oil_rev[-1:-2,]
-colnames(chevron_oil_rev) <- c("year", "rev")
-chevron_oil_rev$rev <- chevron_oil_rev$rev * 1000000000
-chevron_oil_rev$company <- "Chevron"
-
-shell_oil_rev <- read_excel("~/Downloads/statistic_id268734_shells-revenue-2005-2021.xlsx",
-                            sheet = 2)
-shell_oil_rev <- shell_oil_rev[-1:-2,]
-colnames(shell_oil_rev) <- c("year", "rev")
-shell_oil_rev$rev <- shell_oil_rev$rev * 1000000000
-shell_oil_rev$company <- "Shell Oil"
-
-# now let us bring all american companies data together in one dataframe before 
-# bringing in them with the rest of the companies
-american_oil_revs <- rbind(exxon_oil_rev,
-                           shell_oil_rev,
-                           chevron_oil_rev)
-
-# now let us see
-american_oil_revs_2021 <- subset(american_oil_revs, year == 2021) 
-colnames(oil_majors_rev_long) <- c("company", "year", "rev")
-
-# now bring all together 
-oil_majors_rev_long <- rbind(oil_majors_rev_long,
-                             american_oil_revs_2021)
-
-# select year
-oil_majors_rev_2021 <- subset(oil_majors_rev_long, year == 2021)
-
-# now in order to bring both datasets together we need to make syre that the names 
-# corespond, and as such, we will rename the columns in the revenue dataset 
-# to the damages dataset 
-oil_majors_rev_2021 <- oil_majors_rev_2021 %>% 
-  dplyr::mutate(company = case_when(company == "Saudi Aramco" ~ "Saudi Arabian Oil Company (Aramco)",
-                                    company == "Gazprom" ~ "Gazprom OAO",
-                                    company == "ExxonMobil"~ "ExxonMobil Corp",
-                                    company == "Pemex" ~ "Petroleos Mexicanos (Pemex)",
-                                    company == "Shell Oil" ~ "Royal Dutch Shell PLC",
-                                    company == "CNPC" ~ "China National Petroleum Corp (CNPC)",
-                                    company == "Chevron" ~ "Chevron Corp",
-                                    TRUE ~ company)) 
-
-oil_majors_rev_2021 <- oil_majors_rev_2021 %>% dplyr::select(-c("year"))
-total_carb_majors_scp3 <- left_join(total_carb_majors_scp3,
-                                    oil_majors_rev_2021,
-                                    by = c("emitter"= "company"))
-
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "BP PLC"] <- 164200000000
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Royal Dutch Shell PLC"] <- 261500000000
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Poland Coal"] <- 15000000000
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Coal India"] <- 75000000000
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "China (Coal)"] <- 600000000000
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Russia (Coal)"] <- 46800000000
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "National Iranian Oil Co"] <- 76450000000
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Petroleos de Venezuela SA (PDVSA)"] <- 48000000000
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Abu Dhabi National Oil Co"] <- 103600000000
-#https://www.macrotrends.net/stocks/charts/BHP/bhp-group/revenue#:~:text=BHP%20Group%20revenue%20for%20the%20twelve%20months%20ending%20December%2031,a%2032.59%25%20increase%20from%202020.
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "BHP Billiton Ltd"] <- 56921000000
-#https://www.upstreamonline.com/finance/kuwait-poised-for-decade-high-oil-revenues-amid-political-turmoil/2-1-1394384
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Kuwait Petroleum Corp"] <- 52720000000
-#https://sonatrach.com/wp-content/uploads/2022/11/RAPPORT-ANNUEL-2021-An.pdf
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Sonatrach SPA"] <- 35400000000
-#https://www.macrotrends.net/stocks/charts/TTE/totalenergies-se/revenue#:~:text=TotalEnergies%20SE%20revenue%20for%20the%20twelve%20months%20ending%20March%2031,a%2054.24%25%20increase%20from%202020.
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Total SA"] <- 184634000000
-#https://www.macrotrends.net/stocks/charts/BTU/peabody-energy/revenue
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Peabody Energy Corp"] <- 3310000000
-#https://www.qatarenergy.qa/en/MediaCenter/Publications/QatarEnergy%20Summary%20Financial%20Statements%202021.pdf
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Qatar Petroleum Corp"] <- 35000000000
-#https://www.petronas.com/integrated-report-2021/files/PETRONAS-PIR2021-Financial-Report-2021.pdf
-total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Petroliam Nasional Berhad (Petronas)"] <- 62000000000
-
-# Ok now that we have all the estoimated revenue for the top 15 companies, let us
-#rename the emitter column to include the % of damages (revenue/damages)
-total_carb_majors_scp3$rev <- total_carb_majors_scp3$rev / 1000000000000
-
-# ok now let us do the math 
-total_carb_majors_scp3$total_debt_cum <- total_carb_majors_scp3$total_debt_cum/1000000000
-total_carb_majors_scp3$total_debt_cum_2020  <- total_carb_majors_scp3$total_debt_cum_2020/1000000000
-
-total_carb_majors_scp3$pct <- total_carb_majors_scp3$total_debt_cum / total_carb_majors_scp3$rev
-total_carb_majors_scp3$pct_2020 <- total_carb_majors_scp3$total_debt_cum_2020 / total_carb_majors_scp3$rev
-
-total_carb_majors_scp3_ex3 <- total_carb_majors_scp3
-
-total_carb_majors_scp3_ex3 <- total_carb_majors_scp3_ex3 %>% 
-  dplyr::mutate(emitter = case_when(emitter == "Saudi Arabian Oil Company (Aramco)" ~ paste0(emitter, 
-                                                                                             " (Total 2021 Revenue = $", 
-                                                                                             round(rev, 2), "T, ",
-                                                                                             "% of 2021 Revenue = %", round(pct_2020*100, 0), ")"),
-                                    is.na(rev) ~ paste0(emitter, " "),
-                                    TRUE ~ paste0(emitter, " ($", round(rev, 2), "T, %",
-                                                  round(pct_2020*100, 0), ")")))
-
-total_carb_majors_scp3_ex3
-total_carb_majors_scp1_ex3
+#carb_majors_scp3 <- carb_majors_scp3 %>% 
+#  subset(., emitter != "China (Coal)" & emitter != "Russia (Coal)" & emitter != "Poland Coal")
+#
+#
+##damages_per_1tco2yr <- total_damages_1tCO2
+## now let calculate total carbon deby by year and emitter
+#damages_per_1tco2yr_sum <- damages_per_1tco2yr %>% 
+#  dplyr::group_by(emitter, year) %>% 
+#  dplyr::summarise(total_damages = sum(weighted_damages2_scld, na.rm = T))
+#colnames(damages_per_1tco2yr_sum)[1] <- "emission_year"
+#
+## now we have the estimates for each 1tco2 / yr, let us bring in the 
+#carb_majors_scp3 <- subset(carb_majors_scp3, years >= 1988 & years <= 2015)
+#carb_majors_scp3 <- left_join(carb_majors_scp3, damages_per_1tco2yr_sum,
+#                              by = c("years" = "emission_year"),
+#                              relationship = "many-to-many")
+#carb_majors_scp31 <- carb_majors_scp3 %>% 
+#  dplyr::mutate(debt = (emissions*1000000) * total_damages) %>% 
+#  dplyr::group_by(years, year, emitter) %>% 
+#  dplyr::summarise(total_debt = sum(debt, na.rm = T))
+#
+## now let us calculate total debt by year and emitter
+#carb_majors_scp32 <- carb_majors_scp31 %>% 
+#  dplyr::group_by(year, emitter) %>% 
+#  dplyr::summarise(total_debt = sum(total_debt, na.rm = T)) 
+#
+## noe let us calculate cumulative debt 
+#carb_majors_scp32 <- carb_majors_scp32 %>% 
+#  dplyr::group_by(emitter) %>% 
+#  dplyr::mutate(total_debt_cum = cumsum(total_debt))
+#
+## we want to ficus on the top 15, since there are 100 of them
+#total_by_emitter <- carb_majors_scp32 %>% dplyr::group_by(emitter) %>% 
+#  dplyr::summarise(total_debt = sum(total_debt, na.rm = T))
+#total_by_emitter <- total_by_emitter[order(-total_by_emitter$total_debt),] 
+#total_by_emitter$rank <- 1:nrow(total_by_emitter)
+#total_by_emitter <- total_by_emitter %>% dplyr::select(c("emitter", "rank"))
+#carb_majors_scp32 <- left_join(total_by_emitter, carb_majors_scp32, by = c("emitter"))
+#carb_majors_scp32 <- subset(carb_majors_scp32, rank <= 17)
+#carb_majors_scp32 <- subset(carb_majors_scp32)
+#
+## let us try tp plot a bar plot 
+#total_carb_majors_scp3 <- subset(carb_majors_scp32, year == 2100)
+#carb_majors_scp32_2020 <- subset(carb_majors_scp32, year == 2020)
+#carb_majors_scp32_2020 <- carb_majors_scp32_2020 %>% dplyr::select(c("emitter", 
+#                                                                     "total_debt_cum"))
+#colnames(carb_majors_scp32_2020) <- c("emitter", "total_debt_cum_2020")
+#total_carb_majors_scp3 <- left_join(total_carb_majors_scp3,
+#                                    carb_majors_scp32_2020,
+#                                    by = c("emitter"))
+#
+#total_carb_majors_scp3 <- total_carb_majors_scp3[order(total_carb_majors_scp3$total_debt_cum),] 
+#total_carb_majors_scp3$emitter <- factor(total_carb_majors_scp3$emitter, levels = total_carb_majors_scp3$emitter)
+#
+#total_carb_majors_scp3$total_debt_cum <- total_carb_majors_scp3$total_debt_cum / 1000000000000
+#total_carb_majors_scp3$total_debt_cum_2020 <- total_carb_majors_scp3$total_debt_cum_2020 / 1000000000000 
+#
+## first we are going to read in all the revenus
+#oil_majors_rev <- read_csv(paste0(raw_path, "emissions/NRGI-NOCdatabase-ExploreByIndicator-2.csv"))
+#
+#oil_majors_rev <- oil_majors_rev %>% dplyr::select(c("company",
+#                                                     "2011",
+#                                                     "2012",
+#                                                     "2013",
+#                                                     "2014",
+#                                                     "2015",
+#                                                     "2016",
+#                                                     "2017",
+#                                                     "2018",
+#                                                     "2019",
+#                                                     "2020",
+#                                                     "2021"))
+#
+#oil_majors_rev_long <- reshape2::melt(oil_majors_rev, id = c("company"))
+#oil_majors_rev_long <- subset(oil_majors_rev_long, !is.na(oil_majors_rev_long$value))
+#oil_majors_rev_long$value <- oil_majors_rev_long$value * 1000000
+#
+## now let us read the american companies data 
+#exxon_oil_rev <- read_excel("~/Downloads/statistic_id264119_exxonmobils-operating-revenue-2001-2021.xlsx", 
+#                            sheet = 2)
+#exxon_oil_rev <- exxon_oil_rev[-1:-2,]
+#colnames(exxon_oil_rev) <- c("year", "rev")
+#exxon_oil_rev$rev <- exxon_oil_rev$rev * 1000000
+#exxon_oil_rev$company <- "ExxonMobil"
+#
+#chevron_oil_rev <- read_excel("~/Downloads/statistic_id269079_chevrons-operating-revenue-2008-2021.xlsx",
+#                              sheet = 2)
+#chevron_oil_rev <- chevron_oil_rev[-1:-2,]
+#colnames(chevron_oil_rev) <- c("year", "rev")
+#chevron_oil_rev$rev <- chevron_oil_rev$rev * 1000000000
+#chevron_oil_rev$company <- "Chevron"
+#
+#shell_oil_rev <- read_excel("~/Downloads/statistic_id268734_shells-revenue-2005-2021.xlsx",
+#                            sheet = 2)
+#shell_oil_rev <- shell_oil_rev[-1:-2,]
+#colnames(shell_oil_rev) <- c("year", "rev")
+#shell_oil_rev$rev <- shell_oil_rev$rev * 1000000000
+#shell_oil_rev$company <- "Shell Oil"
+#
+## now let us bring all american companies data together in one dataframe before 
+## bringing in them with the rest of the companies
+#american_oil_revs <- rbind(exxon_oil_rev,
+#                           shell_oil_rev,
+#                           chevron_oil_rev)
+#
+## now let us see
+#american_oil_revs_2021 <- subset(american_oil_revs, year == 2021) 
+#colnames(oil_majors_rev_long) <- c("company", "year", "rev")
+#
+## now bring all together 
+#oil_majors_rev_long <- rbind(oil_majors_rev_long,
+#                             american_oil_revs_2021)
+#
+## select year
+#oil_majors_rev_2021 <- subset(oil_majors_rev_long, year == 2021)
+#
+## now in order to bring both datasets together we need to make syre that the names 
+## corespond, and as such, we will rename the columns in the revenue dataset 
+## to the damages dataset 
+#oil_majors_rev_2021 <- oil_majors_rev_2021 %>% 
+#  dplyr::mutate(company = case_when(company == "Saudi Aramco" ~ "Saudi Arabian Oil Company (Aramco)",
+#                                    company == "Gazprom" ~ "Gazprom OAO",
+#                                    company == "ExxonMobil"~ "ExxonMobil Corp",
+#                                    company == "Pemex" ~ "Petroleos Mexicanos (Pemex)",
+#                                    company == "Shell Oil" ~ "Royal Dutch Shell PLC",
+#                                    company == "CNPC" ~ "China National Petroleum Corp (CNPC)",
+#                                    company == "Chevron" ~ "Chevron Corp",
+#                                    TRUE ~ company)) 
+#
+#oil_majors_rev_2021 <- oil_majors_rev_2021 %>% dplyr::select(-c("year"))
+#total_carb_majors_scp3 <- left_join(total_carb_majors_scp3,
+#                                    oil_majors_rev_2021,
+#                                    by = c("emitter"= "company"))
+#
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "BP PLC"] <- 164200000000
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Royal Dutch Shell PLC"] <- 261500000000
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Poland Coal"] <- 15000000000
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Coal India"] <- 75000000000
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "China (Coal)"] <- 600000000000
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Russia (Coal)"] <- 46800000000
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "National Iranian Oil Co"] <- 76450000000
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Petroleos de Venezuela SA (PDVSA)"] <- 48000000000
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Abu Dhabi National Oil Co"] <- 103600000000
+##https://www.macrotrends.net/stocks/charts/BHP/bhp-group/revenue#:~:text=BHP%20Group%20revenue%20for%20the%20twelve%20months%20ending%20December%2031,a%2032.59%25%20increase%20from%202020.
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "BHP Billiton Ltd"] <- 56921000000
+##https://www.upstreamonline.com/finance/kuwait-poised-for-decade-high-oil-revenues-amid-political-turmoil/2-1-1394384
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Kuwait Petroleum Corp"] <- 52720000000
+##https://sonatrach.com/wp-content/uploads/2022/11/RAPPORT-ANNUEL-2021-An.pdf
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Sonatrach SPA"] <- 35400000000
+##https://www.macrotrends.net/stocks/charts/TTE/totalenergies-se/revenue#:~:text=TotalEnergies%20SE%20revenue%20for%20the%20twelve%20months%20ending%20March%2031,a%2054.24%25%20increase%20from%202020.
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Total SA"] <- 184634000000
+##https://www.macrotrends.net/stocks/charts/BTU/peabody-energy/revenue
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Peabody Energy Corp"] <- 3310000000
+##https://www.qatarenergy.qa/en/MediaCenter/Publications/QatarEnergy%20Summary%20Financial%20Statements%202021.pdf
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Qatar Petroleum Corp"] <- 35000000000
+##https://www.petronas.com/integrated-report-2021/files/PETRONAS-PIR2021-Financial-Report-2021.pdf
+#total_carb_majors_scp3$rev[total_carb_majors_scp3$emitter == "Petroliam Nasional Berhad (Petronas)"] <- 62000000000
+#
+## Ok now that we have all the estoimated revenue for the top 15 companies, let us
+##rename the emitter column to include the % of damages (revenue/damages)
+#total_carb_majors_scp3$rev <- total_carb_majors_scp3$rev / 1000000000000
+#
+## ok now let us do the math 
+#total_carb_majors_scp3$total_debt_cum <- total_carb_majors_scp3$total_debt_cum/1000000000
+#total_carb_majors_scp3$total_debt_cum_2020  <- total_carb_majors_scp3$total_debt_cum_2020/1000000000
+#
+#total_carb_majors_scp3$pct <- total_carb_majors_scp3$total_debt_cum / total_carb_majors_scp3$rev
+#total_carb_majors_scp3$pct_2020 <- total_carb_majors_scp3$total_debt_cum_2020 / total_carb_majors_scp3$rev
+#
+#total_carb_majors_scp3_ex3 <- total_carb_majors_scp3
+#
+#total_carb_majors_scp3_ex3 <- total_carb_majors_scp3_ex3 %>% 
+#  dplyr::mutate(emitter = case_when(emitter == "Saudi Arabian Oil Company (Aramco)" ~ paste0(emitter, 
+#                                                                                             " (Total 2021 Revenue = $", 
+#                                                                                             round(rev, 2), "T, ",
+#                                                                                             "% of 2021 Revenue = %", round(pct_2020*100, 0), ")"),
+#                                    is.na(rev) ~ paste0(emitter, " "),
+#                                    TRUE ~ paste0(emitter, " ($", round(rev, 2), "T, %",
+#                                                  round(pct_2020*100, 0), ")")))
+#
+#total_carb_majors_scp3_ex3
+#total_carb_majors_scp1_ex3
 ################################################################################ celebs emissions 
 
 celebs_jet_emissions <- as.data.frame(unique(celebs_jet_emissions$emitter))
@@ -803,7 +805,7 @@ all_celebs_tot <- all_celebs_tot %>%
 
 all_celebs_tot <- all_celebs_tot[order(all_celebs_tot$total_debt_cum),] 
 all_celebs_tot$emitter <- factor(all_celebs_tot$emitter, levels = all_celebs_tot$emitter)
-all_celebs_tot$total_debt_cum <- all_celebs_tot$total_debt_cum / 1000000000
+#all_celebs_tot$total_debt_cum <- all_celebs_tot$total_debt_cum / 1000000000
 #all_celebs_tot$net_worth <- all_celebs_tot$net_worth / 1000
 
 all_celebs_tot$pct <- all_celebs_tot$total_debt_cum / all_celebs_tot$net_worth
@@ -813,7 +815,7 @@ all_celebs_tot$emitter[all_celebs_tot$emitter == "Marshall Burke Flights ($0.8) 
 all_celebs_tot <- all_celebs_tot[-7,]
 all_celebs_tot <- all_celebs_tot[order(all_celebs_tot$total_debt_cum),] 
 all_celebs_tot$emitter <- factor(all_celebs_tot$emitter, levels = all_celebs_tot$emitter)
-all_celebs_tot$total_debt_cum <- all_celebs_tot$total_debt_cum/1000
+#all_celebs_tot$total_debt_cum <- all_celebs_tot$total_debt_cum/1000
 
 ################################################################################ action emissions
 
@@ -867,16 +869,17 @@ individual_beh_emms2_2100 <- left_join(individual_beh_emms2_2100,
 
 individual_beh_emms2_2100 <- individual_beh_emms2_2100[order(individual_beh_emms2_2100$total_debt_cum),] 
 individual_beh_emms2_2100$behavior <- factor(individual_beh_emms2_2100$behavior, levels = individual_beh_emms2_2100$behavior)
+individual_beh_emms2_2100$total_debt_cum_2021_2100 <- individual_beh_emms2_2100$total_debt_cum - individual_beh_emms2_2100$total_debt_cum_2020
 
-individual_beh_emms2_2100$total_debt_cum <- individual_beh_emms2_2100$total_debt_cum / 1000000000
-individual_beh_emms2_2100$total_debt_cum_2020 <- individual_beh_emms2_2100$total_debt_cum_2020 / 1000000000 
+#individual_beh_emms2_2100$total_debt_cum <- individual_beh_emms2_2100$total_debt_cum / 1000000000
+#individual_beh_emms2_2100$total_debt_cum_2020 <- individual_beh_emms2_2100$total_debt_cum_2020 / 1000000000 
 
 
 
 # alright data is ready for plotting 
 write_rds(total_carb_majors_ex3, paste0(fig_prepped_dta, run_date,"/carbon_debt_majors_hist.rds"))
 write_rds(total_carb_majors_scp1_ex3, paste0(fig_prepped_dta, run_date,"/carbon_debt_majors_hist_scp1.rds"))
-write_rds(total_carb_majors_scp3_ex3, paste0(fig_prepped_dta, run_date,"/carbon_debt_majors_hist_scp3.rds"))
+#write_rds(total_carb_majors_scp3_ex3, paste0(fig_prepped_dta, run_date,"/carbon_debt_majors_hist_scp3.rds"))
 write_rds(all_celebs_tot, paste0(fig_prepped_dta, run_date,"/carbon_debt_celebs_fut.rds"))
 write_rds(individual_beh_emms2_2100, paste0(fig_prepped_dta, run_date,"/carbon_debt_ind_beh.rds"))
 

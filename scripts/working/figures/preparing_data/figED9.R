@@ -15,7 +15,7 @@ if (replicate == F){
   run_date <- gsub("-","",Sys.Date())
 }
 
-run_date <- "20230713"
+run_date <- "20230821"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -23,8 +23,8 @@ setwd(dropbox_path)
 #############################################################################
 #############################################################################
 # read data 
-total_damages_cc <- readRDS(paste0(output_path, run_date, "/total_damages_cc.rds"))
-fair_exps_cc <- readRDS(paste0(output_path, "20230523", "/fair_exps_cc.rds"))
+total_damages_cc <- readRDS(paste0(output_path, "/total_damages_cc.rds"))
+fair_exps_cc <- readRDS(paste0(output_path, "/fair_exps_cc.rds"))
 
 #############################################################################
 #############################################################################
@@ -33,7 +33,7 @@ tots_cc <- total_damages_cc %>%
   dplyr::group_by(emitter) %>% 
   dplyr::summarise(total_damages = sum(weighted_damages2_scld, na.rm = T))
 
-tots_cc$total_damages <- tots_cc$total_damages*(-1)
+#tots_cc$total_damages <- tots_cc$total_damages*(-1)
 
 #tots_cc$total_damages <- tots_cc$total_damages/1000000000
 

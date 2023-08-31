@@ -7,7 +7,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230713"
+run_date <- "20230821"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -26,7 +26,7 @@ dev.off()
 ################################################################################
 ################################################################################
 # visualize data   
-pdf(file = paste0(getwd(), "/figures/", run_date, "/fig2_pre_illustrator.pdf"),   # The directory you want to save the file in
+pdf(file = paste0(getwd(), "/figures/", run_date, "/figED1_pre_illustrator.pdf"),   # The directory you want to save the file in
     width = 15.85, # The width of the plot in inches
     height = 8.85) # The height of the plot in inches
 
@@ -171,7 +171,7 @@ title("e", adj = 0, line =1, cex.main = 2.5)
 par(mar = c(4,10,4,2))  
 plot(x = sum_usa_bra$year, y = sum_usa_bra$cumsum2,
      type = "l", lty = 1, xlim = range(c(1990, 2020)),
-     ylim = range(0,250),
+     ylim = range(0,200),
      xlab = "Year", ylab =  "Cumulative Damages \n(in Billions of $USD)\n",
      las = 1, lwd = 2, cex.lab = 2, cex.axis = 1.85, 
      frame.plot = F) 

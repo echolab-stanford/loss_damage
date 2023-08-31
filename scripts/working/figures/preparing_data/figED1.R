@@ -16,7 +16,7 @@ if (replicate == F){
   run_date <- gsub("-","",Sys.Date())
 }
 
-run_date <- "20230713"
+run_date <- "20230821"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -128,7 +128,7 @@ write_rds(gtc1_fair_exp, paste0(fig_prepped_dta, run_date,"gtc1_fair_exp.rds"))
 ################################################################################
 ################################################################################
 # 1c
-raster_cgm <- raster(paste0(dropbox_path, "data/processed/r_cgm/ratio_raster_avgs.tif"))
+raster_cgm <- raster(paste0(dropbox_path, "data/processed/r_cgm/median_raster.tiff"))
 
 
 world <- spData::world
@@ -161,8 +161,8 @@ y <- terra::mask(x, world)
 y <- mean(y)
 
 # data is ready 
-writeVector(v, paste0(fig_prepped_dta, run_date,"v.shp"))
-writeRaster(y, paste0(fig_prepped_dta, run_date,"y.tiff"))
+writeVector(v, paste0(fig_prepped_dta, run_date,"v.shp"), overwrite= TRUE)
+writeRaster(y, paste0(fig_prepped_dta, run_date,"y.tiff"), overwrite= TRUE)
 
 
 ################################################################################

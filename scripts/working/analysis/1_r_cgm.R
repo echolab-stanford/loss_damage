@@ -18,8 +18,25 @@ calculate_grid_warming_ratio <- function(run1, run2, cgm_model) {
   raster_ssp3 <- readAll(raster::brick(paste0("data/raw/historical_ssp370/tas_Amon_", run1, 
                                               "_", cgm_model, "_ann_mean_2pt5degree.nc"),
                           varname = "tas"))
+  
+  raster_ssp3_df <- as.data.frame(raster_ssp3)
+  raster_ssp3_df <- reshape2::melt(raster_ssp3_df)
+  raster_ssp3_df$year <- substr(raster_ssp3_df$variable, 2, 5)
+  raster_ssp3_annual_mean <- raster_ssp3_df %>% 
+    dplyr::group_by(year) %>% 
+    dplyr::summarise(temp = mean(value))
+  raster_ssp3_annual_mean$temp <- raster_ssp3_annual_mean$temp - 273.15
+  
+  plot(raster_ssp3_annual_mean$year,
+       raster_ssp3_annual_mean$temp, 
+       type = "l", xlim = range(1850,2100),
+       ylim = range(4,11))
+  
+  dev.off()
+  
+  
   # maintain the last decade as the average to be subtracted from
-  raster_eoc <- raster_ssp3[[75:86]]
+  raster_eoc <- raster_ssp3[[66:86]]
   # now rotate so that we have coordinates that are -180,180,-90,90
   raster_eoc <- rotate(raster_eoc)
   
@@ -28,12 +45,28 @@ calculate_grid_warming_ratio <- function(run1, run2, cgm_model) {
                                               "_",cgm_model, "_ann_mean_2pt5degree.nc"),
                                        varname = "tas"))
   
+  raster_hist_df <- as.data.frame(raster_hist)
+  raster_hist_df <- reshape2::melt(raster_hist_df)
+  raster_hist_df$year <- substr(raster_hist_df$variable, 2, 5)
+  raster_hist_annual_mean <- raster_hist_df %>% 
+    dplyr::group_by(year) %>% 
+    dplyr::summarise(temp = mean(value))
+  raster_hist_annual_mean$temp <- raster_hist_annual_mean$temp - 273.15
+  
+  lines(raster_hist_annual_mean$year,
+       raster_hist_annual_mean$temp, 
+       col = "red")
+  
+  
   # keep the first 50 years (1850-1900) as the baseline
   raster_boc <- raster_hist[[1:51]]
   # now rotate so that we have coordinates that are -180,180,-90,90
   raster_boc <- rotate(raster_boc)
   
   # now we can aggregate both set of rasters 
+  raster_boc <- raster_boc - 273.15
+  raster_eoc <- raster_eoc - 273.15
+  
   raster_hist_mean <- calc(raster_boc, mean)
   raster_ssp3_mean <- calc(raster_eoc, mean)
   
@@ -72,7 +105,7 @@ calculate_grid_warming_ratio <- function(run1, run2, cgm_model) {
   raster_deltat_calced <- raster_deltat / area_weghted_deltat
   
   #return the raster 
-  return(raster_deltat_calced)
+  return(raster_deltat)
   
   # finally, let us save the raster (we can write the rasters out to have a -
   # permanent version, otherwise just leave it commented out)

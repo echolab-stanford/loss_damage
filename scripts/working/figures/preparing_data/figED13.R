@@ -16,7 +16,7 @@ if (replicate == F){
   run_date <- gsub("-","",Sys.Date())
 }
 
-run_date <- "20230713"
+run_date <- "20230821"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -45,31 +45,52 @@ total_damages_uncertainty_bhm <- readRDS(paste0(output_path, "/total_damages_1gt
 ################################################################################ no growth post 2100
 # generate list of files 
 # set path and get list of files from directory
-path <- paste0(output_path, "/sherlock_files/")
+
+################################################################################ no growth post 2100
+# generate list of files 
+path <- paste0("~/BurkeLab Dropbox/Projects/loss_damage/data/output20230713_nogrowth/")
+
 all_data = list.files(path=path,
                       pattern = "scc_nogrowth" ,
                       full.names = TRUE,
                       recursive = TRUE,
                       include.dirs = FALSE)
 
+
 # now read files into one list 
-listofdfs <- list()
-for (i in 1:1000){
+#listofdfs_rams <- list()
+listofdfs_2dr <- list()
+for (i in 1:5000){
   tic()
   data_i <- readRDS(all_data[i])
-  data_i$loop_id <- i
+  #data_i$loop_id <- i
   data_i <- data_i %>% 
     dplyr::select(c("emitter", 
                     "year",
-                    "loop_id",
+                    "sim_id",
                     "weighted_damages2_scld", 
-                    "weighted_damages_ramsey_scld"))
-  listofdfs[[i]] <- data_i
+                    "weighted_damages_ramsey_scld",
+                    "coef_id",
+                    "temp",
+                    "temp2"))
+#  data_ramsey_i <- data_i %>% 
+#    dplyr::group_by(emitter, sim_id) %>% 
+#    dplyr::summarise(total_damages_ramsey = sum(weighted_damages_ramsey_scld, na.rm = T))
+  
+  data_dr2_i <- data_i %>% 
+    dplyr::group_by(emitter, sim_id) %>% 
+    dplyr::summarise(total_damages2 = sum(weighted_damages2_scld, na.rm = T))
+  
+#  listofdfs_rams[[i]] <- data_ramsey_i
+  listofdfs_2dr[[i]] <- data_dr2_i
+  
   toc()
 }
 
-# ... and append all dataframes
-total_damages_uncertainty_total <- do.call(rbind, listofdfs)
+totals_nog_2dr <- do.call(rbind, listofdfs_2dr)
+#totals_nog_ramsey <- do.call(rbind, listofdfs_rams)
+
+totals_nog_2dr <- subset(totals_nog_2dr, sim_id > 1000 & sim_id < 2001)
 
 #total_damages_uncertainty_total <- readRDS(paste0(output_path, "/total_damages_1gtco2_total.rds"))
 #total_damages_uncertainty_total2 <- readRDS(paste0(output_path, "/total_damages_1gtco2_total2.rds"))
@@ -92,19 +113,19 @@ totals_fair <- total_damages_uncertainty_fair %>% dplyr::group_by(fair_id) %>%
   dplyr::summarise(total_damages = sum(weighted_damages2_scld, na.rm = T))
 median(totals_fair$total_damages)
 
-# total uncertainty
-totals_all <- total_damages_uncertainty_total %>% dplyr::group_by(emitter, loop_id) %>% 
-  dplyr::summarise(total_damages = sum(weighted_damages2_scld, na.rm = T))
 
+# total uncertainty
+totals_all <- totals_nog_2dr 
 totals_all <- ungroup(totals_all)
 totals_all <- totals_all %>% dplyr::select(-c("emitter"))
+#totals_all <- totals_all %>% dplyr::select(-c("emitter"))
 
 
 # ok now write the data 
-write_rds(totals_all, paste0(fig_prepped_dta, run_date,"totals_all.rds"))
-write_rds(totals_bhm, paste0(fig_prepped_dta, run_date,"totals_bhm.rds"))
-write_rds(totals_cgm, paste0(fig_prepped_dta, run_date,"totals_cgm.rds"))
-write_rds(totals_fair, paste0(fig_prepped_dta,run_date, "totals_fair.rds"))
+write_rds(totals_all, paste0(fig_prepped_dta, run_date,"/totals_all.rds"))
+write_rds(totals_bhm, paste0(fig_prepped_dta, run_date,"/totals_bhm.rds"))
+write_rds(totals_cgm, paste0(fig_prepped_dta, run_date,"/totals_cgm.rds"))
+write_rds(totals_fair, paste0(fig_prepped_dta,run_date, "/totals_fair.rds"))
 
 # end of script
 

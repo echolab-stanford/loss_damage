@@ -7,7 +7,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230713"
+run_date <- "20230821"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -33,9 +33,9 @@ world_2021_2100 <- left_join(world, damages_2021_2100,
 world_1990_2020$damages <- world_1990_2020$damages *(-1)
 world_2021_2100$damages <- world_2021_2100$damages *(-1)
 
-world_1990_2020$damages <- world_1990_2020$damages/1000000000 
-world_2021_2100$damages <- world_2021_2100$damages/1000000000 
-world_2021_2100$damages <- world_2021_2100$damages/1000000000 
+#world_1990_2020$damages <- world_1990_2020$damages/1000000000 
+#world_2021_2100$damages <- world_2021_2100$damages/1000000000 
+
 
 ################################################################################
 ################################################################################
@@ -46,8 +46,8 @@ c<- ggplot(world_1990_2020) +
                        trans = modulus_trans(0.5), 
                        limits = c(min(world_2021_2100$damages, na.rm = T),
                                   max(world_2021_2100$damages, na.rm = T)),
-                       breaks = c(-6e+10,-4e+10,-2e+10,-5e+9,0,5e+9,1.5e+10,3e+10),
-                       labels = c("-$60","-$40","-$20","-$5","0","$5","$15","$30"),
+                       breaks = c(-9e+10, -6e+10,-3e+10,-1.5e+10,-5e+9,0,5e+9,1.5e+10,3e+10),
+                       labels = c("-$90B", "-$60B","-$30B","-$15B","-$5B","0","$5B","$15B","$30B"),
                        name = "Impact of CO2 \nemitted in 1990") + 
   theme_minimal() +  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
                            panel.background = element_blank(),
@@ -61,8 +61,8 @@ d <- ggplot(world_2021_2100) +
                        trans = modulus_trans(0.5), 
                        limits = c(min(world_2021_2100$damages, na.rm = T),
                                   max(world_2021_2100$damages, na.rm = T)),
-                       breaks = c(-6e+10,-4e+10,-2e+10,-5e+9,0,5e+9,1.5e+10,3e+10),
-                       labels = c("-$60B","-$40B","-$20B","-$5B","0","$5B","$15B","$30B"),
+                       breaks = c(-9e+10, -6e+10,-3e+10,-1.5e+10,-5e+9,0,5e+9,1.5e+10,3e+10),
+                       labels = c("-$90B", "-$60B","-$30B","-$15B","-$5B","0","$5B","$15B","$30B"),
                        name = "Impact of CO2 \nemitted in 1990") +
   theme_minimal() +  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
                            panel.background = element_blank(), axis.line = element_blank(), axis.text = element_blank(),

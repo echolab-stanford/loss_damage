@@ -14,7 +14,7 @@ source("scripts/working/analysis/0_read_libs.R")
 # establish a function
 `%not_in%` <- purrr::negate(`%in%`)
 
-run_date <- "20230602"
+run_date <- "20230821"
 ################################################################################
 ################################################################################
 # read data 
@@ -173,7 +173,7 @@ sankey_k80 <- ggplot(damages_and_benefits_k80,
     size=9
   ) + scale_fill_manual(values = colorRampPalette(brewer.pal(9, "Set1"))(23), 
                         breaks = unique(damages_and_benefits_k80$owed_to_real)) +
-  scale_y_continuous(labels = addUnits, limits = range(-15000000000000,20000000000000)) 
+  scale_y_continuous(labels = addUnits, limits = range(-15000000000000,25000000000000)) 
 
 ################################################################################ Sankey-> k = 1990 - production
 # we need to use "owed to" as a category for determining the different colors
@@ -247,7 +247,7 @@ sankey_k90_prod <- ggplot(damages_and_benefits_k90_prod,
     size=9
   ) + scale_fill_manual(values = colorRampPalette(brewer.pal(9, "Set1"))(23), 
                         breaks = unique(damages_and_benefits_k90_prod$owed_to_real)) +
-  scale_y_continuous(labels = addUnits, limits = range(-6000000000000,10000000000000)) 
+  scale_y_continuous(labels = addUnits, limits = range(-8000000000000,10000000000000)) 
 
 ################################################################################ Sankey-> k = 1990 - consumption 
 # we need to use "owed to" as a category for determining the different colors
@@ -321,7 +321,7 @@ sankey_k90_consump <- ggplot(damages_and_benefits_k90_consump,
     size=9
   ) + scale_fill_manual(values = colorRampPalette(brewer.pal(9, "Set1"))(23), 
                         breaks = unique(damages_and_benefits_k90_consump$owed_to_real)) +
-  scale_y_continuous(labels = addUnits, limits = range(-6000000000000,10000000000000)) 
+  scale_y_continuous(labels = addUnits, limits = range(-8000000000000,10000000000000)) 
 
 
 

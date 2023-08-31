@@ -20,7 +20,7 @@ if (replicate == F){
   run_date <- gsub("-","",Sys.Date())
 }
 
-run_date <- "20230713"
+run_date <- "20230821"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -115,7 +115,7 @@ ex$post_2100_growth[3] <- "2% growth rate"
 ex$post_2100_growth[4] <- "SSP 2100 clamped rate"
 ex$post_2100_growth[5] <- "SSP 2100 rates"
 ex$post_2100_growth[6] <- "SSP 2100 rates"
-ex$post_2100_growth[7] <- "0% growth rate"
+ex$post_2100_growth[7] <- "SSP 2100 rates"
 ex$post_2100_growth[8] <- ""
 
 # now let us do regression model 

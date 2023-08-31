@@ -6,8 +6,8 @@
 #############################################################################
 
 calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_exps, 
-                                year_k, future_forecast, gdp_temp_dataset, 
-                                temp_dataset, settlement_year){
+                                         year_k, future_forecast, gdp_temp_dataset, 
+                                         temp_dataset, settlement_year){
   
   #read raster data for warming ratio 
   deltat_df <- exactextractr::exact_extract(ratio_raster, 
@@ -29,7 +29,9 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
   # now bring them together
   deltat_calced_df <- left_join(deltat_df,
                                 fair_exps,
-                                by = c("merge_id"), multiple = "all", relationship = "many-to-many")
+                                by = c("merge_id"), 
+                                multiple = "all", 
+                                relationship = "many-to-many")
   
   # now multuply the grid level warming ratio by median temp response from FaIR
   deltat_calced_df$deltat_scld <- deltat_calced_df$weighted_mean * deltat_calced_df$median_deltat   
@@ -189,12 +191,12 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
     
     identifier <- gdp_temp_data1 %>% 
       #  dplyr::group_by(ISO3, year) %>% 
-      # dplyr::summarise(diff_lgdp = mean(diff_lgdp, na.rm = T),
+      # dplyr::summarise(diff_lgdp_for_damages = mean(diff_lgdp_for_damages, na.rm = T),
       #                 .group = "keep") %>% 
       ungroup(.) %>%  
-      dplyr::select(c("ISO3", "diff_lgdp", "year", "NY.GDP.PCAP.KD")) %>% 
+      dplyr::select(c("ISO3", "diff_lgdp_for_damages", "year", "NY.GDP.PCAP.KD")) %>% 
       subset(.,year == year_k) %>% 
-      dplyr::mutate(ssp_data = case_when(is.na(diff_lgdp) ~ "no",
+      dplyr::mutate(ssp_data = case_when(is.na(diff_lgdp_for_damages) ~ "no",
                                          TRUE ~ "yes")) %>% 
       subset(., ssp_data == "yes") %>% 
       dplyr::select(c("ISO3"))
@@ -205,19 +207,19 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
     if (temp_dataset == "ERA"){
       gdp_temp_data1$delta_g_era <- unlist(gdp_temp_data1$delta_g_era)
       # now let us calculate adjusted growht rate by adding deltaG to observed growth
-      gdp_temp_data1$adj_growth <- (gdp_temp_data1$delta_g_era + gdp_temp_data1$diff_lgdp)
+      gdp_temp_data1$adj_growth <- (gdp_temp_data1$delta_g_era + gdp_temp_data1$diff_lgdp_for_damages)
       
     }
     if (temp_dataset == "CRU"){
       gdp_temp_data1$delta_g_cru <- unlist(gdp_temp_data1$delta_g_cru)
       # now let us calculate adjusted growht rate by adding deltaG to observed growth
-      gdp_temp_data1$adj_growth <- (gdp_temp_data1$delta_g_cru + gdp_temp_data1$diff_lgdp)
+      gdp_temp_data1$adj_growth <- (gdp_temp_data1$delta_g_cru + gdp_temp_data1$diff_lgdp_for_damages)
       
     }
     
     
     # let us add 1 to growth variables so we can calculate cumulative growth
-    gdp_temp_data1$diff_lgdp <- gdp_temp_data1$diff_lgdp + 1
+    gdp_temp_data1$diff_lgdp_for_damages <- gdp_temp_data1$diff_lgdp_for_damages + 1
     gdp_temp_data1$adj_growth <- gdp_temp_data1$adj_growth + 1
     #year_k <- 1990  
     # now let us set GDP at year k as initial gdp number to calculate impact of 
@@ -232,7 +234,7 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
     
     damages_i_t4 <- gdp_temp_data1 %>% dplyr::group_by(ISO3) %>% 
       dplyr::mutate(cum_adj_growthz = cumprod(adj_growth),
-                    cum_growth_real = cumprod(diff_lgdp))
+                    cum_growth_real = cumprod(diff_lgdp_for_damages))
     
     # finally comput edamages...
     #  damages_i_t4 <- damages_i_t4 %>% 

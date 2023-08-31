@@ -30,7 +30,9 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
   # now bring them together
   deltat_calced_df <- left_join(deltat_df,
                                 fair_exps,
-                                by = c("merge_id"), multiple = "all", relationship = "many-to-many")
+                                by = c("merge_id"), 
+                                multiple = "all", 
+                                relationship = "many-to-many")
   
   
   # now multuply the grid level warming ratio by median temp response from FaIR
@@ -48,10 +50,7 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
   toc()
   # start an empty dataframe 
   mother_df <- data.frame()
-  i <- 2020
-  #unique(fair_exps_1tco2_2300$experiment_iso)
-  #i <- "USA"
-  #i <- "all0"
+
   # now loop over the experiments and calculate total damages owed by each of 
   # the countries
   #i <- 1990 
@@ -272,6 +271,8 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
                     t_since_today = year - 2020,
                     weighted_damages1 = case_when(year <= 2020 ~ (damages*((1+(0.01))^t_since_k)),
                                                   year > 2020 ~ (damages*(1/(1+(0.01))^t_since_today))),
+                    weighted_damages1_5 = case_when(year <= 2020 ~ (damages*((1+(0.015))^t_since_k)),
+                                                  year > 2020 ~ (damages*(1/(1+(0.015))^t_since_today))),
                     weighted_damages2 = case_when(year <= 2020 ~ (damages*((1+(0.02))^t_since_k)),
                                                   year > 2020 ~ (damages*(1/(1+(0.02))^t_since_today))),
                     weighted_damages3 = case_when(year <= 2020 ~ (damages*((1+(0.03))^t_since_k)),
@@ -289,6 +290,7 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
     damages_i_t4$damages_pop <- damages_i_t4$damages * damages_i_t4$SP.POP.TOTL
     damages_i_t4 <- damages_i_t4 %>% 
       dplyr::mutate(weighted_damages1_scld = weighted_damages1 *SP.POP.TOTL,
+                    weighted_damages1_5_scld = weighted_damages1_5 *SP.POP.TOTL,
                     weighted_damages2_scld = weighted_damages2 *SP.POP.TOTL,
                     weighted_damages3_scld = weighted_damages3 *SP.POP.TOTL,
                     weighted_damages5_scld = weighted_damages5 *SP.POP.TOTL,

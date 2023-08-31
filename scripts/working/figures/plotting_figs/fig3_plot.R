@@ -7,7 +7,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230713"
+run_date <- "20230821"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -37,22 +37,37 @@ ind_beh_emms$behavior <- as.character(ind_beh_emms$behavior)
 ind_beh_emms$behavior[as.numeric(ind_beh_emms$rank) > 6] <- paste0("recyclingz9",ind_beh_emms$rank[as.numeric(ind_beh_emms$rank) > 6])
 ind_beh_emms <- ind_beh_emms[order(ind_beh_emms$total_debt_cum),] 
 ind_beh_emms$emitter <- factor(ind_beh_emms$behavior, levels = ind_beh_emms$behavior)
-
+#ind_beh_emms$total_debt_cum_2021_2100 <- log(ind_beh_emms$total_debt_cum_2021_2100)
+#ind_beh_emms$total_debt_cum_2020 <- log(ind_beh_emms$total_debt_cum_2020+1)
 #industry level
+
+ind_beh_emms$total_debt_cum_2020 <- ind_beh_emms$total_debt_cum_2020 + 1
 figS5a <- ggplot(ind_beh_emms) +
   #geom_col(aes(total_debt_cum, emitter), fill = "#365191", width = 0.6) +
-  geom_col(aes(total_debt_cum, emitter), fill = "#365191", width = 0.6) 
+  geom_col(aes(total_debt_cum_2021_2100, emitter), fill = "#365191", width = 0.6) +
+  geom_col(aes(total_debt_cum_2020, emitter), fill = "#aabae0", width = 0.6) +
+  xlim(0,5500) + 
+  scale_x_continuous(trans = log_trans(), breaks = c(1, 10, 50, 100, 500, 1000, 5000),
+                     position = "top", labels = scales::dollar_format())
+  #scale_x_continuous(trans = "log10")
+  #scale_x_continuous(breaks = log10(c(0, 250, 1000, 3000, 5000),
+  #                                  labels = c(0, 3.2, 10, 32, 100)))
+
+  #scale_x_continuous(trans='log2') + 
+  #coord_trans(x="log2")+
+  #scale_x_log10()
+
 
 figS5a <- figS5a + 
-  scale_x_continuous(
-    limits = c(0, 4500),
-    breaks = seq(0, 4500, by = 500), 
-    expand = c(0,0.0005), # The horizontal axis does not extend to either side
-    position = "top",  # Labels are located on the top,
-    labels = scales::dollar_format()
-    #unit_format(unit = "T", scale = 1e-12),
+  #scale_x_continuous(
+    #limits = c(0, 4500),
+    #breaks = seq(0, 4500, by = 500), 
+   # expand = c(0,0.0005), # The horizontal axis does not extend to either side
+    #position = "top",  # Labels are located on the top,
     
-  )  + scale_y_discrete(expand = expansion(add = c(0, 0.6))) +
+    #labels = scales::dollar_format()
+    #unit_format(unit = "T", scale = 1e-12),
+     scale_y_discrete(expand = expansion(add = c(0, 0.6))) +
   theme(
     # Set background color to white
     panel.background = element_rect(fill = "white"),
@@ -78,19 +93,19 @@ figS5a <- figS5a +
 
 
 figS5a <- figS5a + 
-  geom_shadowtext(
-    data = subset(ind_beh_emms, total_debt_cum < 500),
-    aes(total_debt_cum_2020, y = emitter, label = emitter),
-    hjust = -0.45,
-    nudge_x = 0.02,
-    colour = "#365191",
-    bg.colour = "white",
-    bg.r = 0.2,
-    size = 6,
-    fontface = "bold"
-  ) + 
+#  geom_shadowtext(
+#    data = subset(ind_beh_emms, total_debt_cum < 500),
+#    aes(total_debt_cum_2020, y = emitter, label = emitter),
+#    hjust = -0.45,
+#    nudge_x = 0.02,
+#    colour = "#365191",
+#    bg.colour = "white",
+#    bg.r = 0.2,
+#    size = 6,
+#    fontface = "bold"
+#  ) + 
   geom_text(
-    data = subset(ind_beh_emms,  total_debt_cum > 500),
+    data = subset(ind_beh_emms,  total_debt_cum > 0),
     aes(0, y = emitter, label = emitter),
     hjust = -0.1,
     nudge_x = 0.025,
@@ -119,25 +134,36 @@ figS5a
 
 
 ################################################################################ panel a
-total_carb_majors_jet <- total_carb_majors_jet[order(total_carb_majors_jet$total_debt_cum_2020),] 
+total_carb_majors_jet <- total_carb_majors_jet[order(total_carb_majors_jet$total_debt_cum),] 
 total_carb_majors_jet$emitter <- factor(total_carb_majors_jet$emitter, levels = total_carb_majors_jet$emitter)
-
+#total_carb_majors_jet$total_debt_cum_2020 <- total_carb_majors_jet$total_debt_cum_2020*1000000000
+#total_carb_majors_jet$total_debt_cum <- total_carb_majors_jet$total_debt_cum*1000000000
 
 #industry level
+
+total_carb_majors_jet$total_debt_cum_2020 <- 1+ total_carb_majors_jet$total_debt_cum_2020
+
 figS5c <- ggplot(total_carb_majors_jet) +
   #geom_col(aes(total_debt_cum, emitter), fill = "#365191", width = 0.6) +
-  geom_col(aes(total_debt_cum_2020, emitter), fill = "#00967d", width = 0.6) 
+  geom_col(aes(total_debt_cum, emitter), fill = "#004a3d", width = 0.6) +
+  geom_col(aes(total_debt_cum_2020, emitter), fill = "#00967d", width = 0.6) +
+  scale_x_continuous(trans = log_trans(), breaks = c(1, 1.5, 2, 5, 10, 15),
+                     position = "top", labels = scales::dollar_format())
+  #scale_x_continuous(trans = "log") 
+  
+
 
 figS5c <- figS5c + 
-  scale_x_continuous(
-    limits = c(0, 0.25),
-    breaks = seq(0, 0.3, by = 0.05), 
-    expand = c(0,0.0005), # The horizontal axis does not extend to either side
-    position = "top",  # Labels are located on the top,
-    labels = scales::dollar_format()
-    #unit_format(unit = "T", scale = 1e-12),
-    
-  )  + scale_y_discrete(expand = expansion(add = c(0, 0.6))) +
+#  scale_x_continuous(
+#    limits = c(0, 0.25),
+#    breaks = seq(0, 0.3, by = 0.05), 
+#    expand = c(0,0.0005), # The horizontal axis does not extend to either side
+#    position = "top",  # Labels are located on the top,
+#    labels = scales::dollar_format()
+#    #unit_format(unit = "T", scale = 1e-12),
+#    
+  #)  + 
+  scale_y_discrete(expand = expansion(add = c(0, 0.6))) +
   theme(
     # Set background color to white
     panel.background = element_rect(fill = "white"),
@@ -203,25 +229,33 @@ figS5c <- figS5c +
 figS5c
 
 ################################################################################ panel b
-total_carb_majors_jet_scp1 <- total_carb_majors_jet_scp1[order(total_carb_majors_jet_scp1$total_debt_cum_2020),] 
+total_carb_majors_jet_scp1 <- total_carb_majors_jet_scp1[order(total_carb_majors_jet_scp1$total_debt_cum),] 
 total_carb_majors_jet_scp1$emitter <- factor(total_carb_majors_jet_scp1$emitter, levels = total_carb_majors_jet_scp1$emitter)
 
+total_carb_majors_jet_scp1$total_debt_cum_2020 <- total_carb_majors_jet_scp1$total_debt_cum_2020 +1 
+total_carb_majors_jet_scp1$total_debt_cum <- total_carb_majors_jet_scp1$total_debt_cum +1 
 
 #industry level
 figS5b <- ggplot(total_carb_majors_jet_scp1) +
   #geom_col(aes(total_debt_cum, emitter), fill = "#365191", width = 0.6) +
-  geom_col(aes(total_debt_cum_2020, emitter), fill = "#365191", width = 0.6) 
+  geom_col(aes(total_debt_cum, emitter), fill = "#004a3d", width = 0.6) +
+  geom_col(aes(total_debt_cum_2020, emitter), fill = "#00967d", width = 0.6) +
+  scale_x_continuous(trans = log_trans(), breaks = c(0, 0.5, 1, 1.25, 1.5, 2, 2.5, 3),
+                     position = "top", labels = scales::dollar_format())
+  #scale_x_continuous(trans = "log") 
+
 
 figS5b <- figS5b + 
-  scale_x_continuous(
-    limits = c(0, 0.03),
-    breaks = seq(0, 0.03, by = 0.01), 
-    expand = c(0,0.00005), # The horizontal axis does not extend to either side
-    position = "top",  # Labels are located on the top,
-    labels = scales::dollar_format()
-    #unit_format(unit = "T", scale = 1e-12),
-    
-  )  + scale_y_discrete(expand = expansion(add = c(0, 0.6))) +
+#  scale_x_continuous(
+#    limits = c(0, 0.03),
+#    breaks = seq(0, 0.03, by = 0.01), 
+#    expand = c(0,0.00005), # The horizontal axis does not extend to either side
+#    position = "top",  # Labels are located on the top,
+#    labels = scales::dollar_format()
+#    #unit_format(unit = "T", scale = 1e-12),
+#    
+#  )  + 
+  scale_y_discrete(expand = expansion(add = c(0, 0.6))) +
   theme(
     # Set background color to white
     panel.background = element_rect(fill = "white"),
@@ -287,13 +321,14 @@ figS5b <- figS5b +
 figS5b
 
 ################################################################################ panel c
-figS5b <- ggplot(all_celebs_tot) +
-  geom_col(aes(total_debt_cum, emitter), fill = "#2d7a93", width = 0.6) 
+figs5b1 <- ggplot(all_celebs_tot) +
+  geom_col(aes(total_debt_cum/1000, emitter), fill = "#2d7a93", width = 0.6)
+  
 
-figS5b <- figS5b + 
+figs5b1 <- figs5b1 + 
   scale_x_continuous(
-    limits = c(0, 350),
-    breaks = seq(0, 350, by = 50), 
+    limits = c(0, 425),
+    breaks = seq(0, 425, by = 50), 
     expand = c(0,0.05), # The horizontal axis does not extend to either side
     position = "top",  # Labels are located on the top,
     labels = scales::dollar_format()
@@ -324,7 +359,7 @@ figS5b <- figS5b +
   )
 
 
-figS5b <- figS5b + 
+figs5b1 <- figs5b1 + 
   geom_shadowtext(
     data = subset(all_celebs_tot, total_debt_cum < 100),
     aes(total_debt_cum, y = emitter, label = emitter),
@@ -347,10 +382,10 @@ figS5b <- figS5b +
   )
 
 
-figS5b <- figS5b +
+figs5b1 <- figs5b1 +
   labs(
     title = "",
-    subtitle = "b) Present value of future cumulative damages (through 2100) of celebrities private jet emissions in 2022 (thousands of $)"
+    subtitle = "b. Present value of future cumulative damages (through 2100) of celebrities private jet emissions in 2022 (thousands of $)"
   ) + 
   theme(
     plot.title = element_text(
@@ -361,7 +396,7 @@ figS5b <- figS5b +
       size = 16
     )
   )
-figS5b
+figs5b1
 
 
 # bring the plots together in one plot 
@@ -373,9 +408,8 @@ figS5b
 
 # save the figure 
 ggsave(paste0(getwd(), "/figures/", run_date, "/fig3a_new.pdf"), figS5a, width = 16, height = 8)
-ggsave(paste0(getwd(), "/figures/", run_date, "/fig3b_new.pdf"), figS5b, width = 16, height = 8)
+ggsave(paste0(getwd(), "/figures/", run_date, "/fig3b_new.pdf"), figs5b1, width = 16, height = 8)
 ggsave(paste0(getwd(), "/figures/", run_date, "/fig3c_new.pdf"), figS5c, width = 16, height = 8)
-
-ggsave(paste0(getwd(), "/figures/", run_date, "/figED7.pdf"), figS5b, width = 16, height = 8)
+ggsave(paste0(getwd(), "/figures/", run_date, "/figED8.pdf"), figS5b, width = 16, height = 8)
 
 # end of script 

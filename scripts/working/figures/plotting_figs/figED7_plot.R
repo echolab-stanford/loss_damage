@@ -7,7 +7,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230713"
+run_date <- "20230821"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -46,7 +46,7 @@ scc_est %>%
                    dr_ramsey),
     currency = "USD",
     decimals = F
-  ) %>% gtsave(paste0("figures/", run_date,"/figED7.png"))
+  ) %>% gtsave(paste0("figures/", run_date,"/figED8_new.png"))
 
 #end of script
 

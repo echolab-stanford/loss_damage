@@ -246,7 +246,7 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
     fair_exps$deltaT_preturb <- fair_exps$median_deltat_preturb - fair_exps$median_deltat_preturb[fair_exps$year == 2020]
   }
   
-  plot(fair_exps$year[fair_exps$year <= 2100], fair_exps$median_deltat[fair_exps$year <= 2100])
+  #plot(fair_exps$year[fair_exps$year <= 2100], fair_exps$median_deltat[fair_exps$year <= 2100])
   # clear out this standout country that produces negative values (St. Kitts & Nevis)
   fair_exps <- subset(fair_exps, experiment_iso != "KNA")
   

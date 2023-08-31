@@ -16,7 +16,7 @@ if (replicate == F){
   run_date <- gsub("-","",Sys.Date())
 }
 
-run_date <- "20230708"
+run_date <- "20230821"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -39,8 +39,6 @@ setwd(dropbox_path)
 #############################################################################
 #############################################################################
 # read data 
-total_damages_1tco2 <- readRDS(paste0(output_path,"/total_damages_1tco2_k90_compare.rds"))
-total_damages_10tco2 <- readRDS(paste0(output_path,"/total_damages_10tco2_k90_compare.rds"))
 total_damages_1000tco2 <- readRDS(paste0(output_path,"/total_damages_1000tco2_k90_compare.rds"))
 total_damages_1mtco2 <- readRDS(paste0(output_path,"/total_damages_1mtco2_k90_compare.rds"))
 total_damages_1gtco2 <- readRDS(paste0(output_path,"/total_damages_1gtco2_k90_compare.rds"))
@@ -50,9 +48,7 @@ total_damages_100gtco2 <- readRDS(paste0(output_path,"/total_damages_100gtco2_k9
 #############################################################################
 #############################################################################
 
-datasets <- list(total_damages_1tco2,
-                 total_damages_10tco2,
-                 total_damages_1000tco2,
+datasets <- list(total_damages_1000tco2,
                  total_damages_1mtco2,
                  total_damages_1gtco2,
                  total_damages_10gtco2,
@@ -86,13 +82,11 @@ for (i in 1:length(datasets)){
 mother_dataset <- do.call(rbind, processed_datasets)
 
 mother_dataset <- mother_dataset %>% 
-  dplyr::mutate(pulse_exp = case_when(pulse == 1 ~ "1tCO2",
-                                      pulse == 2 ~ "10tCO2",
-                                      pulse == 3 ~ "1000tCO2",
-                                      pulse == 4 ~ "1MtCO2",
-                                      pulse == 5 ~ "1GtCO2",
-                                      pulse == 6 ~ "10GtCO2",
-                                      pulse == 7 ~ "100GtCO2"))
+  dplyr::mutate(pulse_exp = case_when(pulse == 1 ~ "1000tCO2",
+                                      pulse == 2 ~ "1MtCO2",
+                                      pulse == 3 ~ "1GtCO2",
+                                      pulse == 4 ~ "10GtCO2",
+                                      pulse == 5 ~ "100GtCO2"))
 
 # ok let us reshape
 mother_dataset <- mother_dataset[,-2]
@@ -124,57 +118,47 @@ total_damages_by_pulse <- total_damages_by_pulse %>% dplyr::select(c("year_cat",
                                                                      "total_damages_dr5",
                                                                      "total_damages_dr7"))
 
-ex <- data.frame(hd_actual = c(NA, NA, NA, NA, NA, NA, NA), 
-                 hd_comp = c(NA, NA, NA, NA, NA, NA, NA),
-                 hd_pct = c(NA, NA, NA, NA, NA, NA, NA),
-                 fd_actual = c(NA, NA, NA, NA, NA, NA, NA),
-                 fd_comp = c(NA, NA, NA, NA, NA, NA, NA),
-                 fd_pct = c(NA, NA, NA, NA, NA, NA, NA))
+ex <- data.frame(hd_actual = c(NA, NA, NA, NA, NA), 
+                 hd_comp = c(NA, NA, NA, NA, NA),
+                 hd_pct = c(NA, NA, NA, NA, NA),
+                 fd_actual = c(NA, NA, NA, NA, NA),
+                 fd_comp = c(NA, NA, NA, NA, NA),
+                 fd_pct = c(NA, NA, NA, NA, NA))
 
-ex$pulse[1] <- "1tCO2"
-ex$pulse[2] <- "10tCO2"
-ex$pulse[3] <- "1000tCO2"
-ex$pulse[4] <- "1MtCO2"
-ex$pulse[5] <- "1GtCO2"
-ex$pulse[6] <- "10GtCO2"
-ex$pulse[7] <- "100GtCO2"
+ex$pulse[1] <- "1000tCO2"
+ex$pulse[2] <- "1MtCO2"
+ex$pulse[3] <- "1GtCO2"
+ex$pulse[4] <- "10GtCO2"
+ex$pulse[5] <- "100GtCO2"
 
-ex$hd_actual[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1tCO2_1990-2020"], 2)
-ex$hd_actual[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "10tCO2_1990-2020"], 0)
-ex$hd_actual[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1000tCO2_1990-2020"], 0)
-ex$hd_actual[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1MtCO2_1990-2020"], 0)
-ex$hd_actual[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)
-ex$hd_actual[6] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "10GtCO2_1990-2020"], 0)
-ex$hd_actual[7] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "100GtCO2_1990-2020"], 0)
+ex$hd_actual[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1000tCO2_1990-2020"], 0)
+ex$hd_actual[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1MtCO2_1990-2020"], 0)
+ex$hd_actual[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)
+ex$hd_actual[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "10GtCO2_1990-2020"], 0)
+ex$hd_actual[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "100GtCO2_1990-2020"], 0)
 
-ex$hd_comp[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"]*(1/1000000000), 2)
-ex$hd_comp[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"]*(1/100000000), 0)
-ex$hd_comp[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"]*(1/1000000), 0)
-ex$hd_comp[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"]*(1/1000),0)
-ex$hd_comp[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)
-ex$hd_comp[6] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)*10
-ex$hd_comp[7] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)*100
+ex$hd_comp[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"]*(1/1000000), 0)
+ex$hd_comp[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"]*(1/1000),0)
+ex$hd_comp[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)
+ex$hd_comp[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)*10
+ex$hd_comp[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)*100
 
 ex$hd_actual <- as.numeric(ex$hd_actual)
 
 ex$hd_pct <- round((ex$hd_actual/ ex$hd_comp)*100, 0)
 
 
-ex$fd_actual[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1tCO2_2021-2100"], 2)
-ex$fd_actual[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "10tCO2_2021-2100"], 0)
-ex$fd_actual[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1000tCO2_2021-2100"], 0)
-ex$fd_actual[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1MtCO2_2021-2100"], 0)
-ex$fd_actual[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)
-ex$fd_actual[6] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "10GtCO2_2021-2100"], 0)
-ex$fd_actual[7] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "100GtCO2_2021-2100"], 0)
+ex$fd_actual[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1000tCO2_2021-2100"], 0)
+ex$fd_actual[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1MtCO2_2021-2100"], 0)
+ex$fd_actual[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)
+ex$fd_actual[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "10GtCO2_2021-2100"], 0)
+ex$fd_actual[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "100GtCO2_2021-2100"], 0)
 
-ex$fd_comp[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"]*(1/1000000000), 2)
-ex$fd_comp[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"]*(1/100000000), 0)
-ex$fd_comp[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"]*(1/1000000), 0)
-ex$fd_comp[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"]*(1/1000),0)
-ex$fd_comp[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)
-ex$fd_comp[6] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)*10
-ex$fd_comp[7] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)*100
+ex$fd_comp[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"]*(1/1000000), 0)
+ex$fd_comp[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"]*(1/1000),0)
+ex$fd_comp[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)
+ex$fd_comp[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)*10
+ex$fd_comp[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)*100
 
 ex$fd_actual <- as.numeric(ex$fd_actual)
 
@@ -192,30 +176,30 @@ ex <- ex %>%
 ex$hd_pct <- paste0(ex$hd_pct, "%")
 ex$fd_pct <- paste0(ex$fd_pct, "%")
 
-ex$hd_actual[7] <- paste0("$", as.character(round(ex$hd_actual[7]/(1000000000*100),2)))
-ex$hd_comp[7] <- paste0("$", as.character(round(ex$hd_comp[7]/(1000000000*100),2)))
-ex$fd_actual[7] <- paste0("$", as.character(round(ex$fd_actual[7]/(1000000000*100),0)))
-ex$fd_comp[7] <- paste0("$", as.character(round(ex$fd_comp[7]/(1000000000*100),0)))
+ex$hd_actual[5] <- paste0("$", as.character(round(ex$hd_actual[5]/(1000000000*100),2)))
+ex$hd_comp[5] <- paste0("$", as.character(round(ex$hd_comp[5]/(1000000000*100),2)))
+ex$fd_actual[5] <- paste0("$", as.character(round(ex$fd_actual[5]/(1000000000*100),0)))
+ex$fd_comp[5] <- paste0("$", as.character(round(ex$fd_comp[5]/(1000000000*100),0)))
 
-ex$hd_actual[6] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[6])/(1000000000*10),2)))
-ex$hd_comp[6] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[6])/(1000000000*10),2)))
-ex$fd_actual[6] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[6])/(1000000000*10),0)))
-ex$fd_comp[6] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[6])/(1000000000*10),0)))
+ex$hd_actual[4] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[4])/(1000000000*10),2)))
+ex$hd_comp[4] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[4])/(1000000000*10),2)))
+ex$fd_actual[4] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[4])/(1000000000*10),0)))
+ex$fd_comp[4] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[4])/(1000000000*10),0)))
 
-ex$hd_actual[5] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[5])/1000000000,2)))
-ex$hd_comp[5] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[5])/1000000000,2)))
-ex$fd_actual[5] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[5])/1000000000,0)))
-ex$fd_comp[5] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[5])/1000000000,0)))
+ex$hd_actual[3] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[3])/1000000000,2)))
+ex$hd_comp[3] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[3])/1000000000,2)))
+ex$fd_actual[3] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[3])/1000000000,0)))
+ex$fd_comp[3] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[3])/1000000000,0)))
 
-ex$hd_actual[4] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[4])/1000000,2)))
-ex$hd_comp[4] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[4])/1000000,2)))
-ex$fd_actual[4] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[4])/1000000,0)))
-ex$fd_comp[4] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[4])/1000000,0)))
+ex$hd_actual[2] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[2])/1000000,2)))
+ex$hd_comp[2] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[2])/1000000,2)))
+ex$fd_actual[2] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[2])/1000000,0)))
+ex$fd_comp[2] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[2])/1000000,0)))
 
-ex$hd_actual[3] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[3])/1000,2)))
-ex$hd_comp[3] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[3])/1000,2)))
-ex$fd_actual[3] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[3])/1000,0)))
-ex$fd_comp[3] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[3])/1000,0)))
+ex$hd_actual[1] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[1])/1000,2)))
+ex$hd_comp[1] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[1])/1000,2)))
+ex$fd_actual[1] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[1])/1000,0)))
+ex$fd_comp[1] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[1])/1000,0)))
 
 #ex$hd_actual[2] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[2]),0)))
 #ex$hd_comp[2] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[2]),0)))
@@ -228,12 +212,12 @@ ex$fd_comp[3] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[3])/1000,0
 #ex$fd_comp[1] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[1]),0)))
 
 ex <- ex %>% dplyr::select(c("pulse", "hd_actual", "hd_pct", "fd_actual", "fd_pct"))
-ex <- ex[-1:-2,]
+#ex <- ex[-1:-2,]
 
 ################################################################################
 ################################################################################
 # plot data 
-################################################################################ Figure 3a
+################################################################################ FigED6
 ex %>%
   tibble%>%
   #group_by(emitter) %>% 
@@ -258,12 +242,9 @@ ex %>%
              columns = c(hd_pct,
                          fd_pct)) %>% 
   gt_theme_538_nocaps(table.width = px(700)) %>%
-  gtsave(paste0("/Users/mustafazahid/GitHub/loss_damage/figures/", 
-                run_date,"/fig_compare_est.png"))
+  gtsave(paste0("~/GitHub/loss_damage/figures/", run_date, "/figED6.png"))
+#  gtsave(paste0("/Users/mustafazahid/GitHub/loss_damage/figures/", 
+ #               run_date,"/fig_compare_est.png"))
 
 #end of script
 
-
-
-
-# end of script 

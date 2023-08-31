@@ -7,7 +7,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230713"
+run_date <- "20230821"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -16,9 +16,10 @@ source("scripts/working/analysis/0_read_libs.R")
 ################################################################################
 # read data 
 totals_all   <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_all.rds"))
-totals_bhm   <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_bhm.rds"))
+totals_bhm   <- subset(readRDS(paste0(fig_prepped_dta,run_date, "/totals_bhm.rds")), !is.na(coef_id))
 totals_cgm   <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_cgm.rds"))
 totals_fair  <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_fair.rds"))
+
 
 ################################################################################
 ################################################################################
@@ -64,7 +65,7 @@ for (i in 1:length(listofdfs)) {
   toc()
 }
 
-all_median <- median(totals_all$total_damages)
+all_median <- median(totals_all$total_damages2)
 fair_median <- median(totals_fair$total_damages)
 cgm_median <- median(totals_cgm$total_damages)
 bhm_median <- median(totals_bhm$total_damages)

@@ -160,6 +160,10 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
     damages_i_t4 <- damages_i_t4 %>% 
       dplyr::mutate(t_since_k = settlement_year - year,
                     t_since_today = year - 2020,
+                    weighted_damages1 = case_when(year <= 2020 ~ (damages_pop*((1+(0.01))^t_since_k)),
+                                                  year > 2020 ~ (damages_pop*(1/(1+(0.01))^t_since_today))),
+                    weighted_damages1_5 = case_when(year <= 2020 ~ (damages_pop*((1+(0.015))^t_since_k)),
+                                                  year > 2020 ~ (damages_pop*(1/(1+(0.015))^t_since_today))),
                     weighted_damages2 = case_when(year <= 2020 ~ (damages_pop*((1+(0.02))^t_since_k)),
                                                   year > 2020 ~ (damages_pop*(1/(1+(0.02))^t_since_today))),
                     weighted_damages3 = case_when(year <= 2020 ~ (damages_pop*((1+(0.03))^t_since_k)),

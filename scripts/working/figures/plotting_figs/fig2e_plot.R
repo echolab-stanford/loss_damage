@@ -7,7 +7,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230713"
+run_date <- "20230821"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -39,7 +39,7 @@ for (i in 1:length(listofdfs)) {
                           total_damages <= (quantile(df$total_damages, c(.05, .95))[2]))
   assign(paste0("totals_5_95_", unique(df$scenario)), totals_5_95)
   
-  totals_median <-median(df$total_damages)
+  totals_median <- median(df$total_damages)
   assign(paste0("totals_median_", unique(df$scenario)), totals_median)
   
   toc()
