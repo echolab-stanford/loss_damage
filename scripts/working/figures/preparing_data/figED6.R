@@ -45,6 +45,13 @@ total_damages_1gtco2 <- readRDS(paste0(output_path,"/total_damages_1gtco2_k90_co
 total_damages_10gtco2 <- readRDS(paste0(output_path,"/total_damages_10gtco2_k90_compare.rds"))
 total_damages_100gtco2 <- readRDS(paste0(output_path,"/total_damages_100gtco2_k90_compare.rds"))
 
+total_damages_1000tco2 <- total_damages_1000tco2_k90
+total_damages_1mtco2 <- total_damages_1mtco2_k90
+total_damages_1gtco2 <- total_damages_1gtco2_k90
+total_damages_10gtco2 <- total_damages_10gtco2_k90
+total_damages_100gtco2 <- total_damages_100gtco2_k90
+
+
 #############################################################################
 #############################################################################
 
@@ -55,7 +62,6 @@ datasets <- list(total_damages_1000tco2,
                  total_damages_100gtco2)
 
 processed_datasets <- list()
-i <- 1
 for (i in 1:length(datasets)){
   tic()
   dataset <- datasets[[i]] 
@@ -242,6 +248,8 @@ ex %>%
              columns = c(hd_pct,
                          fd_pct)) %>% 
   gt_theme_538_nocaps(table.width = px(700)) %>%
+  gtsave("~/Desktop/figED8_a.png")
+  
   gtsave(paste0("~/GitHub/loss_damage/figures/", run_date, "/figED6.png"))
 #  gtsave(paste0("/Users/mustafazahid/GitHub/loss_damage/figures/", 
  #               run_date,"/fig_compare_est.png"))

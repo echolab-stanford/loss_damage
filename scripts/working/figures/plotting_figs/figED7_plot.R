@@ -15,11 +15,11 @@ source("scripts/working/analysis/0_read_libs.R")
 ################################################################################
 # read data 
 scc_est <- readRDS(paste0(fig_prepped_dta, run_date,"/scc_under_diff_scenarios.rds"))
-
+scc_est <- readRDS(paste0(fig_prepped_dta, "20231208","/scc_under_diff_scenarios.rds"))
 ################################################################################
 ################################################################################
 # plot data 
-
+run_date <- "20231212"
 scc_est %>%
   tibble%>%
   #group_by() %>% 
@@ -46,7 +46,7 @@ scc_est %>%
                    dr_ramsey),
     currency = "USD",
     decimals = F
-  ) %>% gtsave(paste0("figures/", run_date,"/figED8_new.png"))
+  ) %>% gtsave(paste0("/figures/", run_date,"/figED8_new_rr.pdf"))
 
 #end of script
 

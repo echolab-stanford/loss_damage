@@ -5,9 +5,11 @@
 # Edited: June 2023
 #############################################################################
 
+
 calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_exps, 
                                          year_k, future_forecast, gdp_temp_dataset, 
-                                         temp_dataset, settlement_year){
+                                         temp_dataset, settlement_year, growth_past_2100, 
+                                         adaptation){
   
   #read raster data for warming ratio 
   deltat_df <- exactextractr::exact_extract(ratio_raster, 
@@ -40,16 +42,23 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
   
   # calculating model growth response after adjusting for the delta T by creating 
   # a function that takes in the temperature variable, as well as the model used
-  calc_delta_g <- function(dataset, temp_var, model, deltaT, coef1, coef2) {
-    response_tempnew <- ((temp_var - deltaT)*(coef1)) +
-      (((temp_var - deltaT)^2)*(coef2)) 
+  calc_delta_g <- function(dataset, temp_var, model, deltaT, coef1, coef2, 
+                           coef3, coef4,
+                           coef5, coef6,
+                           coef7, coef8,
+                           coef9, coef10,
+                           coef11, coef12) {
+    response_tempnew <- ((temp_var - deltaT)*(coef1 + coef3 + coef5 + coef7 + coef9 + coef11)) +
+      (((temp_var - deltaT)^2)*(coef2 + coef4 + coef6 + coef8 + coef10 + coef12)) 
     response_tempnew
   }
   
   # start an empty dataframe 
   mother_df <- data.frame()
+i <- 1990
   # now loop over the experiments and calculate total damages owed by each of 
   # the countries
+  
   for (i in list_of_exps){
     tic()
     
@@ -137,6 +146,9 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
     gdp_temp_data1$temp_l5 <- coef(bhm_model)[11]
     gdp_temp_data1$temp2_l5 <- coef(bhm_model)[12]
     
+
+    
+    
     gdp_temp_data1$era_mwtemp_fullemms[gdp_temp_data1$era_mwtemp_fullemms > 30 & !is.na(gdp_temp_data1$era_mwtemp_fullemms)] <- 30
     gdp_temp_data1$era_mwtemp_preturb[gdp_temp_data1$era_mwtemp_preturb > 30 & !is.na(gdp_temp_data1$era_mwtemp_preturb)] <- 30
     
@@ -167,6 +179,18 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
       
     }
     
+    if (adaptation == T){
+      # ok here we need to include adaptation. What we need is to flatten the response function over time
+      gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2101] <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2101]*((2100-gdp_temp_data1$year[gdp_temp_data1$year < 2101])/(2100-i))
+      gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2100] <- 0 
+    }
+    
+    # now let us calculate adjusted growht rate by adding deltaG to observed growth
+    if (growth_past_2100 == 0){
+      gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2100] <- 0
+    }
+    
+    
     if (temp_dataset == "CRU"){
       gdp_temp_data1$resp_temp_fullemms <- (gdp_temp_data1$cru_mwtemp_fullemms * gdp_temp_data1$temp) + 
         ((gdp_temp_data1$cru_mwtemp_fullemms^2) * gdp_temp_data1$temp2)
@@ -189,6 +213,7 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
       dplyr::mutate(SP.POP.TOTL = case_when(is.na(SP.POP.TOTL) ~ pop,
                                             TRUE ~ SP.POP.TOTL))
     
+    
     identifier <- gdp_temp_data1 %>% 
       #  dplyr::group_by(ISO3, year) %>% 
       # dplyr::summarise(diff_lgdp_for_damages = mean(diff_lgdp_for_damages, na.rm = T),
@@ -206,10 +231,12 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
     # unlist...
     if (temp_dataset == "ERA"){
       gdp_temp_data1$delta_g_era <- unlist(gdp_temp_data1$delta_g_era)
-      # now let us calculate adjusted growht rate by adding deltaG to observed growth
+
       gdp_temp_data1$adj_growth <- (gdp_temp_data1$delta_g_era + gdp_temp_data1$diff_lgdp_for_damages)
       
     }
+    
+    
     if (temp_dataset == "CRU"){
       gdp_temp_data1$delta_g_cru <- unlist(gdp_temp_data1$delta_g_cru)
       # now let us calculate adjusted growht rate by adding deltaG to observed growth
@@ -228,7 +255,7 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
     #year_k <- 1990
     
     gdp_temp_data1 <- gdp_temp_data1 %>% dplyr::group_by(ISO3) %>% 
-      dplyr::mutate(gdp_year = NY.GDP.PCAP.KD[year == year_k])
+      dplyr::mutate(gdp_year = NY.GDP.PCAP.KD_for_damages[year == year_k])
     
     gdp_temp_data1 <- subset(gdp_temp_data1, year >= year_k)
     
@@ -261,6 +288,8 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
                     t_since_today = year - 2020,
                     weighted_damages1 = case_when(year <= 2020 ~ (damages*((1+(0.01))^t_since_k)),
                                                   year > 2020 ~ (damages*(1/(1+(0.01))^t_since_today))),
+                    weighted_damages1_5 = case_when(year <= 2020 ~ (damages*((1+(0.015))^t_since_k)),
+                                                  year > 2020 ~ (damages*(1/(1+(0.015))^t_since_today))),
                     weighted_damages2 = case_when(year <= 2020 ~ (damages*((1+(0.02))^t_since_k)),
                                                   year > 2020 ~ (damages*(1/(1+(0.02))^t_since_today))),
                     weighted_damages3 = case_when(year <= 2020 ~ (damages*((1+(0.03))^t_since_k)),
@@ -278,6 +307,7 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
     damages_i_t4$damages_pop <- damages_i_t4$damages * damages_i_t4$SP.POP.TOTL
     damages_i_t4 <- damages_i_t4 %>% 
       dplyr::mutate(weighted_damages1_scld = weighted_damages1 *SP.POP.TOTL,
+                    weighted_damages1_5_scld = weighted_damages1_5 *SP.POP.TOTL,
                     weighted_damages2_scld = weighted_damages2 *SP.POP.TOTL,
                     weighted_damages3_scld = weighted_damages3 *SP.POP.TOTL,
                     weighted_damages5_scld = weighted_damages5 *SP.POP.TOTL,
