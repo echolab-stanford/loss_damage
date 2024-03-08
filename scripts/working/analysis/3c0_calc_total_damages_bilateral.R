@@ -84,10 +84,6 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
                                                     coef(bhm_model)[1],
                                                     coef(bhm_model)[2])
     
-    plot(gdp_temp_data1$era_mwtemp, gdp_temp_data1$response_tempactual_era, type = "l")
-    lines(gdp_temp_data1$era_mwtemp, gdp_temp_data1$response_tempnew, type = "l",
-         col = "red")
-    
     # now let us calculate deltaG
     gdp_temp_data1$delta_g_era <- gdp_temp_data1$response_tempactual_era - gdp_temp_data1$response_tempnew
   

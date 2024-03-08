@@ -34,7 +34,6 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
                                 multiple = "all", 
                                 relationship = "many-to-many")
   
-  
   # now multuply the grid level warming ratio by median temp response from FaIR
   deltat_calced_df$deltat_scld <- deltat_calced_df$weighted_mean * deltat_calced_df$median_deltat   
   deltat_calced_df$deltat_fullemms_scld <- deltat_calced_df$weighted_mean * deltat_calced_df$deltat_fullemms
@@ -283,7 +282,11 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
                                                   year > 2020 ~ (damages*(1/(1+(0.07))^t_since_today))),      
                     weighted_damages_ramsey = case_when(year <= 2020 ~ (damages*((1+(0.02))^t_since_k)),
                                                         year > 2020 ~ damages*((1/(1.002^(t_since_today)))*((average_gdp/average_gdp_2020)^(-1.24)))),
-                    ramsey_discount = ((1/(1.002^(t_since_today)))*((average_gdp/average_gdp_2020)^(-1.24))))
+                    ramsey_discount = ((1/(1.002^(t_since_today)))*((average_gdp/average_gdp_2020)^(-1.24))),
+                    ramsey_discount_rate = (0.002 + (1.24*(average_gdp/average_gdp_2020)))^-t_since_today,
+                    discount_factor_2   = (1/(1+(0.02))^t_since_today),
+                    discount_factor_1   = (1/(1+(0.01))^t_since_today))
+    
 
     
     # scale by population
