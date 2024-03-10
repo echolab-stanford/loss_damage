@@ -72,8 +72,11 @@ process_exp_data_hist <- function(date, experiment, year_k, aggregating){
       experiment == "hist_bitt_v2022" | experiment == "hist_biconsump_v2022" |
       experiment == "hist_bitest1_v2022" | experiment == "hist_bitest2_v2022" |
       experiment == "hist_bitest3_v2022" | experiment == "hist_bitest4_v2022"|
-      experiment == "hist_biprod_v2022"
-      ) {
+      experiment == "hist_biprod_v2022" | experiment == "hist_bi_2100_10pct" |
+      experiment == "hist_bi_2100_30pct" | experiment == "hist_bi_2100_50pct" |
+      experiment == "hist_bi_2100_70pct" | experiment == "hist_bi_70pct_2100" |
+      experiment == "hist_bi_50pct_2100" |experiment == "hist_bi_30pct_2100" |
+      experiment == "hist_bi_10pct_2100") {
     fair_exps$experiment_iso <- substr(fair_exps$loop, 10,12) 
   }
   if (experiment == "carbon_debt" | experiment == "carbon_debt_op" | 
@@ -123,7 +126,11 @@ process_exp_data_hist <- function(date, experiment, year_k, aggregating){
       experiment == "hist_bitt_v2022"| experiment == "hist_biconsump_v2022"|
       experiment == "hist_bitest1_v2022"| experiment == "hist_bitest2_v2022" |
       experiment == "hist_bitest3_v2022" | experiment == "hist_bitest4_v2022"|
-      experiment == "hist_biprod_v2022") 
+      experiment == "hist_biprod_v2022" | experiment == "hist_bi_2100_10pct" |
+      experiment == "hist_bi_2100_30pct" | experiment == "hist_bi_2100_50pct" |
+      experiment == "hist_bi_2100_70pct" | experiment == "hist_bi_70pct_2100" |
+      experiment == "hist_bi_50pct_2100" |experiment == "hist_bi_30pct_2100" |
+      experiment == "hist_bi_10pct_2100") 
     {
     fair_exp_all <- subset(fair_exps, experiment_iso == "all") 
   }
@@ -132,7 +139,8 @@ process_exp_data_hist <- function(date, experiment, year_k, aggregating){
       experiment == "carbon_debt_indent" | experiment == "carbon_debt_indentcelebs") { 
     fair_exp_all <- subset(fair_exps, experiment_iso == "all")
   }
-  if (experiment == "ssp370" | experiment == "ssp245" | experiment == "ssp119" | experiment == "ssp126"){
+  if (experiment == "ssp370" | experiment == "ssp245" | experiment == "ssp119" | 
+      experiment == "ssp126"){
     fair_exp_all <- subset(fair_exps, experiment_iso == "all1")
   }
   
@@ -168,7 +176,11 @@ process_exp_data_hist <- function(date, experiment, year_k, aggregating){
       experiment == "hist_bitt_v2022"| experiment == "hist_biconsump_v2022"|
       experiment == "hist_bitest1_v2022"| experiment == "hist_bitest2_v2022" |
       experiment == "hist_bitest3_v2022" | experiment == "hist_bitest4_v2022"|
-      experiment == "hist_biprod_v2022") {
+      experiment == "hist_biprod_v2022" | experiment == "hist_bi_2100_10pct" |
+      experiment == "hist_bi_2100_30pct" | experiment == "hist_bi_2100_50pct" |
+      experiment == "hist_bi_2100_70pct" | experiment == "hist_bi_70pct_2100" |
+      experiment == "hist_bi_50pct_2100" |experiment == "hist_bi_30pct_2100" |
+      experiment == "hist_bi_10pct_2100") {
     fair_exps <- subset(fair_exps, experiment_iso != "all")
   }
   if (experiment == "carbon_debt" | experiment == "carbon_debt_op" | 

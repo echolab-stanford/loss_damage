@@ -58,7 +58,7 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
   
   if (experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" | 
       experiment == "cc_hist" |
-      experiment == "1GtCO2_hist_2100" |
+      experiment == "1GtCO2_hist_2100" | experiment == "1GtCO2_hist_2100_051923_fair_params" | 
       experiment == "1tCO2_hist_2100"  | experiment == "10tCO2_hist_2300"  | 
       experiment == "100tCO2_hist_2300" | experiment == "1000tCO2_hist_2300" | 
       experiment == "1MtCO2_hist_2300"  | experiment == "10GtCO2_hist_2300" | 
@@ -103,7 +103,7 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
   
   if (experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" | 
       experiment == "cc_hist" |
-      experiment == "1GtCO2_hist_2100" |
+      experiment == "1GtCO2_hist_2100" | experiment == "1GtCO2_hist_2100_051923_fair_params" | 
       experiment == "1tCO2_hist_2100"  | experiment == "10tCO2_hist_2300"  | 
       experiment == "100tCO2_hist_2300" | experiment == "1000tCO2_hist_2300" | 
       experiment == "1MtCO2_hist_2300"  | experiment == "10GtCO2_hist_2300" | 
@@ -143,7 +143,7 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
   
   if (experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" | 
       experiment == "cc_hist" |
-      experiment == "1GtCO2_hist_2100" |
+      experiment == "1GtCO2_hist_2100" | experiment == "1GtCO2_hist_2100_051923_fair_params" |
       experiment == "1tCO2_hist_2100"  | experiment == "10tCO2_hist_2300"  | 
       experiment == "100tCO2_hist_2300" | experiment == "1000tCO2_hist_2300" | 
       experiment == "1MtCO2_hist_2300"  | experiment == "10GtCO2_hist_2300" | 
@@ -200,7 +200,7 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
   
   if (experiment == "1tCO2_hist_2300" | experiment == "1GtCO2_hist_2300" | 
       experiment == "cc_hist" |
-      experiment == "1GtCO2_hist_2100" |
+      experiment == "1GtCO2_hist_2100" | experiment == "1GtCO2_hist_2100_051923_fair_params" |
       experiment == "1tCO2_hist_2100"  | experiment == "10tCO2_hist_2300"  | 
       experiment == "100tCO2_hist_2300" | experiment == "1000tCO2_hist_2300" | 
       experiment == "1MtCO2_hist_2300"  | experiment == "10GtCO2_hist_2300" | 
