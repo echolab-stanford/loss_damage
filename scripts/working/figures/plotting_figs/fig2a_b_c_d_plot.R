@@ -63,7 +63,7 @@ plot(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all
      y = total_damages_by_pulse_2020_all$total_damages[total_damages_by_pulse_2020_all$discount_rate == "7%"],
      # log = "y",
      #yaxt = "n",
-     ylim = range(c(0,11)),
+     ylim = range(c(0,350)),
      col = "#023b70",
      pch = 3, xlim = range(c(1990, 2020)),
      xlab = "Year of CO2 Pulse",  ylab = "Per tonne damages in 2020 $USD\n",
@@ -78,18 +78,18 @@ par(f = 2)
 
 #axis(side = 2, at = c(0, 100, 200, 300, 400), labels =c("0", "5", '10', '15', '20'))
 
-segments(x0 = 2002, x1 = 2004, y0 = 10, y1 = 10, col = "#8a5cb4", lwd = 3)
-segments(x0 = 2002, x1 = 2004, y0 = 9.6, y1 = 9.6, col = "#de3623", lwd = 3)
-segments(x0 = 2002, x1 = 2004, y0 = 9.2, y1 = 9.2, col = "#f0da32", lwd = 3)
-segments(x0 = 2002, x1 = 2004, y0 = 8.8, y1 = 8.8, col = "#2aa83f", lwd = 3)
-segments(x0 = 2002, x1 = 2004, y0 = 8.4, y1 = 8.4, col = "#023b70", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 285, y1 = 285, col = "#8a5cb4", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 265, y1 = 265, col = "#de3623", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 245, y1 = 245, col = "#f0da32", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 225, y1 = 225, col = "#2aa83f", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 205, y1 = 205, col = "#023b70", lwd = 3)
 
-text(2006, 10, " 1.5%")
-text(2006, 9.6, " 2%")
-text(2006, 9.2, " 3%")
-text(2006, 8.8, " 5%")
-text(2006, 8.4, " 7%")
-text(2002, 10.4, "Discount rates:", col = "black", cex = 1.2, adj = 0)
+text(2014, 285, " 1.5%")
+text(2014, 265, " 2%")
+text(2014, 245, " 3%")
+text(2014, 225, " 5%")
+text(2014, 205, " 7%")
+text(2009, 298, "Discount rates:", col = "black", cex = 1.2, adj = 0)
 
 
 points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all$discount_rate == "5%"], 
@@ -119,9 +119,9 @@ points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_a
 plot(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "7%"], 
      y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "7%"],
      # log = "y",
-     ylim = range(c(0,450)),
+     ylim = range(c(0,2500)),
      col = "#023b70",
-     pch = 3, xlim = range(c(1990, 2020)),
+     pch = 3, xlim = range(c(1990, 2021)),
      xlab = "Year of CO2 Pulse",  ylab = "Per tonne damages in 2020 $USD\n",
      las = 1, lwd = 2, cex.axis = 1.25, cex.lab = 1.5, 
      cex.main = 1.12,
@@ -149,6 +149,16 @@ points(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_a
        y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "1.5%"],
        pch = 3, col = "#8a5cb4",
        lwd = 2)
+
+
+segments(x0 = 2020, 
+         x1 = 2020, 
+         y0 = 0, 
+         y1 = 2000, 
+         lty = 2)
+
+text("SC-CO2", x = 2020, y = 2100)
+
 dev.off()
 
 # end of script 

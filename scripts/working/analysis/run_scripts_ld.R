@@ -13,7 +13,7 @@
 # output(s): country-year panel with total damages from different emissions 
 # perturbations (past and future), emitter-harmed-year panel for bilateral 
 # damages, 
-# Last edited: June 2023
+# Last edited: March 2024
 ##############################################################################
 
 ################################################################################
@@ -35,7 +35,7 @@ if (replicate == T){
 if (replicate == F){
   run_date <- gsub("-","",Sys.Date())
 }
-run_date <- "20230821"
+#run_date <- "20230821"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -55,7 +55,7 @@ source("scripts/working/analysis/3c0_calc_total_damages_bilateral.R")
 source("scripts/working/analysis/3c1_calc_total_damages.R")
 source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
 
-# let us set the path
+# let us set the path so we can read in the input data 
 setwd(dropbox_path)
 
 ################################################################################
@@ -67,7 +67,6 @@ pop_wdi <- readRDS("data/processed/world_gdp_pop/pop_wdi.rds")
 # ok let us read the processed raster and list of rasters for warming ratio
 #mean_r_raster <- raster("data/processed/r_cgm/ratio_raster_avgs.tif")
 median_raster <- raster("data/processed/r_cgm/median_raster.tiff")
-#list_r_rasters <- readRDS("data/processed/r_cgm/ratio_raster_list.rds")
 
 # we need to aggregate the deltat to the country level by weighting by pop
 # so let us read the pop raster and resample it to match coordinates and 
@@ -84,16 +83,19 @@ world$ISO3 <- countrycode::countrycode(sourcevar = world$iso_a2,origin = "iso2c"
                                        destination = "iso3c"
 )
 world <- subset(world, !is.na(ISO3))
-#plot(world["geom"])
 
+# now let us read in the min and max historical growth numbers so we can bound 
+# future growth
 minmax_data <- readRDS("data/processed/minmax_data.rds")
+
+# now read in the wdi data to get population estimates 
 wdi_dat <- readRDS("data/processed/wdi_dat.rds")
 
 #################################################################################
 ##################### PART I: Calculate CGM Warming Ratio #######################
 #################################################################################
-# calculate deltaTs. Specify the needed cgm models and read the model names so we 
-# can use to call models and rename output
+# calculate warming ration from CGM models. Specify the needed cgm models and 
+#read the model names so we can use to call models and rename output
 #
 #cgm_guide <- read_excel("~/GitHub/loss_damage/scripts/working/analysis/cgm_model_guide.xlsx")
 ##
@@ -105,43 +107,13 @@ wdi_dat <- readRDS("data/processed/wdi_dat.rds")
 #  toc()
 #}
 #
+
+# ok let us read in the list of all CGM ratio rasters
 load("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/r_cgm/list_r_rasters_20230822.RData")
 #write_rds(list_r_rasters, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/r_cgm/list_r_rasters_20230822.rds")
 #
 ## now we have a raster for each of the models where we have grid level warming 
 ## ratio relative to global warming 
-#
-## let us create one raster that is the average of all the rasters
-#master_raster <- mean(`raster_deltaT_ACCESS-CM2_r1i1p1f1`,
-#                      `raster_deltaT_ACCESS-ESM1-5_r1i1p1f1`,
-#                      `raster_deltaT_AWI-CM-1-1-MR_r1i1p1f1`,
-#                      `raster_deltaT_BCC-CSM2-MR_r1i1p1f1`,
-#                      raster_deltaT_CanESM5_r1i1p1f1,
-#                      `raster_deltaT_CAS-ESM2-0_r1i1p1f1`,
-#                      raster_deltaT_CESM2_r10i1p1f1,#
-#                      `raster_deltaT_CESM2-WACCM_r1i1p1f1`,
-#                      `raster_deltaT_CMCC-CM2-SR5_r1i1p1f1`,
-#                      `raster_deltaT_CMCC-ESM2_r1i1p1f1`,
-#                      `raster_deltaT_CNRM-CM6-1_r1i1p1f2`,
-#                      `raster_deltaT_CNRM-CM6-1-HR_r1i1p1f2`,
-#                      `raster_deltaT_FGOALS-f3-L_r1i1p1f1`,
-#                      `raster_deltaT_FGOALS-g3_r1i1p1f1`,
-#                      `raster_deltaT_GFDL-ESM4_r1i1p1f1`,
-#                      `raster_deltaT_GISS-E2-1-G_r1i1p1f2`,
-#                      `raster_deltaT_IITM-ESM_r1i1p1f1`,
-#                      `raster_deltaT_INM-CM4-8_r1i1p1f1`,
-#                      `raster_deltaT_INM-CM5-0_r1i1p1f1`,
-#                      `raster_deltaT_IPSL-CM5A2-INCA_r1i1p1f1`,
-#                      `raster_deltaT_IPSL-CM6A-LR_r1i1p1f1`,
-#                      `raster_deltaT_KACE-1-0-G_r1i1p1f1`,
-#                      `raster_deltaT_MIROC-ES2L_r1i1p1f2`,
-#                      raster_deltaT_MIROC6_r1i1p1f1,
-#                      `raster_deltaT_MPI-ESM1-2-LR_r10i1p1f1`,
-#                      `raster_deltaT_MRI-ESM2-0_r1i1p1f1`,
-#                      `raster_deltaT_NorESM2-LM_r1i1p1f1`,
-#                      `raster_deltaT_NorESM2-MM_r1i1p1f1`,
-#                      raster_deltaT_TaiESM1_r1i1p1f1,
-#                      `raster_deltaT_UKESM1-0-LL_r1i1p1f2`)#
 #
 ## let us put the rasters in a list in case we want to loop over them
 #list_r_rasters <- list(`raster_deltaT_ACCESS-CM2_r1i1p1f1`,
@@ -179,20 +151,13 @@ load("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/r_cgm/list_r_raster
 #median_raster <- calc(stack_r_rasters, median)
 #writeRaster(median_raster, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/r_cgm/median_raster.tiff")
 
-#
-# save raster 
-#writeRaster(master_raster, "data/figs/fig1/ratio_raster_avgs.tif")
+#save raster 
 #writeRaster(master_raster, "data/processed/r_cgm/ratio_raster_avgs.tif")
-#raster::writeRaster(master_raster, "sherlock_files/data/pre_processed/master_raster.tif")
 #save(list_r_rasters, file = "~/BurkeLab Dropbox/Projects/loss_damage/sherlock_files_060223/list_r_rasters_20230822.RData")
 #save(list_r_rasters, file = "data/processed/r_cgm/list_r_rasters_20230822.RData")
 
-#saveRDS(list_rasters, "data/processed/r_cgm/ratio_raster_list_20230822.rds")
-
-
 # ok let us read the processed raster and list of rasters for warming ratio
 #mean_r_raster <- raster("data/processed/r_cgm/ratio_raster_avgs.tif")
-#list_r_rasters <- readRDS("data/processed/r_cgm/ratio_raster_list.rds")
 
 ################################################################################
 ##################### PART II: Read and compute delta T ########################
@@ -203,37 +168,24 @@ load("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/r_cgm/list_r_raster
 
 ####################### Experiment (1G/tCO2/yr): ########################
 # this experiment is run to estimate the temperature effects of pulsing 
-# 1GtCO2 or 1tCO2 at a given year.
+# 1GtCO2 or 1tCO2 at a given year. This will be used to calculate the 
+# total damages by certain emitters
 
-## 1tCO2 
-# temperature response through 2100 
-fair_exps_1tco2_2100_k90 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2100", 1990, aggregating = T) # fig2e_i, figED7_p
-fair_exps_1gtco2_2100_k90 <- process_exp_data_hist_fut("20230523", "1GtCO2_hist_2100", 1990, aggregating = T) # fig2ab, figcd, figED4, figED9b, 
-fair_exps_1tco2_2300_k90 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2300", 1990, aggregating = T) # fig3a, fig3b, figED7_i, figED7_j, figED7_k, figED7_l, figED7_m, figED7_n, figED7_o, figED13_i, figED13_k, figED13_l
-
+# 1tCO2 
+## temperature response through 2100 
+fair_exps_1tco2_2100_k90 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2100", 1990, aggregating = T) # fig2e_i, figED7_a figED7_d figED7_J
 fair_exps_1tco2_2100_k80 <- process_exp_data_hist_fut("20230821", "1tCO2_hist_2100", 1980, aggregating = T) # figED8, fig3c, 
-#fair_exps_1tco2_2300_k80 <- process_exp_data_hist_fut("20230821", "1tCO2_hist_2300", 1980, aggregating = T)
-#fair_exps_1gtco2_2100_k80 <- process_exp_data_hist_fut("20230523", "1GtCO2_hist_2100", 1980, aggregating = T)
-#fair_exps_1gtco2_2100_k80 <- process_exp_data_hist_fut("20230703", "1tCO2_hist_2300", 1980, aggregating = T)
-#fair_exps_1tco2_2100_k80 <- process_exp_data_hist_fut("20230518", "1tCO2_hist_2300", 1980, aggregating = T)
-
-# temperature response through 2300 
-#fair_exps_1tco2_2300 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2300", 1990, aggregating = T)
-# now let us calc deltat and return all the runs so that we can run 
-# uncertainty analysis
-#fair_exps_1tco2_disagg <- process_disagg_exp_data(run_date,"1tCO2_hist_2300", 1990)
-fair_exps_1gtco2_disagg_2100 <- process_disagg_exp_data("20230523","1GtCO2_hist_2100", 1990) #fig2e_i, fig2e_j, fig2e_k
+## temperature response through 2300 
+fair_exps_1tco2_2300_k90 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2300", 1990, aggregating = T) # fig3a, fig3b, figED7_i, figED7_j, figED7_k, figED7_l, figED7_m, figED7_n, figED7_o, figED13_i, figED13_k, figED13_l
+### temperature response dis-aggregated. In other words all runs. 
 fair_exps_1gtco2_disagg_2300 <- process_disagg_exp_data("20230809","1tCO2_hist_2300", 1990) # figED13_j
-#fair_exps_1gtco2_disagg_2300 <- process_disagg_exp_data("20230809","1tCO2_hist_2300", 1990)
 
-write_rds(fair_exps_1gtco2_disagg_2300, "~/BurkeLab Dropbox/Projects/loss_damage/sherlock_files_060223/fair_exps_disagg_20230822.rds")
-
-write_rds(fair_exps_1gtco2_disagg_2300, "~/BurkeLab Dropbox/Projects/loss_damage/sherlock_files_060223/fair_exps_1gtco2_disagg_2300.rds")
-
-# now we need to run the experiment for 1gtco2 instead of 1tco2
-#fair_exps_1gtco2_2100 <- process_exp_data_hist_fut("20230523","1GtCO2_hist_2100", 1990, aggregating = T)
-#2300 
-#fair_exps_1gtco2_2100 <- process_exp_data_hist_fut("20230523","1GtCO2_hist_2100", 1990, aggregating = T)
+# 1GtCO2 
+## temperature response through 2100 
+fair_exps_1gtco2_2100_k90 <- process_exp_data_hist_fut("20230523", "1GtCO2_hist_2100", 1990, aggregating = T) # fig2ab, figcd, figED4, figED9b, 
+### temperature response dis-aggregated. In other words all runs. 
+fair_exps_1gtco2_disagg_2100 <- process_disagg_exp_data("20230523","1GtCO2_hist_2100", 1990) #fig2e_i, fig2e_j, fig2e_k
+#write_rds(fair_exps_1gtco2_disagg_2300, "~/BurkeLab Dropbox/Projects/loss_damage/sherlock_files_060223/fair_exps_disagg_20230822.rds")
 
 ####################### Experiment (Carbon Capture): ########################
 # this experiment is to estimate the damages if we are to capture 1 tCO2 
@@ -241,13 +193,6 @@ write_rds(fair_exps_1gtco2_disagg_2300, "~/BurkeLab Dropbox/Projects/loss_damage
 fair_exps_cc <- process_exp_data_hist_fut("20230822", "cc_hist", 2020, aggregating = T) # figED9cd
 # we will need this data saved for plotting cc figure (S6)
 #write_rds(fair_exps_cc, paste0(output_path, "/fair_exps_cc.rds"))
-
-####################### Experiment (Carbon debt): ######################
-# this experiment is to estimate the deltaT resulting from emissions 
-# sources of certain known emitters (individuals/entities)
-# Alternatively, we can use the numbers we get from the tco2/yr experiment
-# to look at the carbon debt. The latter is the cuuren approach. As such, we 
-# are going to stick with just running 1tco2 experiment 
 
 ################ Experiment (Country-level emissions): #################
 # this experiment is to estimate the country level damages attributed to each 
