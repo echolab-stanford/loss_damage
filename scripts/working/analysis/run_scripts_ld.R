@@ -197,7 +197,6 @@ fair_exps_cc <- process_exp_data_hist_fut("20230822", "cc_hist", 2020, aggregati
 ################ Experiment (Country-level emissions): #################
 # this experiment is to estimate the country level damages attributed to each 
 # of the countries.
-
 # for year_k = 1980
 fair_exps_isos_k80 <- process_exp_data_hist("20230523", "hist_bi_v2022", 1980, aggregating = T) # figED10
 # for year_k = 1990
@@ -210,21 +209,17 @@ fair_exps_isos_k90_prod <- process_exp_data_hist("20230523", "hist_biprod_v2022"
 ####################### Experiment (1/10/1000/1M/1G/10G/100G/tCO2/yr): ########################
 # this experiment is run to estimate the temperature effects of pulsing 
 # 1GtCO2 or 1tCO2 at a given year.
-
-#fair_exps_1tco2_2100_k90  <- process_exp_data_hist_fut("20230807","1tCO2_hist_2300",1990,aggregating = T)  
 #fair_exps_10tco2_2100_k90 <- process_exp_data_hist_fut("20230807","10tCO2_hist_2300",1990,aggregating = T)
 fair_exps_1000tco2_2100_k90 <- process_exp_data_hist_fut("20230807","1000tCO2_hist_2300",1990,aggregating = T) # figED6_i
 fair_exps_1Mtco2_2100_k90 <- process_exp_data_hist_fut("20230807","1MtCO2_hist_2300",1990,aggregating = T) # figED6_j
-#fair_exps_1Gtco2_2100_k90 <- process_exp_data_hist_fut("20230807","1GtCO2_hist_2300",1990,aggregating = T) # figED6_k
 fair_exps_10Gtco2_2100_k90 <- process_exp_data_hist_fut("20230807","10GtCO2_hist_2300",1990,aggregating = T) # figED6_l
 fair_exps_100Gtco2_2100_k90 <- process_exp_data_hist_fut("20230807","100GtCO2_hist_2300",1990,aggregating = T) # figED6_m
 
 ################################################################################
 ##################### PART III: Calculate Total Damages ########################
 ################################################################################
-
-## The first section of this part is to read the world bank augmented gdp 
-## panel dataset and combine it with the temperature-year panel
+## The first section of this part is to read the future forecast growth numbers 
+## from the IPCC SSP3.7 scenario
 
 # first, we start by reading the future forecast dataset
 future_forecast_ssp370 <- readRDS("data/processed/future_forecast/future_forecast_ssp370.rds")
@@ -236,94 +231,42 @@ future_forecast_ssp370_2300_1pct <- readRDS("data/processed/future_forecast/futu
 future_forecast_ssp370_2300_2pct <- readRDS("data/processed/future_forecast/future_forecast_ssp370_2300_2pct.rds")
 
 ####################### generate country-year panel: #########################
-# Now we need to generate the country-year panel data frames 
-#for k = 1990
-#gdp_temp_data_k90 <- generate_gdptemp_panel("pooled", 
-#                                        future_forecast_ssp370, 
-#                                        "1990", 
-#                                        "ERA")
-#write_rds(gdp_temp_data_k90, "data/processed/world_gdp_pop/gdp_temp_data_k90.rds")
-
-
-#for k = 1990 & into 2300 at 2100 growth rates
-#gdp_temp_data_k90_2300 <- generate_gdptemp_panel("pooled", 
-#                                            future_forecast_ssp370_2300, 
-#                                            "1990", 
-#                                            "ERA")
-#
-
-#write_rds(gdp_temp_data_k90_2300, "data/processed/world_gdp_pop/gdp_temp_data_k90_2300.rds")
-#for k = 1990 & into 2300 at 1% grwoth rate
-#gdp_temp_data_k90_2300_1pct <- generate_gdptemp_panel("pooled", 
-#                                                 future_forecast_ssp370_2300_1pct, 
-#                                                 "1990", 
-#                                                 "ERA")
-
-#write_rds(gdp_temp_data_k90_2300_1pct, "data/processed/world_gdp_pop/gdp_temp_data_k90_2300_1pct.rds")
-
-#for k = 1990 & into 2300 at 2% grwoth rate
-#gdp_temp_data_k90_2300_2pct <- generate_gdptemp_panel("pooled", 
-#                                                 future_forecast_ssp370_2300_2pct, 
-#                                                 "1990", 
-#                                                 "ERA")
-##write_rds(gdp_temp_data_k90_2300_2pct, "data/processed/world_gdp_pop/gdp_temp_data_k90_2300_2pct.rds")
-
-#for k = 1980 
-#gdp_temp_data_k80 <- generate_gdptemp_panel("pooled", 
-#                                            future_forecast_ssp370, 
-#                                            "1980", 
-#                                            "ERA")
-#write_rds(gdp_temp_data_k80, "data/processed/world_gdp_pop/gdp_temp_data_k80.rds")
-
-#gdp_temp_data_k80_2300 <- generate_gdptemp_panel("pooled", 
-#                                            future_forecast_ssp370_2300, 
-#                                            "1980", 
-#                                            "ERA")
-#write_rds(gdp_temp_data_k80_2300, "data/processed/world_gdp_pop/gdp_temp_data_k80_2300.rds")
-
-#gdp_temp_data_5lags <- generate_gdptemp_panel_5lags("pooled", 
-#                                        future_forecast_ssp370_2300, 
-#                                        "1990", 
-#                                        "ERA")
-#
-#write_rds(gdp_temp_data_5lags, "data/processed/world_gdp_pop/gdp_temp_data_5lags_2300.rds")
-
 # ok let us read the processed country-year panel data frames 
+# for calculations with year k = 1990 and ending in 2100 
 gdp_temp_data_k90 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k90.rds")
+# k = 1990 and ending in 2300 
 gdp_temp_data_k90_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k90_2300.rds")
+# k = 1990 and ending in 2300 with post 2100 growth rates fixed at 1%
 gdp_temp_data_k90_2300_1pct <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k90_2300_1pct.rds")
+# k = 1990 and ending in 2300 with post 2100 growth rates fixed at 2%
 gdp_temp_data_k90_2300_2pct <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k90_2300_2pct.rds")
+# for calculations with year k = 1980 and ending in 2100 
 gdp_temp_data_k80 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k80.rds")
+# k = 1980 and ending in 2300
 gdp_temp_data_k80_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k80_2300.rds")
-gdp_temp_data_5lags <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_5lags.rds")
+# for calculations with year k = 1990 and ending in 2300 with lagged temperatures
 gdp_temp_data_5lags_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_5lags_2300.rds")
+# now limited to 2100 
 gdp_temp_data_5lags_2100 <- subset(gdp_temp_data_5lags_2300, year < 2101)
 
-################# generate country-year bootstrapped panel: ##################
-pooledbs <- as.data.frame(readRDS("data/processed/bhm/pooledregression_boostraps_era.rds"))
-#gdp_temp_data_bhmbs <- generate_gdptemp_panel_bhmbs("pooled", future_forecast_ssp370_cru, 1990, "CRU")
-#write_rds(gdp_temp_data_bhmbs, "data/processed/world_gdp_pop/gdp_temp_data_bhmbs.rds")
-#gdp_temp_data_bhmbs <- generate_gdptemp_panel_bhmbs("pooled",
-#                                                    future_forecast_ssp370,
-#                                                    1990,
-#                                                    "ERA")
+gdp_temp_data_5lags_2300$diff_lgdp_for_damages[is.na(gdp_temp_data_5lags_2300$diff_lgdp_for_damages) & (gdp_temp_data_5lags_2300$year > 2014 & gdp_temp_data_5lags_2300$year <2021)] <- 0
+gdp_temp_data_5lags_2300$diff_lgdp_for_damages[is.na(gdp_temp_data_5lags_2300$diff_lgdp_for_damages) & (gdp_temp_data_5lags_2300$year == 1990)]  <- 0
 
-gdp_temp_data_bhmbs <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_bhmbs.rds")
+
+gdp_temp_data_5lags_2100$diff_lgdp_for_damages[is.na(gdp_temp_data_5lags_2100$diff_lgdp_for_damages) & (gdp_temp_data_5lags_2100$year > 2014 & gdp_temp_data_5lags_2100$year <2021)] <- 0
+gdp_temp_data_5lags_2100$diff_lgdp_for_damages[is.na(gdp_temp_data_5lags_2100$diff_lgdp_for_damages) & (gdp_temp_data_5lags_2100$year == 1990)]  <- 0
+# before going on make sure canada and other countries' data are included 
+
 
 ################### generate country-year regression model: ##################
-# as well as the regression model
+# generating the pooled base model 
 #bhm_era_reg <- run_bhm_model_reg("pooled")
-
 #save(bhm_era_reg, file = "data/processed/bhm/bhm_era_reg.RData")
 load("data/processed/bhm/bhm_era_reg.RData")
 
-############### generate country-year regression model: richvpoor ##############
-# now we do the same but with the rich/poor. Here rich/poor is constructed by 
-# looking at average of each country's GDP  relative to median of full sample
-# panel...
-#gdp_temp_data <- run_bhm_model("richpoor")
-# model...
-#bhm_cru_reg <- run_bhm_model_reg("richpoor")
+# generating the pooled lagged model regression
+#bhm_era_reg_5lag <- run_bhm_model_reg_lag5("pooled")
+#save(bhm_era_reg, file = "data/processed/bhm/bhm_era_reg.RData")
 
 ##############################################################################
 ############### calculate the total damages for each scenario ################
@@ -485,6 +428,7 @@ write_rds(total_damages_1mtco2_k90, paste0("data/output/", run_date, "/total_dam
 write_rds(total_damages_1gtco2_k90, paste0("data/output/", run_date, "/total_damages_1gtco2_k90_compare.rds"))
 write_rds(total_damages_10gtco2_k90, paste0("data/output/", run_date, "/total_damages_10gtco2_k90_compare.rds"))
 write_rds(total_damages_100gtco2_k90, paste0("data/output/", run_date, "/total_damages_100gtco2_k90_compare.rds"))
+
 
 ######################## SCC Uncertainty Sources ############################
 ######################## Response function uncertainty

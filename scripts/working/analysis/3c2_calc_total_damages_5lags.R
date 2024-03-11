@@ -9,7 +9,7 @@
 calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_exps, 
                                          year_k, future_forecast, gdp_temp_dataset, 
                                          temp_dataset, settlement_year, growth_past_2100, 
-                                         adaptation){
+                                         adaptation, bootstrapped, laggedbs_df){
   
   #read raster data for warming ratio 
   deltat_df <- exactextractr::exact_extract(ratio_raster, 
@@ -157,25 +157,46 @@ i <- 1990
     #    gdp_temp_data1$era_mwtemp_fullemms[gdp_temp_data1$era_mwtemp_fullemms > 30] <- 30
     #  }
     
-    if (temp_dataset == "ERA"){
-      gdp_temp_data1$resp_temp_fullemms <- (gdp_temp_data1$era_mwtemp_fullemms * (gdp_temp_data1$temp + gdp_temp_data1$temp_l1 +
+    if (bootstrapped == T){
+      if (temp_dataset == "ERA"){
+        gdp_temp_data1$resp_temp_fullemms <- (gdp_temp_data1$era_mwtemp_fullemms * (laggedbs_df$temp_l5)) + 
+          ((gdp_temp_data1$era_mwtemp_fullemms^2) * (laggedbs_df$temp2_l5))
+        
+        gdp_temp_data1$resp_temp_preturb <- (gdp_temp_data1$era_mwtemp_preturb * (laggedbs_df$temp_l5)) + 
+          ((gdp_temp_data1$era_mwtemp_preturb^2) * (laggedbs_df$temp2_l5))
+        
+        gdp_temp_data1$delta_g_era <- gdp_temp_data1$resp_temp_preturb - gdp_temp_data1$resp_temp_fullemms
+        
+        #  maxtemp_2020 <- max(gdp_temp_data1$era_mwtemp[gdp_temp_data1$year < 2021], na.rm = T)
+        # gdp_temp_data1$max_delta_g_era <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2021 & gdp_temp_data1$era_mwtemp == maxtemp_2020 & !is.na(gdp_temp_data1$delta_g_era)]
+        #max_g <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2021 & gdp_temp_data1$era_mwtemp == maxtemp_2020 & !is.na(gdp_temp_data1$delta_g_era)]
+        #gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2020 & gdp_temp_data1$delta_g_era < max_g] <- max_g 
+        
+      }
+      
+    }
+    if (bootstrapped == F){
+      if (temp_dataset == "ERA"){
+        gdp_temp_data1$resp_temp_fullemms <- (gdp_temp_data1$era_mwtemp_fullemms * (gdp_temp_data1$temp + gdp_temp_data1$temp_l1 +
+                                                                                      gdp_temp_data1$temp_l2 + gdp_temp_data1$temp_l3 +
+                                                                                      gdp_temp_data1$temp_l4 + gdp_temp_data1$temp_l5)) + 
+          ((gdp_temp_data1$era_mwtemp_fullemms^2) * (gdp_temp_data1$temp2 + gdp_temp_data1$temp2_l1 + gdp_temp_data1$temp2_l2 +
+                                                       gdp_temp_data1$temp2_l3 + gdp_temp_data1$temp2_l4 + gdp_temp_data1$temp2_l5))
+        
+        gdp_temp_data1$resp_temp_preturb <- (gdp_temp_data1$era_mwtemp_preturb * (gdp_temp_data1$temp + gdp_temp_data1$temp_l1 +
                                                                                     gdp_temp_data1$temp_l2 + gdp_temp_data1$temp_l3 +
                                                                                     gdp_temp_data1$temp_l4 + gdp_temp_data1$temp_l5)) + 
-        ((gdp_temp_data1$era_mwtemp_fullemms^2) * (gdp_temp_data1$temp2 + gdp_temp_data1$temp2_l1 + gdp_temp_data1$temp2_l2 +
-                                                     gdp_temp_data1$temp2_l3 + gdp_temp_data1$temp2_l4 + gdp_temp_data1$temp2_l5))
-      
-      gdp_temp_data1$resp_temp_preturb <- (gdp_temp_data1$era_mwtemp_preturb * (gdp_temp_data1$temp + gdp_temp_data1$temp_l1 +
-                                                                                  gdp_temp_data1$temp_l2 + gdp_temp_data1$temp_l3 +
-                                                                                  gdp_temp_data1$temp_l4 + gdp_temp_data1$temp_l5)) + 
-        ((gdp_temp_data1$era_mwtemp_preturb^2) * (gdp_temp_data1$temp2 + gdp_temp_data1$temp2_l1 + gdp_temp_data1$temp2_l2 +
-                                                    gdp_temp_data1$temp2_l3 + gdp_temp_data1$temp2_l4 + gdp_temp_data1$temp2_l5))
-      
-      gdp_temp_data1$delta_g_era <- gdp_temp_data1$resp_temp_preturb - gdp_temp_data1$resp_temp_fullemms
-      
-      #  maxtemp_2020 <- max(gdp_temp_data1$era_mwtemp[gdp_temp_data1$year < 2021], na.rm = T)
-      # gdp_temp_data1$max_delta_g_era <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2021 & gdp_temp_data1$era_mwtemp == maxtemp_2020 & !is.na(gdp_temp_data1$delta_g_era)]
-      #max_g <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2021 & gdp_temp_data1$era_mwtemp == maxtemp_2020 & !is.na(gdp_temp_data1$delta_g_era)]
-      #gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2020 & gdp_temp_data1$delta_g_era < max_g] <- max_g 
+          ((gdp_temp_data1$era_mwtemp_preturb^2) * (gdp_temp_data1$temp2 + gdp_temp_data1$temp2_l1 + gdp_temp_data1$temp2_l2 +
+                                                      gdp_temp_data1$temp2_l3 + gdp_temp_data1$temp2_l4 + gdp_temp_data1$temp2_l5))
+        
+        gdp_temp_data1$delta_g_era <- gdp_temp_data1$resp_temp_preturb - gdp_temp_data1$resp_temp_fullemms
+        
+        #  maxtemp_2020 <- max(gdp_temp_data1$era_mwtemp[gdp_temp_data1$year < 2021], na.rm = T)
+        # gdp_temp_data1$max_delta_g_era <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2021 & gdp_temp_data1$era_mwtemp == maxtemp_2020 & !is.na(gdp_temp_data1$delta_g_era)]
+        #max_g <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2021 & gdp_temp_data1$era_mwtemp == maxtemp_2020 & !is.na(gdp_temp_data1$delta_g_era)]
+        #gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2020 & gdp_temp_data1$delta_g_era < max_g] <- max_g 
+        
+      }
       
     }
     
