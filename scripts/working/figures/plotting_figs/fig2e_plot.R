@@ -20,10 +20,14 @@ run_date <- "20240307"
 # read data
 load(paste0(fig_prepped_dta, run_date,"/listof_scc_est_dfs_figs13.RData"))
 
+load("~/Desktop/listof_scc_est_dfs_figs13.RData")
+listofdfs
+
+i <- 5
 ################################################################################
 ################################################################################
 # prep data
-
+i 
 for (i in 1:length(listofdfs)) {
   tic()
   df <- listofdfs[[i]]
@@ -70,20 +74,21 @@ plot(-1,-1,pch = 15, #xlim = range(0,4),
 title("e SC-CO2 estimates with total uncertainty under different scenarios", adj = 0)
 
 
-polygon(x = c(min(totals_5_95_impacts_2300_2dr$total_damages), max(totals_5_95_impacts_2300_2dr$total_damages),
-              max(totals_5_95_impacts_2300_2dr$total_damages), min(totals_5_95_impacts_2300_2dr$total_damages)),
+
+polygon(x = c(min(totals_5_95_ssp_2100_2dr$total_damages), max(totals_5_95_ssp_2100_2dr$total_damages),
+              max(totals_5_95_ssp_2100_2dr$total_damages), min(totals_5_95_ssp_2100_2dr$total_damages)),
         border = "#ffe6e6",      # X-Coordinates of polygon
         y = c(1, 1,2, 2),                             # Y-Coordinates of polygon
         col = "#ffe6e6")  
 
-polygon(x = c(min(totals_10_90_impacts_2300_2dr$total_damages), max(totals_10_90_impacts_2300_2dr$total_damages),
-              max(totals_10_90_impacts_2300_2dr$total_damages), min(totals_10_90_impacts_2300_2dr$total_damages)),
+polygon(x = c(min(totals_10_90_ssp_2100_2dr$total_damages), max(totals_10_90_ssp_2100_2dr$total_damages),
+              max(totals_10_90_ssp_2100_2dr$total_damages), min(totals_10_90_ssp_2100_2dr$total_damages)),
         border = "#ffb3b3",      # X-Coordinates of polygon
         y = c(1, 1,2, 2),                             # Y-Coordinates of polygon
         col = "#ffb3b3")  
 
-polygon(x = c(min(totals_iqr_impacts_2300_2dr$total_damages), max(totals_iqr_impacts_2300_2dr$total_damages),
-              max(totals_iqr_impacts_2300_2dr$total_damages), min(totals_iqr_impacts_2300_2dr$total_damages)),
+polygon(x = c(min(totals_iqr_ssp_2100_2dr$total_damages), max(totals_iqr_ssp_2100_2dr$total_damages),
+              max(totals_iqr_ssp_2100_2dr$total_damages), min(totals_iqr_ssp_2100_2dr$total_damages)),
         border = "#990000",      # X-Coordinates of polygon
         y = c(1, 1,2, 2),                             # Y-Coordinates of polygon
         col = "#990000")  
@@ -95,21 +100,20 @@ polygon(x = c(totals_median_impacts_2300_2dr - 25, totals_median_impacts_2300_2d
         col = "gold1")  
 
 
-
-polygon(x = c(min(totals_5_95_impacts_2300_ramsey$total_damages), max(totals_5_95_impacts_2300_ramsey$total_damages),
-              max(totals_5_95_impacts_2300_ramsey$total_damages), min(totals_5_95_impacts_2300_ramsey$total_damages)),
+polygon(x = c(min(totals_5_95_ssp_2100_ramsey$total_damages), max(totals_5_95_ssp_2100_ramsey$total_damages),
+              max(totals_5_95_ssp_2100_ramsey$total_damages), min(totals_5_95_ssp_2100_ramsey$total_damages)),
         border = "#efe8f6",      # X-Coordinates of polygon
         y = c(3.25, 3.25,4.25, 4.25),                             # Y-Coordinates of polygon
         col = "#efe8f6")  
 
-polygon(x = c(min(totals_10_90_impacts_2300_ramsey$total_damages), max(totals_10_90_impacts_2300_ramsey$total_damages),
-              max(totals_10_90_impacts_2300_ramsey$total_damages), min(totals_10_90_impacts_2300_ramsey$total_damages)),
+polygon(x = c(min(totals_10_90_ssp_2100_ramsey$total_damages), max(totals_10_90_ssp_2100_ramsey$total_damages),
+              max(totals_10_90_ssp_2100_ramsey$total_damages), min(totals_10_90_ssp_2100_ramsey$total_damages)),
         border = "#c0a3db",      # X-Coordinates of polygon
         y = c(3.25, 3.25,4.25, 4.25),                             # Y-Coordinates of polygon
         col = "#c0a3db")  
 
-polygon(x = c(min(totals_iqr_impacts_2300_ramsey$total_damages), max(totals_iqr_impacts_2300_ramsey$total_damages),
-              max(totals_iqr_impacts_2300_ramsey$total_damages), min(totals_iqr_impacts_2300_ramsey$total_damages)),
+polygon(x = c(min(totals_iqr_ssp_2100_ramsey$total_damages), max(totals_iqr_ssp_2100_ramsey$total_damages),
+              max(totals_iqr_ssp_2100_ramsey$total_damages), min(totals_iqr_ssp_2100_ramsey$total_damages)),
         border = "#581795",      # X-Coordinates of polygon
         y = c(3.25, 3.25,4.25, 4.25),                             # Y-Coordinates of polygon
         col = "#581795")  
@@ -173,52 +177,52 @@ polygon(x = c(totals_median_nogrowth_ramsey - 25, totals_median_nogrowth_ramsey 
         col = "gold1")  
 
 
-polygon(x = c(min(totals_5_95_ssp_2100_2dr$total_damages), max(totals_5_95_ssp_2100_2dr$total_damages),
-              max(totals_5_95_ssp_2100_2dr$total_damages), min(totals_5_95_ssp_2100_2dr$total_damages)),
+polygon(x = c(min(totals_5_95_noimpacts_2dr$total_damages), max(totals_5_95_noimpacts_2dr$total_damages),
+              max(totals_5_95_noimpacts_2dr$total_damages), min(totals_5_95_noimpacts_2dr$total_damages)),
         border = "#ffe6e6",      # X-Coordinates of polygon
         y = c(13, 13,14, 14),                             # Y-Coordinates of polygon
         col = "#ffe6e6")  
 
-polygon(x = c(min(totals_10_90_ssp_2100_2dr$total_damages), max(totals_10_90_ssp_2100_2dr$total_damages),
-              max(totals_10_90_ssp_2100_2dr$total_damages), min(totals_10_90_ssp_2100_2dr$total_damages)),
+polygon(x = c(min(totals_10_90_noimpacts_2dr$total_damages), max(totals_10_90_noimpacts_2dr$total_damages),
+              max(totals_10_90_noimpacts_2dr$total_damages), min(totals_10_90_noimpacts_2dr$total_damages)),
         border = "#ffb3b3",      # X-Coordinates of polygon
         y = c(13, 13,14, 14),                             # Y-Coordinates of polygon        
         col = "#ffb3b3")  
 
-polygon(x = c(min(totals_iqr_ssp_2100_2dr$total_damages), max(totals_iqr_ssp_2100_2dr$total_damages),
-              max(totals_iqr_ssp_2100_2dr$total_damages), min(totals_iqr_ssp_2100_2dr$total_damages)),
+polygon(x = c(min(totals_iqr_noimpacts_2dr$total_damages), max(totals_iqr_noimpacts_2dr$total_damages),
+              max(totals_iqr_noimpacts_2dr$total_damages), min(totals_iqr_noimpacts_2dr$total_damages)),
         border = "#990000",      # X-Coordinates of polygon
         y = c(13, 13,14, 14),                             # Y-Coordinates of polygon        
         col = "#990000")  
 
-polygon(x = c(totals_median_ssp_2100_2dr - 25, totals_median_ssp_2100_2dr + 25,
-              totals_median_ssp_2100_2dr + 25, totals_median_ssp_2100_2dr - 25),
+polygon(x = c(totals_median_noimpacts_2dr - 25, totals_median_noimpacts_2dr + 25,
+              totals_median_noimpacts_2dr + 25, totals_median_noimpacts_2dr - 25),
         border = "gold1",      # X-Coordinates of polygon
         y = c(13, 13,14, 14),                             # Y-Coordinates of polygon        
         col = "gold1")  
 
 
 
-polygon(x = c(min(totals_5_95_ssp_2100_2dr$total_damages), max(totals_5_95_ssp_2100_2dr$total_damages),
-              max(totals_5_95_ssp_2100_2dr$total_damages), min(totals_5_95_ssp_2100_2dr$total_damages)),
+polygon(x = c(min(totals_5_95_noimpacts_ramsey$total_damages), max(totals_5_95_noimpacts_ramsey$total_damages),
+              max(totals_5_95_noimpacts_ramsey$total_damages), min(totals_5_95_noimpacts_ramsey$total_damages)),
         border = "#efe8f6",      # X-Coordinates of polygon
         y = c(15.25, 15.25,16.25, 16.25),                             # Y-Coordinates of polygon
         col = "#efe8f6")  
 
-polygon(x = c(min(totals_10_90_ssp_2100_ramsey$total_damages), max(totals_10_90_ssp_2100_ramsey$total_damages),
-              max(totals_10_90_ssp_2100_ramsey$total_damages), min(totals_10_90_ssp_2100_ramsey$total_damages)),
+polygon(x = c(min(totals_10_90_noimpacts_ramsey$total_damages), max(totals_10_90_noimpacts_ramsey$total_damages),
+              max(totals_10_90_noimpacts_ramsey$total_damages), min(totals_10_90_noimpacts_ramsey$total_damages)),
         border = "#c0a3db",      # X-Coordinates of polygon
         y = c(15.25, 15.25,16.25, 16.25),                             # Y-Coordinates of polygon
         col = "#c0a3db")  
 
-polygon(x = c(min(totals_iqr_ssp_2100_ramsey$total_damages), max(totals_iqr_ssp_2100_ramsey$total_damages),
-              max(totals_iqr_ssp_2100_ramsey$total_damages), min(totals_iqr_ssp_2100_ramsey$total_damages)),
+polygon(x = c(min(totals_iqr_noimpacts_ramsey$total_damages), max(totals_iqr_noimpacts_ramsey$total_damages),
+              max(totals_iqr_noimpacts_ramsey$total_damages), min(totals_iqr_noimpacts_ramsey$total_damages)),
         border = "#581795",      # X-Coordinates of polygon
         y = c(15.25, 15.25,16.25, 16.25),                             # Y-Coordinates of polygon
         col = "#581795")  
 
-polygon(x = c(totals_median_ssp_2100_ramsey - 25, totals_median_ssp_2100_ramsey + 25,
-              totals_median_ssp_2100_ramsey + 25, totals_median_ssp_2100_ramsey - 25),
+polygon(x = c(totals_median_noimpacts_ramsey - 25, totals_median_noimpacts_ramsey + 25,
+              totals_median_noimpacts_ramsey + 25, totals_median_noimpacts_ramsey - 25),
         border = "gold1",      # X-Coordinates of polygon
         y = c(15.25, 15.25,16.25, 16.25),                             # Y-Coordinates of polygon
         col = "gold1")  

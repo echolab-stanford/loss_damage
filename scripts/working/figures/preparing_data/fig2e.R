@@ -7,7 +7,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230713"
+run_date <- "20240311"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -16,18 +16,18 @@ setwd(dropbox_path)
 #############################################################################
 # read data 
 # set path and get list of files from directory
-path <- paste0("~/BurkeLab Dropbox/Projects/loss_damage/data/output/20230713/sherlock_data")
+path <- paste0(output_path, "_3")
 
-################################################################################ ssp 2100 growth rates
+################################################################################ ssp 2100 growth rates w/damages into 2300 (fig2eiii)
 # generate list of files 
 all_data = list.files(path=path,
-                      pattern = "scc_2100growth", 
+                      pattern = "scc_", 
                       full.names = TRUE,
                       recursive = TRUE,
                       include.dirs = FALSE)
 listofdfs_rams <- list()
 listofdfs_2dr <- list()
-for (i in 1:4000){
+for (i in 1:1000){
   tic()
   data_i <- readRDS(all_data[i])
   #data_i$loop_id <- i
@@ -58,55 +58,12 @@ for (i in 1:4000){
 totals_2100g_ramsey <- do.call(rbind, listofdfs_rams)
 totals_2100g_2dr <- do.call(rbind, listofdfs_2dr)
 
-totals_2100g_ramsey <- subset(totals_2100g_ramsey, sim_id > 2000 & sim_id < 3001) 
-totals_2100g_2dr <- subset(totals_2100g_2dr, sim_id > 2000 & sim_id < 3001)
-
-#list_of_coef <- list()
-#for (i in 1:1000){
-#  tic()
-# list_of_coef[[i]] <- unique(subset(listofdfs[[i]], !is.na(temp))$temp)
-# toc()
-#}
-#
-#df <- melt(data.frame(list_of_coef))
-#hist(df$value)
-#segments(x0 = median(df$value), 
-#         x1 = median(df$value),
-#         y0 = 0, 
-#         y1 = 400,
-#         col = "red")
-#
-#text(0.01, 300, median(df$value))
-#
-
-#list_of_coef <- list()
-#for (i in 1:1000){
-#  tic()
-#  list_of_coef[[i]] <- unique(subset(listofdfs[[i]], !is.na(temp2))$temp2)
-#  toc()
-#}
-#
-#df <- melt(data.frame(list_of_coef))
-#hist(df$value)
-#segments(x0 = median(df$value), 
-#         x1 = median(df$value),
-#         y0 = 0, 
-#         y1 = 400,
-#         col = "red")
-
-#text(-8e-04, 200, median(df$value))
-
-
-# ...... and append all the dataframe 
-#total_damages_uncertainty_2100g <- do.call(rbind, listofdfs)
-#rm(listofdfs)
-
-################################################################################ no growth post 2100
+################################################################################ no growth post 2100 w/damages into 2300 (fig2eii)
 # generate list of files 
-path <- paste0("~/BurkeLab Dropbox/Projects/loss_damage/data/output20230713_nogrowth/")
+path <- paste0(output_path, "_2")
 
 all_data = list.files(path=path,
-                      pattern = "scc_nogrowth" ,
+                      pattern = "scc_" ,
                       full.names = TRUE,
                       recursive = TRUE,
                       include.dirs = FALSE)
@@ -115,7 +72,7 @@ all_data = list.files(path=path,
 # now read files into one list 
 listofdfs_rams <- list()
 listofdfs_2dr <- list()
-for (i in 1:5000){
+for (i in 1:1000){
   tic()
   data_i <- readRDS(all_data[i])
   #data_i$loop_id <- i
@@ -141,22 +98,16 @@ for (i in 1:5000){
   
   toc()
 }
-
 totals_nog_2dr <- do.call(rbind, listofdfs_2dr)
 totals_nog_ramsey <- do.call(rbind, listofdfs_rams)
 
-totals_nog_2dr <- subset(totals_nog_2dr, sim_id > 1000 & sim_id < 2001)
-totals_nog_ramsey <- subset(totals_nog_ramsey, sim_id > 1001& sim_id < 2001)
-
-# ... and append all dataframes
-#total_damages_uncertainty_nog <- do.call(rbind, listofdfs)
-#rm(listofdfs)
-
 
 ################################################################################ no impacts post 2100
+path <- paste0(output_path, "_5b")
+
 # generate list of files 
 all_data = list.files(path=path,
-                      pattern = "scc_2100_" ,
+                      pattern = "scc_" ,
                       full.names = TRUE,
                       recursive = TRUE,
                       include.dirs = FALSE)
@@ -169,56 +120,36 @@ for (i in 1:1000){
   data_i <- data_i %>% 
     dplyr::select(c("emitter", 
                     "year",
+                    "ISO3",
                     "sim_id",
                     "weighted_damages2_scld", 
                     "weighted_damages_ramsey_scld",
                     "coef_id",
                     "temp",
                     "temp2"))
-  listofdfs[[i]] <- data_i
+  
+  data_ramsey_i <- data_i %>% 
+    dplyr::group_by(emitter, sim_id) %>% 
+    dplyr::summarise(total_damages_ramsey = sum(weighted_damages_ramsey_scld, na.rm = T))
+  
+  data_dr2_i <- data_i %>% 
+    dplyr::group_by(emitter, sim_id) %>% 
+    dplyr::summarise(total_damages2 = sum(weighted_damages2_scld, na.rm = T))
+  
+  listofdfs_rams[[i]] <- data_ramsey_i
+  listofdfs_2dr[[i]] <- data_dr2_i
+
   toc()
 }
 
 # ... and append all dataframes
-total_damages_uncertainty_noi <- do.call(rbind, listofdfs)
-rm(listofdfs)
+totals_noi_2dr <- do.call(rbind, listofdfs_2dr)
+totals_noi_ramsey <- do.call(rbind, listofdfs_rams)
+
 
 #############################################################################
 #############################################################################
 # prep data 
-
-# ok now let us aggregate. We want 4 numbers. These numbers will then be 
-# plotted 
-#totals_2100g_2dr <- total_damages_uncertainty_2100g %>% 
-#  dplyr::group_by(emitter, loop_id) %>% 
-#  dplyr::summarise(total_damages2 = sum(weighted_damages2_scld, na.rm = T))
-#
-## now we need daamages at ramsey params
-#totals_2100g_ramsey <- total_damages_uncertainty_2100g %>% 
-#  dplyr::group_by(emitter, loop_id) %>% 
-#  dplyr::summarise(total_damages_ramsey = sum(weighted_damages_ramsey_scld, na.rm = T))
-#
-## now lwt us do the no growth post 2100 scenario
-#totals_nog_2dr <- total_damages_uncertainty_nog %>% 
-#  dplyr::group_by(emitter, sim_id) %>% 
-#  dplyr::summarise(total_damages2 = sum(weighted_damages2_scld, na.rm = T))
-#
-## now we need daamages at ramsey params
-#totals_nog_ramsey <- total_damages_uncertainty_nog %>% 
-#  dplyr::group_by(emitter, sim_id) %>% 
-#  dplyr::summarise(total_damages_ramsey = sum(weighted_damages_ramsey_scld, na.rm = T))
-
-# now lwt us do the no growth post 2100 scenario
-totals_noi_2dr <- total_damages_uncertainty_noi %>% 
-  dplyr::group_by(emitter, sim_id) %>% 
-  dplyr::summarise(total_damages2 = sum(weighted_damages2_scld, na.rm = T))
-
-# now we need daamages at ramsey params
-totals_noi_ramsey <- total_damages_uncertainty_noi %>% 
-  dplyr::group_by(emitter, sim_id) %>% 
-  dplyr::summarise(total_damages_ramsey = sum(weighted_damages_ramsey_scld, na.rm = T))
-
-median(totals_nog_ramsey$total_damages_ramsey)
 
 totals_2100g_2dr$scenario <- "ssp_2100_2dr"
 totals_2100g_ramsey$scenario <- "ssp_2100_ramsey"
@@ -238,6 +169,6 @@ listofdfs <- list(totals_2100g_2dr,
                   totals_noi_ramsey)
 
 # write that list into directory 
-save(listofdfs, file = paste0(fig_prepped_dta, "20230821", "/listof_scc_est_dfs_figs13.RData"))
+save(listofdfs, file = paste0(fig_prepped_dta, run_date, "/listof_scc_est_dfs_fig2e.RData"))
 
 # end of script 
