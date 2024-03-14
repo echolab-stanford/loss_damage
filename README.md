@@ -5,14 +5,14 @@ A Repo supporting project on estimating global loss and damage from emissions. T
 
 ## Scripts 
 
-- The pipeline for producing this paper's results rely on output dataframes produced through the run_scripts.R script. Inside this script teh needed custom functions are sourced from scripts in the same folders. Each with thier own job.
+- The pipeline for producing this paper's results rely on output dataframes produced through the run_scripts_ld.R script. Inside this script teh needed custom functions are sourced from scripts in the same folders. Each with thier own job.
 - Some of the script are run through sherlock. These are batch scripts (R scripts) with shell files (.sh) specifiying the resources needed to run the script. 
 
 ### Processing scripts 
 
 ### Analysis scripts 
 
--  run_scripts.R
+- run_scripts_ld.R
 - 0_read_libs.R
 - 1_r_cgm.R
 - 2a_FaIR_deltaT_hist.R
@@ -45,7 +45,7 @@ A Repo supporting project on estimating global loss and damage from emissions. T
         - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/minmax_data.rds"
         - downloads the github 'loss_damage' repo from the lab directory (5lag_pipeline branch NOT main)
     - panels a-b:
-        - output dataframes through run_scripts.R found under "~/GitHub/loss_damage/scripts/working/analysis/run_scripts.R"
+        - output dataframes through run_scripts_ld.R found under "~/GitHub/loss_damage/scripts/working/analysis/run_scripts_ld.R"
             1. set up the directories to access the input data and to output the outcome data by syncing the above folders
             2. run the set up code chunks and read the main dataframes (lines 22-93). Those lines will produce the following:
                 a. country-year data with population from the WDI
