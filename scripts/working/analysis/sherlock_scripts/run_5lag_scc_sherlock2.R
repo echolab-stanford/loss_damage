@@ -1,15 +1,62 @@
 ##############################################################################
-# Mustafa Zahid, April 1st, 2022
-# This script calculates the total damages bore by a specified pulse of emissions 
-# for example 1gtco2 pulse with BHM model under 5 lags specification. 
-# Edited: June 2023
+# Mustafa Zahid, March 1st, 2024
+# This is a script to be run through sherlock. This script calculates the 
+# damages per 1tco2 of emissions in a given year under a sample of the 
+# various paramters (FaIR run, BHM coef, CGM model used for pattern scaling)
 #############################################################################
 
+############################################################################# install and read needed libraries 
+#install.packages('readr', repos='http://cran.us.r-project.org')
+#install.packages('doParallel', repos='http://cran.us.r-project.org')
+#install.packages('foreach', repos='http://cran.us.r-project.org')
+#install.packages('exactextractr', repos='http://cran.us.r-project.org')
+#install.packages('sf', repos='http://cran.us.r-project.org')
+#install.packages('raster', repos='http://cran.us.r-project.org')
 
-calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_exps, 
-                                         year_k, future_forecast, gdp_temp_dataset, 
-                                         temp_dataset, settlement_year, growth_past_2100, 
-                                         adaptation, bootstrapped){
+library("dplyr")
+library("readr")
+library("doParallel")
+library("foreach")
+library("exactextractr")
+library("sf")
+library("raster")
+
+############################################################################# set path and read data 
+path <- "/scratch/users/mhzahid/sherlock_files_060223/"
+# bhm model 
+load(paste0(path, "bhm_era_reg.RData"))
+load(paste0(path, "bhm_era_reg_5lag.Rdata"))
+# cgm rasters 
+load(paste0(path, "list_r_rasters_20230822.RData"))
+# fair dataframes 
+fair_exps_1tco2_disagg <- readRDS(paste0(path, "fair_exps_1tco2_2100_k90_20230523.rds"))
+fair_exps_1tco2_disagg <- subset(fair_exps_1tco2_disagg, year <2101)
+# world shapefiles and population information 
+pop_wdi <- readRDS(paste0(path, "pop_wdi.rds"))  
+world <- read_sf(paste0(path, "world_sf.shp"))  
+pop <- raster(paste0(path, "pop_raster.tiff"))
+# gdp - temp panels
+gdp_temp_data_k90 <- readRDS(paste0(path, "gdp_temp_data_k90_norm.rds"))
+gdp_temp_data_k90_2300 <- readRDS(paste0(path, "gdp_temp_data_k90_2300.rds"))
+gdp_temp_data_k90_5lag <- readRDS(paste0(path, "gdp_temp_data_5lags_2100_20240311.rds"))
+#gdp_temp_data_k90_5lag <- subset(gdp_temp_data_k90_5lag, year < 2101)
+# future gdp projections per SSP 370 
+future_forecast_ssp370_2300 <- readRDS(paste0(path, "future_forecast_ssp370_2300.rds"))
+future_forecast_ssp370 <- readRDS(paste0(path, "future_forecast_ssp370.rds"))
+# now we need to reed the bootstrapped coeffecients from bhm
+pooledbs <- as.data.frame(readRDS(paste0(path, "pooledregression_boostraps_era.rds")))
+laggedbs <- as.data.frame(readRDS(paste0(path, "laggedregression_bootstraps_era_20240311a.rds")))
+pooledbs$coef_id <- 1:nrow(pooledbs)
+laggedbs$coef_id <- 1:nrow(laggedbs)
+# read the years we want to loop over 
+list_of_exps_1990_2020 <- 1990:2020
+
+############################################################################# read the function to be used for calculating teh damages
+calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps, 
+                                    year_k, future_forecast, gdp_temp_dataset, 
+                                    temp_dataset, bhm_model, bootstrapped, 
+                                    clamping, growth_past_2100, settlement_year,
+                                    coefdf){
   
   #read raster data for warming ratio 
   deltat_df <- exactextractr::exact_extract(ratio_raster, 
@@ -35,6 +82,7 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
                                 multiple = "all", 
                                 relationship = "many-to-many")
   
+  
   # now multuply the grid level warming ratio by median temp response from FaIR
   deltat_calced_df$deltat_scld <- deltat_calced_df$weighted_mean * deltat_calced_df$median_deltat   
   deltat_calced_df$deltat_fullemms_scld <- deltat_calced_df$weighted_mean * deltat_calced_df$deltat_fullemms
@@ -42,38 +90,29 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
   
   # calculating model growth response after adjusting for the delta T by creating 
   # a function that takes in the temperature variable, as well as the model used
-  calc_delta_g <- function(dataset, temp_var, model, deltaT, coef1, coef2, 
-                           coef3, coef4,
-                           coef5, coef6,
-                           coef7, coef8,
-                           coef9, coef10,
-                           coef11, coef12) {
-    response_tempnew <- ((temp_var - deltaT)*(coef1 + coef3 + coef5 + coef7 + coef9 + coef11)) +
-      (((temp_var - deltaT)^2)*(coef2 + coef4 + coef6 + coef8 + coef10 + coef12)) 
+  calc_delta_g <- function(dataset, temp_var, model, deltaT, coef1, coef2) {
+    response_tempnew <- ((temp_var - deltaT)*(coef1)) +
+      (((temp_var - deltaT)^2)*(coef2)) 
     response_tempnew
   }
   
   # start an empty dataframe 
   mother_df <- data.frame()
-i <- 1990
+  #unique(fair_exps_1tco2_2300$experiment_iso)
+  #i <- "USA"
+  #i <- "all0"
   # now loop over the experiments and calculate total damages owed by each of 
   # the countries
   
   for (i in list_of_exps){
-    tic()
     
-    tic()
+    # subset by keeping one experiment for each loop
+    
     deltaT_df1 <- deltat_calced_df[ which(deltat_calced_df$experiment_iso==i), ]
-    toc()
-    
-    tic()
     
     # keep non missing ISOs exoeriments
     deltaT_df1 <- subset(deltaT_df1, !is.na(ISO3))
-    toc()
-
-    # keep to a certain year
-    tic()
+    
     deltaT_df1 <- deltaT_df1 %>% dplyr::group_by(ISO3, year) %>% 
       dplyr::summarise(deltat_fullemms = mean(deltat_fullemms_scld, na.rm = T),
                        deltat_preturb = mean(deltat_preturb_scld, na.rm = T),
@@ -85,22 +124,26 @@ i <- 1990
     
     # now let us get the country-year panel
     gdp_temp_data1 <- gdp_temp_dataset
+    
     gdp_temp_data1$year <- as.numeric(as.character(gdp_temp_data1$year))
     
+    
     # join country-year temp change with the country-year panel
+    
     gdp_temp_data1 <- left_join(deltaT_df1,
                                 gdp_temp_data1,
                                 by = c("ISO3", "year"))
     
+    
     # we need to create country level annual average for last 5 years of observed 
     # data 
-    
     if (temp_dataset == "ERA"){
       gdp_temp_data1$era_mwtemp[gdp_temp_data1$year >2020] <- NA 
       #  if (i < 2020){
       gdp_temp_data1$era_mwtemp_preturb_pre2020 <- gdp_temp_data1$era_mwtemp - gdp_temp_data1$deltat
       gdp_temp_data1 <- gdp_temp_data1 %>% dplyr::group_by(ISO3) %>% 
         dplyr::mutate(avg_temp_2010_2020_preturb = mean(era_mwtemp_preturb_pre2020[year > 2009 & year <= 2020], na.rm = T))
+      
     }
     if (temp_dataset == "CRU"){
       gdp_temp_data1$cru_mwtemp[gdp_temp_data1$year >2020] <- NA 
@@ -110,19 +153,25 @@ i <- 1990
         dplyr::mutate(avg_temp_2010_2020_preturb = mean(cru_mwtemp_preturb_pre2020[year > 2009 & year <= 2020], na.rm = T))
     }
     
+    
+    #remotes::install_version("dplyr", "1.0.10")
+    
     if (temp_dataset == "ERA") {
+      
       gdp_temp_data1 <- gdp_temp_data1 %>%  dplyr::group_by(ISO3, year) %>% 
         dplyr::mutate(
           era_mwtemp_preturb= case_when(!is.na(era_mwtemp) ~ era_mwtemp_preturb_pre2020, 
                                         is.na(era_mwtemp) & year >2020 ~ avg_temp_2010_2020_preturb + deltat_preturb))
     }
+    
     if (temp_dataset == "CRU"){
       gdp_temp_data1 <- gdp_temp_data1 %>%  dplyr::group_by(ISO3, year) %>% 
         dplyr::mutate(
           cru_mwtemp_preturb= case_when(!is.na(cru_mwtemp) ~ cru_mwtemp_preturb_pre2020, 
                                         is.na(cru_mwtemp) & year >2020 ~ avg_temp_2010_2020_preturb + deltat_preturb))
     }
-  
+    
+    
     if (temp_dataset == "ERA"){
       gdp_temp_data1$era_mwtemp_fullemms <- gdp_temp_data1$era_mwtemp_preturb + gdp_temp_data1$deltat  
     }
@@ -130,87 +179,42 @@ i <- 1990
       gdp_temp_data1$cru_mwtemp_fullemms <- gdp_temp_data1$cru_mwtemp_preturb + gdp_temp_data1$deltat  
     }
     
-    
-    bhm_model <- run_bhm_model_reg_lag5("pooled")
-    
-    gdp_temp_data1$temp <- coef(bhm_model)[1]
-    gdp_temp_data1$temp2 <- coef(bhm_model)[2]
-    gdp_temp_data1$temp_l1 <- coef(bhm_model)[3]
-    gdp_temp_data1$temp2_l1 <- coef(bhm_model)[4]
-    gdp_temp_data1$temp_l2 <- coef(bhm_model)[5]
-    gdp_temp_data1$temp2_l2 <- coef(bhm_model)[6]
-    gdp_temp_data1$temp_l3 <- coef(bhm_model)[7]
-    gdp_temp_data1$temp2_l3 <- coef(bhm_model)[8]
-    gdp_temp_data1$temp_l4 <- coef(bhm_model)[9]
-    gdp_temp_data1$temp2_l4 <- coef(bhm_model)[10]
-    gdp_temp_data1$temp_l5 <- coef(bhm_model)[11]
-    gdp_temp_data1$temp2_l5 <- coef(bhm_model)[12]
-    
-
-    
+    if (bootstrapped == T){
+      gdp_temp_data1$temp <- coefdf$temp_l5  
+      gdp_temp_data1$temp2 <- coefdf$temp2_l5 
+    }
+    if (bootstrapped == F){
+      gdp_temp_data1$temp <- coef(bhm_model)[1]
+      gdp_temp_data1$temp2 <- coef(bhm_model)[2]
+      gdp_temp_data1$temp_l1 <- coef(bhm_model)[3]
+      gdp_temp_data1$temp2_l1 <- coef(bhm_model)[4]
+      gdp_temp_data1$temp_l2 <- coef(bhm_model)[5]
+      gdp_temp_data1$temp2_l2 <- coef(bhm_model)[6]
+      gdp_temp_data1$temp_l3 <- coef(bhm_model)[7]
+      gdp_temp_data1$temp2_l3 <- coef(bhm_model)[8]
+      gdp_temp_data1$temp_l4 <- coef(bhm_model)[9]
+      gdp_temp_data1$temp2_l4 <- coef(bhm_model)[10]
+      gdp_temp_data1$temp_l5 <- coef(bhm_model)[11]
+      gdp_temp_data1$temp2_l5 <- coef(bhm_model)[12]
+    }
     
     gdp_temp_data1$era_mwtemp_fullemms[gdp_temp_data1$era_mwtemp_fullemms > 30 & !is.na(gdp_temp_data1$era_mwtemp_fullemms)] <- 30
     gdp_temp_data1$era_mwtemp_preturb[gdp_temp_data1$era_mwtemp_preturb > 30 & !is.na(gdp_temp_data1$era_mwtemp_preturb)] <- 30
     
-    #plot(gdp_temp_data1$year, gdp_temp_data1$era_mwtemp_fullemms)
-    #if (experiment == "ssp370" | experiment == "ssp370" | experiment == "ssp370" | experiment == "ssp370"){
-    #    gdp_temp_data1$era_mwtemp_fullemms[gdp_temp_data1$era_mwtemp_fullemms > 30] <- 30
-    #  }
     
-    if (bootstrapped == T){
-      if (temp_dataset == "ERA"){
-        gdp_temp_data1$resp_temp_fullemms <- (gdp_temp_data1$era_mwtemp_fullemms * (laggedbs_df$temp_l5)) + 
-          ((gdp_temp_data1$era_mwtemp_fullemms^2) * (laggedbs_df$temp2_l5))
-        
-        gdp_temp_data1$resp_temp_preturb <- (gdp_temp_data1$era_mwtemp_preturb * (laggedbs_df$temp_l5)) + 
-          ((gdp_temp_data1$era_mwtemp_preturb^2) * (laggedbs_df$temp2_l5))
-        
-        gdp_temp_data1$delta_g_era <- gdp_temp_data1$resp_temp_preturb - gdp_temp_data1$resp_temp_fullemms
-        
-        #  maxtemp_2020 <- max(gdp_temp_data1$era_mwtemp[gdp_temp_data1$year < 2021], na.rm = T)
-        # gdp_temp_data1$max_delta_g_era <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2021 & gdp_temp_data1$era_mwtemp == maxtemp_2020 & !is.na(gdp_temp_data1$delta_g_era)]
-        #max_g <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2021 & gdp_temp_data1$era_mwtemp == maxtemp_2020 & !is.na(gdp_temp_data1$delta_g_era)]
-        #gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2020 & gdp_temp_data1$delta_g_era < max_g] <- max_g 
-        
-      }
+    if (temp_dataset == "ERA"){
+      gdp_temp_data1$resp_temp_fullemms <- (gdp_temp_data1$era_mwtemp_fullemms * gdp_temp_data1$temp) + 
+        ((gdp_temp_data1$era_mwtemp_fullemms^2) * gdp_temp_data1$temp2)
+      
+      gdp_temp_data1$resp_temp_preturb <- (gdp_temp_data1$era_mwtemp_preturb * gdp_temp_data1$temp) + 
+        ((gdp_temp_data1$era_mwtemp_preturb^2) * gdp_temp_data1$temp2)
+      
+      gdp_temp_data1$delta_g_era <- gdp_temp_data1$resp_temp_preturb - gdp_temp_data1$resp_temp_fullemms
       
     }
-    if (bootstrapped == F){
-      if (temp_dataset == "ERA"){
-        gdp_temp_data1$resp_temp_fullemms <- (gdp_temp_data1$era_mwtemp_fullemms * (gdp_temp_data1$temp + gdp_temp_data1$temp_l1 +
-                                                                                      gdp_temp_data1$temp_l2 + gdp_temp_data1$temp_l3 +
-                                                                                      gdp_temp_data1$temp_l4 + gdp_temp_data1$temp_l5)) + 
-          ((gdp_temp_data1$era_mwtemp_fullemms^2) * (gdp_temp_data1$temp2 + gdp_temp_data1$temp2_l1 + gdp_temp_data1$temp2_l2 +
-                                                       gdp_temp_data1$temp2_l3 + gdp_temp_data1$temp2_l4 + gdp_temp_data1$temp2_l5))
-        
-        gdp_temp_data1$resp_temp_preturb <- (gdp_temp_data1$era_mwtemp_preturb * (gdp_temp_data1$temp + gdp_temp_data1$temp_l1 +
-                                                                                    gdp_temp_data1$temp_l2 + gdp_temp_data1$temp_l3 +
-                                                                                    gdp_temp_data1$temp_l4 + gdp_temp_data1$temp_l5)) + 
-          ((gdp_temp_data1$era_mwtemp_preturb^2) * (gdp_temp_data1$temp2 + gdp_temp_data1$temp2_l1 + gdp_temp_data1$temp2_l2 +
-                                                      gdp_temp_data1$temp2_l3 + gdp_temp_data1$temp2_l4 + gdp_temp_data1$temp2_l5))
-        
-        gdp_temp_data1$delta_g_era <- gdp_temp_data1$resp_temp_preturb - gdp_temp_data1$resp_temp_fullemms
-        
-        #  maxtemp_2020 <- max(gdp_temp_data1$era_mwtemp[gdp_temp_data1$year < 2021], na.rm = T)
-        # gdp_temp_data1$max_delta_g_era <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2021 & gdp_temp_data1$era_mwtemp == maxtemp_2020 & !is.na(gdp_temp_data1$delta_g_era)]
-        #max_g <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2021 & gdp_temp_data1$era_mwtemp == maxtemp_2020 & !is.na(gdp_temp_data1$delta_g_era)]
-        #gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2020 & gdp_temp_data1$delta_g_era < max_g] <- max_g 
-        
-      }
-      
-    }
-    
-    if (adaptation == T){
-      # ok here we need to include adaptation. What we need is to flatten the response function over time
-      gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2101] <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2101]*((2100-gdp_temp_data1$year[gdp_temp_data1$year < 2101])/(2100-i))
-      gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2100] <- 0 
-    }
-    
-    # now let us calculate adjusted growht rate by adding deltaG to observed growth
     if (growth_past_2100 == 0){
       gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2100] <- 0
     }
-    
     
     if (temp_dataset == "CRU"){
       gdp_temp_data1$resp_temp_fullemms <- (gdp_temp_data1$cru_mwtemp_fullemms * gdp_temp_data1$temp) + 
@@ -223,7 +227,6 @@ i <- 1990
       
     }
     
-  
     # let us bring in the population data at the country-year level
     gdp_temp_data1 <- left_join(gdp_temp_data1,
                                 pop_wdi,
@@ -234,10 +237,9 @@ i <- 1990
       dplyr::mutate(SP.POP.TOTL = case_when(is.na(SP.POP.TOTL) ~ pop,
                                             TRUE ~ SP.POP.TOTL))
     
-    
     identifier <- gdp_temp_data1 %>% 
       #  dplyr::group_by(ISO3, year) %>% 
-      # dplyr::summarise(diff_lgdp_for_damages = mean(diff_lgdp_for_damages, na.rm = T),
+      # dplyr::summarise(diff_lgdp = mean(diff_lgdp, na.rm = T),
       #                 .group = "keep") %>% 
       ungroup(.) %>%  
       dplyr::select(c("ISO3", "diff_lgdp_for_damages", "year", "NY.GDP.PCAP.KD")) %>% 
@@ -249,19 +251,31 @@ i <- 1990
     
     gdp_temp_data1 <- left_join(identifier, gdp_temp_data1)
     
+    # Now let us clamp teh growth rates on both sides 
+    # turn this off if you do not want clamping
+    if (clamping == "clamp_growth"){
+      
+      gdp_temp_data1 <- left_join(gdp_temp_data1,
+                                  minmax_data,
+                                  by = c("Income group" = "Income.group"))
+      
+      gdp_temp_data1 <- gdp_temp_data1 %>% 
+        dplyr::mutate(diff_lgdp_for_damages = case_when(diff_lgdp_for_damages > max_dg ~ max_dg,
+                                                        diff_lgdp_for_damages < min_dg ~ min_dg,
+                                                        TRUE ~ diff_lgdp_for_damages))
+    }
+    
     # unlist...
     if (temp_dataset == "ERA"){
       gdp_temp_data1$delta_g_era <- unlist(gdp_temp_data1$delta_g_era)
-
+      # now let us calculate adjusted growht rate by adding deltaG to observed growth
       gdp_temp_data1$adj_growth <- (gdp_temp_data1$delta_g_era + gdp_temp_data1$diff_lgdp_for_damages)
       
     }
-    
-    
     if (temp_dataset == "CRU"){
       gdp_temp_data1$delta_g_cru <- unlist(gdp_temp_data1$delta_g_cru)
       # now let us calculate adjusted growht rate by adding deltaG to observed growth
-      gdp_temp_data1$adj_growth <- (gdp_temp_data1$delta_g_cru + gdp_temp_data1$diff_lgdp_for_damages)
+      gdp_temp_data1$adj_growth <- (gdp_temp_data1$delta_g_cru + gdp_temp_data1$diff_lgdp)
       
     }
     
@@ -284,23 +298,21 @@ i <- 1990
       dplyr::mutate(cum_adj_growthz = cumprod(adj_growth),
                     cum_growth_real = cumprod(diff_lgdp_for_damages))
     
-    # finally comput edamages...
-    #  damages_i_t4 <- damages_i_t4 %>% 
-    #    dplyr::mutate(damages = (gdp_year * cum_adj_growthz) - (gdp_year * cum_growth_real))
-    
+    # finally compute edamages...
     damages_i_t4 <- damages_i_t4 %>% 
       dplyr::mutate(gdp_noemms = (gdp_year * cum_adj_growthz),
                     gdp_ssp370 = (gdp_year * cum_growth_real),
                     damages = gdp_noemms - gdp_ssp370)
     
+    damages_i_t4 <- ungroup(damages_i_t4)
     
-    #damages_i_t4$gdp <- (damages_i_t4$gdp_year * damages_i_t4$cum_growth_real)
-    #experiment_year <- unique(damages_i_t4$exp_yr)
-    damages_i_t4 <- damages_i_t4 %>% dplyr::group_by(year) %>% 
-      dplyr::mutate(average_gdp = case_when(year <= 2020 ~ mean(NY.GDP.PCAP.KD, na.rm = T),
-                                            year > 2020 ~ mean(gdp_ssp370, na.rm = T)))
+    damages_i_t4 <- damages_i_t4 %>% 
+      dplyr::mutate(average_gdp_2020 = mean(gdp_ssp370[year == 2020], na.rm = T))
     
-    damages_i_t4$average_gdp_2020 = mean(damages_i_t4$NY.GDP.PCAP.KD[damages_i_t4$year == 2020], na.rm = T)
+    damages_i_t4 <- damages_i_t4 %>% 
+      dplyr::group_by(year) %>% 
+      dplyr::mutate(average_gdp = mean(gdp_ssp370, na.rm = T))
+    
     
     # calculate discounted damages for past and for future (note different 
     #- processes for discounting past damages and future damages)
@@ -309,8 +321,6 @@ i <- 1990
                     t_since_today = year - 2020,
                     weighted_damages1 = case_when(year <= 2020 ~ (damages*((1+(0.01))^t_since_k)),
                                                   year > 2020 ~ (damages*(1/(1+(0.01))^t_since_today))),
-                    weighted_damages1_5 = case_when(year <= 2020 ~ (damages*((1+(0.015))^t_since_k)),
-                                                  year > 2020 ~ (damages*(1/(1+(0.015))^t_since_today))),
                     weighted_damages2 = case_when(year <= 2020 ~ (damages*((1+(0.02))^t_since_k)),
                                                   year > 2020 ~ (damages*(1/(1+(0.02))^t_since_today))),
                     weighted_damages3 = case_when(year <= 2020 ~ (damages*((1+(0.03))^t_since_k)),
@@ -318,7 +328,7 @@ i <- 1990
                     weighted_damages5 = case_when(year <= 2020 ~ (damages*((1+(0.05))^t_since_k)),
                                                   year > 2020 ~ (damages*(1/(1+(0.05))^t_since_today))),
                     weighted_damages7 = case_when(year <= 2020 ~ (damages*((1+(0.07))^t_since_k)),
-                                                  year > 2020 ~ (damages*(1/(1+(0.07))^t_since_today))),
+                                                  year > 2020 ~ (damages*(1/(1+(0.07))^t_since_today))),      
                     weighted_damages_ramsey = case_when(year <= 2020 ~ (damages*((1+(0.02))^t_since_k)),
                                                         year > 2020 ~ damages*((1/(1.002^(t_since_today)))*((average_gdp/average_gdp_2020)^(-1.24)))),
                     ramsey_discount = ((1/(1.002^(t_since_today)))*((average_gdp/average_gdp_2020)^(-1.24))))
@@ -328,7 +338,6 @@ i <- 1990
     damages_i_t4$damages_pop <- damages_i_t4$damages * damages_i_t4$SP.POP.TOTL
     damages_i_t4 <- damages_i_t4 %>% 
       dplyr::mutate(weighted_damages1_scld = weighted_damages1 *SP.POP.TOTL,
-                    weighted_damages1_5_scld = weighted_damages1_5 *SP.POP.TOTL,
                     weighted_damages2_scld = weighted_damages2 *SP.POP.TOTL,
                     weighted_damages3_scld = weighted_damages3 *SP.POP.TOTL,
                     weighted_damages5_scld = weighted_damages5 *SP.POP.TOTL,
@@ -338,13 +347,67 @@ i <- 1990
                     gdp_ssp370_scld = gdp_ssp370 *SP.POP.TOTL)
     
     damages_i_t4$emitter <- i
-      
+    
+    
+    
     # add to data frame
     mother_df <- rbind(mother_df, damages_i_t4)
     
-    toc()
   }
   return(mother_df)
 }
 
-# end of script 
+############################################################################# now loop over the years and assign multiple cpus
+# Get number of cores set in bash script
+num_cores = as.integer(Sys.getenv("SLURM_CPUS_PER_TASK")) - 1
+# set up parallel backend
+registerDoParallel(num_cores)
+
+# parallelize the loop using foreach
+foreach(i=1:1000) %dopar% {
+  
+  #sample fair run
+  num_loop_i <- sample(unique(fair_exps_1tco2_disagg$num_loop), 1)
+  fair_exps_1gtc_disagg_i <- subset(fair_exps_1tco2_disagg, 
+                                    num_loop == num_loop_i)
+  # sample cgm raster 
+  raster_i <- list_r_rasters[[sample(1:30, 1)]]
+  #sample bhm coeffeceint
+  laggedbs_i <- subset(laggedbs, coef_id == sample(unique(laggedbs$coef_id), 1))
+  # run the function
+  damages_i <- calculate_damages_pulse(raster_i,
+                                       fair_exps_1gtc_disagg_i,
+                                       list_of_exps_1990_2020,
+                                       1990,
+                                       future_forecast_ssp370,
+                                       gdp_temp_data_k90_5lag,
+                                       "ERA",
+                                       bhm_era_reg,
+                                       T,
+                                       "NO",
+                                       "NO" ,
+                                       2020,
+                                       laggedbs_i)
+  damages_i$sim_id <- i
+  damages_i$coef_id <- laggedbs_i$coef_id
+  
+  damages_i <- damdamages_iages %>% 
+    dplyr::select(c("sim_id",
+                    "emitter", 
+                    "ISO3",
+                    "year",
+                    "weighted_damages2_scld", 
+                    "weighted_damages_ramsey_scld",
+                    "coef_id",
+                    "temp", 
+                    "temp2"))
+  
+  write_rds(damages_i, 
+            paste0(path, "data_20240311_6/scc_5lag_2100_", i, ".rds"))
+  
+  return(NULL)
+}
+
+stopImplicitCluster()
+
+#end of script 

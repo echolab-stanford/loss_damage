@@ -44,7 +44,6 @@ totals_bhm$uncertainty <- "bhm"
 totals_fair$uncertainty <- "fair"
 totals_cgm$uncertainty <- "cgm"
 
-
 listofdfs <- list(totals_all,
                   totals_bhm,
                   totals_cgm,

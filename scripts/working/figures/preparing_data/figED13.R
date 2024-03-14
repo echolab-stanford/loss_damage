@@ -100,10 +100,10 @@ totals_nog_2dr <- do.call(rbind, listofdfs_2dr)
 
 ################################################################################ no growth post 2100
 # generate list of files 
-path <- paste0("~/BurkeLab Dropbox/Projects/loss_damage/data/output20230713_nogrowth/")
+path <- paste0("~/BurkeLab Dropbox/Projects/loss_damage/data/output/20240311_2")
 
 all_data = list.files(path=path,
-                      pattern = "scc_nogrowth" ,
+                      pattern = "scc_" ,
                       full.names = TRUE,
                       recursive = TRUE,
                       include.dirs = FALSE)
@@ -112,7 +112,7 @@ all_data = list.files(path=path,
 # now read files into one list 
 #listofdfs_rams <- list()
 listofdfs_2dr <- list()
-for (i in 1:5000){
+for (i in 1:1000){
   tic()
   data_i <- readRDS(all_data[i])
   #data_i$loop_id <- i
@@ -160,6 +160,7 @@ totals_cgm <- total_damages_uncertainty_cgm %>% dplyr::group_by(cgm_id) %>%
 totals_bhm <- totals_nog_2dr %>% dplyr::group_by(coef_id) %>% 
   dplyr::summarise(total_damages = sum(weighted_damages2_scld, na.rm = T))
 
+
 # fair uncertainty
 totals_fair <- total_damages_uncertainty_fair %>% dplyr::group_by(fair_id) %>% 
   dplyr::summarise(total_damages = sum(weighted_damages2_scld, na.rm = T))
@@ -170,6 +171,18 @@ median(totals_fair$total_damages)
 totals_all <- totals_nog_2dr 
 totals_all <- ungroup(totals_all)
 totals_all <- totals_all %>% dplyr::select(-c("emitter"))
+
+median(totals_all$total_damages2)
+
+
+totals_bhm <- ungroup(totals_bhm)
+totals_bhm <- totals_bhm %>% dplyr::select(-c("emitter"))
+
+median(totals_all$total_damages2)
+median(totals_bhm$total_damages2)
+median(totals_cgm$total_damages)
+median(totals_fair$total_damages)
+
 #totals_all <- totals_all %>% dplyr::select(-c("emitter"))
 
 
@@ -180,4 +193,9 @@ write_rds(totals_cgm, paste0(fig_prepped_dta, run_date,"/totals_cgm.rds"))
 write_rds(totals_fair, paste0(fig_prepped_dta,run_date, "/totals_fair.rds"))
 
 # end of script
+
+write_rds(totals_all,"~/Desktop/totals_all.rds")
+write_rds(totals_bhm, "~/Desktop/totals_bhm.rds")
+write_rds(totals_cgm, "~/Desktop/totals_cgm.rds")
+write_rds(totals_fair, "~/Desktop/totals_fair.rds")
 

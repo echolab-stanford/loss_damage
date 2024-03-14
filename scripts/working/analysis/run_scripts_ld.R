@@ -252,6 +252,7 @@ gdp_temp_data_5lags_2100 <- subset(gdp_temp_data_5lags_2300, year < 2101)
 gdp_temp_data_5lags_2300$diff_lgdp_for_damages[is.na(gdp_temp_data_5lags_2300$diff_lgdp_for_damages) & (gdp_temp_data_5lags_2300$year > 2014 & gdp_temp_data_5lags_2300$year <2021)] <- 0
 gdp_temp_data_5lags_2300$diff_lgdp_for_damages[is.na(gdp_temp_data_5lags_2300$diff_lgdp_for_damages) & (gdp_temp_data_5lags_2300$year == 1990)]  <- 0
 
+write_rds(gdp_temp_data_5lags_2300, "~/Desktop/gdp_temp_data_5lags_2300+20240311.rds")
 
 gdp_temp_data_5lags_2100$diff_lgdp_for_damages[is.na(gdp_temp_data_5lags_2100$diff_lgdp_for_damages) & (gdp_temp_data_5lags_2100$year > 2014 & gdp_temp_data_5lags_2100$year <2021)] <- 0
 gdp_temp_data_5lags_2100$diff_lgdp_for_damages[is.na(gdp_temp_data_5lags_2100$diff_lgdp_for_damages) & (gdp_temp_data_5lags_2100$year == 1990)]  <- 0
@@ -267,6 +268,18 @@ load("data/processed/bhm/bhm_era_reg.RData")
 # generating the pooled lagged model regression
 #bhm_era_reg_5lag <- run_bhm_model_reg_lag5("pooled")
 #save(bhm_era_reg, file = "data/processed/bhm/bhm_era_reg.RData")
+
+-(coef(bhm_era_reg_5lag)[1]+
+  coef(bhm_era_reg_5lag)[3] + 
+coef(bhm_era_reg_5lag)[5] +
+coef(bhm_era_reg_5lag)[7] +
+coef(bhm_era_reg_5lag)[9] +
+coef(bhm_era_reg_5lag)[11]) / (2*(coef(bhm_era_reg_5lag)[2]+
+                                    coef(bhm_era_reg_5lag)[4] + 
+                                    coef(bhm_era_reg_5lag)[6] +
+                                    coef(bhm_era_reg_5lag)[8] +
+                                    coef(bhm_era_reg_5lag)[10] +
+                                    coef(bhm_era_reg_5lag)[12]))
 
 ##############################################################################
 ############### calculate the total damages for each scenario ################

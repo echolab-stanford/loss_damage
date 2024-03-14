@@ -27,7 +27,7 @@ i <- 5
 ################################################################################
 ################################################################################
 # prep data
-i 
+ 
 for (i in 1:length(listofdfs)) {
   tic()
   df <- listofdfs[[i]]
@@ -57,7 +57,7 @@ for (i in 1:length(listofdfs)) {
 # plot data
 dev.off()
 
-pdf(paste0("figures/", run_date ,"/fig2e.pdf"), width=14, height=5.75)
+pdf(paste0("~/Desktop/fig2e_5lag_v3.pdf"), width=14, height=5.75)
 
 par(mfrow = c(1,1))
 par(mar= c(8,6,2,2))
@@ -93,8 +93,8 @@ polygon(x = c(min(totals_iqr_ssp_2100_2dr$total_damages), max(totals_iqr_ssp_210
         y = c(1, 1,2, 2),                             # Y-Coordinates of polygon
         col = "#990000")  
 
-polygon(x = c(totals_median_impacts_2300_2dr - 25, totals_median_impacts_2300_2dr + 25,
-              totals_median_impacts_2300_2dr + 25, totals_median_impacts_2300_2dr - 25),
+polygon(x = c(totals_median_ssp_2100_2dr - 25, totals_median_ssp_2100_2dr + 25,
+              totals_median_ssp_2100_2dr + 25, totals_median_ssp_2100_2dr - 25),
         border = "gold1",      # X-Coordinates of polygon
         y = c(1, 1,2, 2),                             # Y-Coordinates of polygon
         col = "gold1")  
@@ -118,8 +118,8 @@ polygon(x = c(min(totals_iqr_ssp_2100_ramsey$total_damages), max(totals_iqr_ssp_
         y = c(3.25, 3.25,4.25, 4.25),                             # Y-Coordinates of polygon
         col = "#581795")  
 
-polygon(x = c(totals_median_impacts_2300_ramsey - 25, totals_median_impacts_2300_ramsey + 25,
-              totals_median_impacts_2300_ramsey + 25, totals_median_impacts_2300_ramsey - 25),
+polygon(x = c(totals_median_ssp_2100_ramsey - 25, totals_median_ssp_2100_ramsey + 25,
+              totals_median_ssp_2100_ramsey + 25, totals_median_ssp_2100_ramsey - 25),
         border = "gold1",      # X-Coordinates of polygon
         y = c(3.25, 3.25,4.25, 4.25),                             # Y-Coordinates of polygon
         col = "gold1")  
@@ -323,39 +323,42 @@ text(totals_median_nogrowth_2dr,
      cex = 1.45,
      lwd = 2.25)
 
-segments(x0 = totals_median_impacts_2300_ramsey, 
-         x1 = totals_median_impacts_2300_ramsey,
-         y0 = 4.25, y1 = 4.50, lwd = 1.75)
-text(totals_median_impacts_2300_ramsey,
-     4.85, 
-     paste0("$", round(totals_median_impacts_2300_ramsey, 0)),
-     cex = 1.45,
-     lwd = 2.25)
 
-segments(x0 = totals_median_impacts_2300_2dr, 
-         x1 = totals_median_impacts_2300_2dr,
-         y0 = 2, y1 = 2.25, lwd = 1.75)
-text(totals_median_impacts_2300_2dr,
-     2.6, 
-     paste0("$", round(totals_median_impacts_2300_2dr, 0)),
-     cex = 1.45,
-     lwd = 2.25)
+
 
 segments(x0 = totals_median_ssp_2100_ramsey, 
          x1 = totals_median_ssp_2100_ramsey,
-         y0 = 16.25, y1 = 16.50, lwd = 1.75)
+         y0 = 4.25, y1 = 4.50, lwd = 1.75)
 text(totals_median_ssp_2100_ramsey,
-     16.85, 
+     4.85, 
      paste0("$", round(totals_median_ssp_2100_ramsey, 0)),
      cex = 1.45,
      lwd = 2.25)
 
 segments(x0 = totals_median_ssp_2100_2dr, 
          x1 = totals_median_ssp_2100_2dr,
-         y0 = 14, y1 = 14.25, lwd = 1.75)
+         y0 = 2, y1 = 2.25, lwd = 1.75)
 text(totals_median_ssp_2100_2dr,
-     14.6, 
+     2.6, 
      paste0("$", round(totals_median_ssp_2100_2dr, 0)),
+     cex = 1.45,
+     lwd = 2.25)
+
+segments(x0 = totals_median_noimpacts_ramsey, 
+         x1 = totals_median_noimpacts_ramsey,
+         y0 = 16.25, y1 = 16.50, lwd = 1.75)
+text(totals_median_noimpacts_ramsey,
+     16.85, 
+     paste0("$", round(totals_median_noimpacts_ramsey, 0)),
+     cex = 1.45,
+     lwd = 2.25)
+
+segments(x0 = totals_median_noimpacts_2dr, 
+         x1 = totals_median_noimpacts_2dr,
+         y0 = 14, y1 = 14.25, lwd = 1.75)
+text(totals_median_noimpacts_2dr,
+     14.6, 
+     paste0("$", round(totals_median_noimpacts_2dr, 0)),
      cex = 1.45,
      lwd = 2.25)
 
