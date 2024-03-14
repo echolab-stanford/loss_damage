@@ -73,7 +73,7 @@ A Repo supporting project on estimating global loss and damage from emissions. T
         - run figure preparation and plotting scripts
             - run the script fig2a_b_c_d.R found under "~/GitHub/loss_damage/scripts/working/figures/preparing_data/fig2a_b_c_d.R"
                 - Before running the scripts make sure to adjust the 'run_date' paramter uptop so that the script can pull the data you have just produced above for panels a-d. This script will save the dataset in the github repo "~/GitHub/loss_damage/data/figures/{run_date}/".
-            - now run the scripts 'fig2a_b_plot.R' and 'figc_d_plot.R' both can be found here:  "~/GitHub/loss_damage/scripts/working/figures/plotting_data/". Also make sure you have updated the 'run_date' parameter up top. 
+            - now run the scripts 'fig2a_b_plot.R' and can be found here:  "~/GitHub/loss_damage/scripts/working/figures/plotting_data/". Also make sure you have updated the 'run_date' parameter up top. 
 
 
 
