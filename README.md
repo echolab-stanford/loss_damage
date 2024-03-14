@@ -36,10 +36,10 @@ A Repo supporting project on estimating global loss and damage from emissions. T
 ### Reproduce figures from the paper 
 
 - Figure 2:
-  -- output dataframes through run_scripts.R
-      1) run the set up code chunks and read the main dataframes (lines 22-92)
-      2) run (line 185) to produce the fair temperature response to emissions preturbation. Specifically, this will return $' \delta{T}_t '$
-      3)    
+-   output dataframes through run_scripts.R
+-     1) run the set up code chunks and read the main dataframes (lines 22-92)
+-     2) run (line 185) to produce the fair temperature response to emissions preturbation. Specifically, this will return $ \delta{T}_t $
+-     3)    
 
 ### Reproduce data underlying figures in the paper
 
