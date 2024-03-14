@@ -5,6 +5,9 @@ A Repo supporting project on estimating global loss and damage from emissions. T
 
 ## Scripts 
 
+- The pipeline for producing this paper's results rely on output dataframes produced through the run_scripts.R script. Inside this script teh needed custom functions are sourced from scripts in the same folders. Each with thier own job.
+- Some of the script are run through sherlock. These are batch scripts (R scripts) with shell files (.sh) specifiying the resources needed to run the script. 
+
 ### Processing scripts 
 
 ### Analysis scripts 
@@ -31,6 +34,12 @@ A Repo supporting project on estimating global loss and damage from emissions. T
 ## Processes 
 
 ### Reproduce figures from the paper 
+
+- Figure 2:
+-   output dataframes through run_scripts.R
+-     1) run the set up code chunks and read the main dataframes (lines 22-92)
+-     2) run (line 185) to produce the fair temperature response to emissions preturbation. Specifically, this will return $ \delta{T}_t $
+-     3)    
 
 ### Reproduce data underlying figures in the paper
 
