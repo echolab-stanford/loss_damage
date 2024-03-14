@@ -7,7 +7,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230821"
+run_date <- "20240314"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -162,84 +162,3 @@ text("SC-CO2", x = 2020, y = 2100)
 dev.off()
 
 # end of script 
-
-# Load required packages
-library(ggplot2)
-
-# Set the output file for the plot
-run_date <- format(Sys.Date(), "%Y%m%d")
-output_file <- paste0("figures/", run_date, "/fig2a_b.pdf")
-
-# Create data frames for each plot
-data_df_2020 <- total_damages_by_pulse_2020_all[total_damages_by_pulse_2020_all$discount_rate == "7%", ]
-data_df_2100 <- total_damages_by_pulse_2100_all[total_damages_by_pulse_2100_all$discount_rate == "7%", ]
-
-# Plotting Figure 3b
-pdf(output_file, width = 15, height = 6)
-# Load required packages
-library(ggplot2)
-
-# Set the output file for the plot
-run_date <- format(Sys.Date(), "%Y%m%d")
-output_file <- paste0("figures/", run_date, "/fig2a_b.pdf")
-
-# Create data frames for each plot
-data_df_2020 <- total_damages_by_pulse_2020_all[total_damages_by_pulse_2020_all$discount_rate == "7%", ]
-data_df_2100 <- total_damages_by_pulse_2100_all[total_damages_by_pulse_2100_all$discount_rate == "7%", ]
-
-# Create data frame for segment values
-segment_data <- data.frame(
-  x = rep(2002, 4),
-  y = c(9.6, 9.2, 8.8, 8.4),
-  yend = c(9.6, 9.2, 8.8, 8.4),
-  col = c("#de3623", "#f0da32", "#2aa83f", "#023b70")
-)
-
-# Plotting Figure 3b
-pdf(output_file, width = 15, height = 6)
-# Load required packages
-library(ggplot2)
-
-# Set the output file for the plot
-run_date <- format(Sys.Date(), "%Y%m%d")
-output_file <- paste0("figures/", run_date, "/fig2a_b.pdf")
-
-# Create data frames for each plot
-data_df_2020 <- total_damages_by_pulse_2020_all[total_damages_by_pulse_2020_all$discount_rate == "7%", ]
-data_df_2100 <- total_damages_by_pulse_2100_all[total_damages_by_pulse_2100_all$discount_rate == "7%", ]
-
-# Create data frame for segment values
-segment_data <- data.frame(
-  x = rep(2002, 4),
-  y = c(9.6, 9.2, 8.8, 8.4),
-  yend = c(9.6, 9.2, 8.8, 8.4),
-  col = c("#de3623", "#f0da32", "#2aa83f", "#023b70"),
-  label = c("2%", "3%", "5%", "7%")
-)
-
-# Plotting Figure 3b
-pdf(output_file, width = 15, height = 6)
-
-# Plot 1 - Accumulated damages through 2020
-p1 <- ggplot(data_df_2020, aes(x = emitter, y = total_damages)) +
-  geom_point(pch = 3, color = "#023b70", size = 2) +
-  geom_segment(data = segment_data, aes(x = x, y = y, xend = 2004, yend = yend, color = col), size = 3) +
-  annotate("text", x = 2006, y = c(9.6, 9.2, 8.8, 8.4), label = c("2%", "3%", "5%", "7%"), nudge_x = 0.5) +
-  labs(x = "Year of 1GtCO2 Pulse", y = "Per tonne damages in 2020 $USD\n", title = "a)  Accumulated damages through 2020") +
-  scale_x_continuous(limits = c(1990, 2020)) +
-  scale_y_continuous(limits = c(0, 10)) +
-  theme_minimal()
-
-# Plot 2 - Accumulated damages 2021-2100
-p2 <- ggplot(data_df_2100, aes(x = emitter, y = total_damages)) +
-  geom_point(pch = 3, color = "#023b70", size = 2) +
-  labs(x = "Year of 1GtCO2 Pulse", y = "Per tonne damages in 2020 $USD\n", title = "b)  Accumulated damages 2021-2100") +
-  scale_x_continuous(limits = c(1990, 2020)) +
-  scale_y_continuous(limits = c(0, 450)) +
-  theme_minimal()
-
-# Combine the two plots side by side
-combined_plot <- cowplot::plot_grid(p1, p2, ncol = 2)
-
-# Save the combined plot to the pdf file
-cowplot::save_plot(output_file, combined_plot, base_aspect_ratio = 1.5)
