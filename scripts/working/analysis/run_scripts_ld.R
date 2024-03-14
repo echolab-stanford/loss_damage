@@ -28,14 +28,16 @@ setwd("~/GitHub/loss_damage")
 # the scripts to produce the data underlying the study). The other option is to 
 # produce new data with updated parameters, such as fair parameters, year of 
 # start of damages, among others 
-replicate <- F# change T to F if you want to create your own data  
-if (replicate == T){
-  run_date <- "20230523"
-}
-if (replicate == F){
-  run_date <- gsub("-","",Sys.Date())
-}
-#run_date <- "20230821"
+#replicate <- F# change T to F if you want to create your own data  
+#if (replicate == T){
+#  run_date <- "20230523"
+#}
+#if (replicate == F){
+#  run_date <- gsub("-","",Sys.Date())
+#}
+
+#ADJUST THE RUN_DATE BEFORE RUNNING THE SCRIPT 
+run_date <- "20240314"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -64,8 +66,7 @@ setwd(dropbox_path)
 # population country-year dataset
 pop_wdi <- readRDS("data/processed/world_gdp_pop/pop_wdi.rds")
 
-# ok let us read the processed raster and list of rasters for warming ratio
-#mean_r_raster <- raster("data/processed/r_cgm/ratio_raster_avgs.tif")
+# read in the warming ratio raster
 median_raster <- raster("data/processed/r_cgm/median_raster.tiff")
 
 # we need to aggregate the deltat to the country level by weighting by pop
@@ -107,6 +108,10 @@ wdi_dat <- readRDS("data/processed/wdi_dat.rds")
 #  toc()
 #}
 #
+
+# ok let us read the processed raster and list of rasters for warming ratio
+#mean_r_raster <- raster("data/processed/r_cgm/ratio_raster_avgs.tif")
+
 
 # ok let us read in the list of all CGM ratio rasters
 load("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/r_cgm/list_r_rasters_20230822.RData")
@@ -251,6 +256,7 @@ gdp_temp_data_5lags_2100 <- subset(gdp_temp_data_5lags_2300, year < 2101)
 # before going on make sure canada and other countries' data are included 
 
 
+
 ################### generate country-year regression model: ##################
 # generating the pooled base model 
 #bhm_era_reg <- run_bhm_model_reg("pooled")
@@ -297,7 +303,8 @@ total_damages_1gtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
 
 write_rds(total_damages_1gtco2_k90, paste0("data/output/", 
                                            run_date, 
-                                           "/total_damages_1gtco2_1990_2022.rds"))
+                                           "/total_damages_1gtco2_1990_2020.rds"))
+
 
 ################################################################################  # fig3c
 total_damages_1tco2_k80 <- calculate_damages_pulse(median_raster,

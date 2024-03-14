@@ -36,21 +36,29 @@ A Repo supporting project on estimating global loss and damage from emissions. T
 ### Reproduce figures from the paper 
 
 - Figure 2:
-    - panels a-d:
+    - before running the scripts sync the following files in your desktop:
+        - "~/BurkeLab Dropbox/projects/loss_damage/FaIR/"
+        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/world_gdp_pop/"
+        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/future_forecast/"
+        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/bhm/"
+        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/wdi_dat.rds"
+        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/minmax_data.rds"
+        - downloads the github 'loss_damage' repo from the lab directory (5lag_pipeline branch NOT main)
+    - panels a-b:
         - output dataframes through run_scripts.R found under "~/GitHub/loss_damage/scripts/working/analysis/run_scripts.R"
-            1. set up the directorie to access the input data and to output the outcome data 
-            2. run the set up code chunks and read the main dataframes (lines 22-92). Those lines will produce the following:
+            1. set up the directories to access the input data and to output the outcome data by syncing the above folders
+            2. run the set up code chunks and read the main dataframes (lines 22-93). Those lines will produce the following:
                 a. country-year data with population from the WDI
                 b. a median raster from the 30 CGMs ensemble
                 c. population raster to calculate weighted ratios
                 d. a country level global shapefile
                 e. a dataframe with minimum and maximum observed growth to bound future growth                
-            3. run (line 185) to produce the fair temperature response to emissions preturbation. Specifically, this will return $' \delta{T}_t '$ used in equation (12)
-            4. run (line 225) to read in the SSP3.70 scenario forecast data
-            5. run (line 248-250) to read the GDP-temperature panel. This data will be used to calculate the damages attributed to the emissions preturbation 
-            6. run (line 266) to read in the BHM temperature-growth regression output
-            7. run (line 287) to read in the number of years to loop over to produce the damages per emissions in a given year 
-            8. Finally, run lines (294-307) this will run the custom function that would calculate the damages following equations (12-16) and then the last linee is to output the dataset. The paramaters to specify:
+            3. run (line 190) to produce the fair temperature response to emissions preturbation. Specifically, this will return $' \delta{T}_t '$ used in equation (12)
+            4. run (line 230) to read in the SSP3.70 scenario forecast data
+            5. run (line 253-255) to read the GDP-temperature panel. This data will be used to calculate the damages attributed to the emissions preturbation 
+            6. run (line 285) to read in the number of years to loop over to produce the damages per emissions in a given year 
+            7. Finally, run lines (292-304) this will run the custom function that would calculate the damages following equations (12-16) and then the last linee is to output the dataset. The paramaters to specify:
+                - NOTE: the script that contains the function that calculate the damages is '3c2_calc_total_damages_5lags.R'
                 a. warming ratio raster
                 b. fair temperature response to emissions preturbation 
                 c. year(s) to loop over to calculate the damages per that year 
@@ -65,7 +73,7 @@ A Repo supporting project on estimating global loss and damage from emissions. T
         - run figure preparation and plotting scripts
             - run the script fig2a_b_c_d.R found under "~/GitHub/loss_damage/scripts/working/figures/preparing_data/fig2a_b_c_d.R"
                 - Before running the scripts make sure to adjust the 'run_date' paramter uptop so that the script can pull the data you have just produced above for panels a-d. This script will save the dataset in the github repo "~/GitHub/loss_damage/data/figures/{run_date}/".
-            - now run the scripts 'fig2a_b_c_d_plot.R' and 'figc_d_plot.R' both can be found here:  "~/GitHub/loss_damage/scripts/working/figures/plotting_data/". Also make sure you have updated the 'run_date' parameter up top. 
+            - now run the scripts 'fig2a_b_plot.R' and 'figc_d_plot.R' both can be found here:  "~/GitHub/loss_damage/scripts/working/figures/plotting_data/". Also make sure you have updated the 'run_date' parameter up top. 
 
 
 
