@@ -255,6 +255,9 @@ gdp_temp_data_5lags_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_
 gdp_temp_data_5lags_2100 <- subset(gdp_temp_data_5lags_2300, year < 2101)
 # before going on make sure canada and other countries' data are included 
 
+gdp_temp_data_k80$diff_lgdp_for_damages[gdp_temp_data_k80$diff_lgdp_for_damages< -1] <- -0.99999999999
+gdp_temp_data_k90$diff_lgdp_for_damages[gdp_temp_data_k90$diff_lgdp_for_damages< -1] <- -0.99999999999
+
 
 
 ################### generate country-year regression model: ##################
@@ -264,7 +267,7 @@ gdp_temp_data_5lags_2100 <- subset(gdp_temp_data_5lags_2300, year < 2101)
 load("data/processed/bhm/bhm_era_reg.RData")
 
 # generating the pooled lagged model regression
-#bhm_era_reg_5lag <- run_bhm_model_reg_lag5("pooled")
+bhm_era_reg_5lag <- run_bhm_model_reg_lag5("pooled")
 #save(bhm_era_reg, file = "data/processed/bhm/bhm_era_reg.RData")
 
 ##############################################################################
@@ -574,7 +577,7 @@ total_damages_k80 <- calculate_bidamages_bilateral(median_raster,
                                                    1980, 
                                                    future_forecast_ssp370,
                                                    gdp_temp_data_k80_2020,
-                                                   bhm_era_reg,
+                                                   bhm_era_reg_5lag,
                                                    2020)
 
 # write teh dataframe in to the output arm of teh directory 
@@ -590,7 +593,7 @@ total_damages_k90 <- calculate_bidamages_bilateral(median_raster,
                                                    1990, 
                                                    future_forecast_ssp370,
                                                    gdp_temp_data_k90_2020,
-                                                   bhm_era_reg,
+                                                   bhm_era_reg_5lag,
                                                    2020)
 
 # write the dataframe
@@ -607,7 +610,7 @@ total_damages_k90_consump <- calculate_bidamages_bilateral(median_raster,
                                                    1990, 
                                                    future_forecast_ssp370,
                                                    gdp_temp_data_k90_2020,
-                                                   bhm_era_reg,
+                                                   bhm_era_reg_5lag,
                                                    2020)
 
 #write_rds(total_damages_k90_consump, "data/output/060223/total_damages_k90_consump_v2022.rds")
@@ -624,7 +627,7 @@ total_damages_k90_prod <- calculate_bidamages_bilateral(median_raster,
                                                         1990, 
                                                         future_forecast_ssp370,
                                                         gdp_temp_data_k90_2020,
-                                                        bhm_era_reg,
+                                                        bhm_era_reg_5lag,
                                                         2020)
 
 #write_rds(total_damages_k90_prod, "data/output/060223/total_damages_k90_prod_v2022.rds")

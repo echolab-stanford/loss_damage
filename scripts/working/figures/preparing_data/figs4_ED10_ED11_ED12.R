@@ -15,15 +15,15 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-replicate <- F# change T to F if you want to create your own data  
-if (replicate == T){
-  run_date <- "20230523"
-}
-if (replicate == F){
-  run_date <- gsub("-","",Sys.Date())
-}
+#replicate <- F# change T to F if you want to create your own data  
+#if (replicate == T){
+#  run_date <- "20230523"
+#}
+#if (replicate == F){
+#  run_date <- gsub("-","",Sys.Date())
+#}
 
-run_date <- "20230821"
+run_date <- "20240314"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -40,7 +40,7 @@ total_damages_k90_consump <- readRDS(paste0(output_path, "/total_damages_k90_con
 #############################################################################
 #############################################################################
 # prepa data  
-dataset <- total_damages_k90
+dataset <- total_damages_k90_consump
 # we will build a funciton that takes in the dataset and prepares it and then 
 # just loop over the 4 datasets 
 prep_data_for_sankey <- function(dataset){
@@ -285,7 +285,9 @@ prep_data_for_sankey <- function(dataset){
                                                       benefits_transfers2_owing$owing_real,
                                                       damages_transfers2_owed_to$owed_to_real,
                                                       as.character(unique(damages_and_benefits_transfers2a$stratum)[24]),
-                                                      benefits_transfers2_owed_to$owed_to_real)))
+                                                      benefits_transfers2_owed_to$owed_to_real[1:3], 
+                                                      benefits_transfers2_owed_to$owed_to_real[5:6])))
+ 
 
   return(damages_and_benefits_transfers2a)
 }
@@ -303,3 +305,31 @@ write_rds(damages_and_benefits_k90_prod, paste0(fig_prepped_dta, run_date, "/dam
 write_rds(damages_and_benefits_k90_consump, paste0(fig_prepped_dta, run_date, "/damages_and_benefits_k90_consump.rds"))
 
 # end of script
+
+a <- as.data.frame(unique(damages_and_benefits_transfers2a$stratum))
+b <- as.data.frame(c(damages_transfers2_owing$owing_real,
+                     as.character(unique(damages_and_benefits_transfers2a$stratum)[40]),
+                     as.character(unique(damages_and_benefits_transfers2a$stratum)[1]),
+                     as.character(unique(damages_and_benefits_transfers2a$stratum)[17]),
+                     benefits_transfers2_owing$owing_real,
+                     damages_transfers2_owed_to$owed_to_real,
+                     as.character(unique(damages_and_benefits_transfers2a$stratum)[24]),
+                     benefits_transfers2_owed_to$owed_to_real))
+
+)
+
+colnames(a)[1] <- "id"
+colnames(b)[1] <- "id"
+
+a <- as.data.frame(a)
+a$id <- as.character(a$id)
+a <- a[order(a$id),]
+a$nrow <- 1:nrow(a)
+
+b$id <- as.character(b$id)
+b <- b[order(b$id),]
+b <- as.data.frame(b)
+b$nrow <- 1:nrow(b)
+
+
+c <- left_join(b,a, by = c("nrow"))

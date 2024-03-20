@@ -14,7 +14,7 @@ source("scripts/working/analysis/0_read_libs.R")
 # establish a function
 `%not_in%` <- purrr::negate(`%in%`)
 
-run_date <- "20230821"
+run_date <- "20240314"
 ################################################################################
 ################################################################################
 # read data 
@@ -150,7 +150,8 @@ sankey_k80 <- ggplot(damages_and_benefits_k80,
   geom_text(stat="stratum", 
             aes(label=ifelse(after_stat(deposit)%not_in%label_out_rect_k80 &after_stat(deposit)%in%label_out_rect_right_k80,
                                              as.character(after_stat(stratum)),"")),
-            size=9) +  ggrepel::geom_text_repel(
+            size=9) +  
+  ggrepel::geom_text_repel(
               stat="stratum", 
               aes(label=ifelse(after_stat(deposit)%in%label_out_rect_k80,
                                as.character(after_stat(stratum)),"")),
@@ -173,7 +174,7 @@ sankey_k80 <- ggplot(damages_and_benefits_k80,
     size=9
   ) + scale_fill_manual(values = colorRampPalette(brewer.pal(9, "Set1"))(23), 
                         breaks = unique(damages_and_benefits_k80$owed_to_real)) +
-  scale_y_continuous(labels = addUnits, limits = range(-15000000000000,25000000000000)) 
+  scale_y_continuous(labels = addUnits, limits = range(-150000000000,125000000000000)) 
 
 ################################################################################ Sankey-> k = 1990 - production
 # we need to use "owed to" as a category for determining the different colors
@@ -247,7 +248,7 @@ sankey_k90_prod <- ggplot(damages_and_benefits_k90_prod,
     size=9
   ) + scale_fill_manual(values = colorRampPalette(brewer.pal(9, "Set1"))(23), 
                         breaks = unique(damages_and_benefits_k90_prod$owed_to_real)) +
-  scale_y_continuous(labels = addUnits, limits = range(-8000000000000,10000000000000)) 
+  scale_y_continuous(labels = addUnits, limits = range(-80000000000,65000000000000)) 
 
 ################################################################################ Sankey-> k = 1990 - consumption 
 # we need to use "owed to" as a category for determining the different colors
@@ -321,7 +322,7 @@ sankey_k90_consump <- ggplot(damages_and_benefits_k90_consump,
     size=9
   ) + scale_fill_manual(values = colorRampPalette(brewer.pal(9, "Set1"))(23), 
                         breaks = unique(damages_and_benefits_k90_consump$owed_to_real)) +
-  scale_y_continuous(labels = addUnits, limits = range(-8000000000000,10000000000000)) 
+  scale_y_continuous(labels = addUnits, limits = range(-80000000000,65000000000000)) 
 
 
 

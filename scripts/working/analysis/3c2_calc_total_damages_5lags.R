@@ -2,7 +2,7 @@
 # Mustafa Zahid, April 1st, 2022
 # This script calculates the total damages bore by a specified pulse of emissions 
 # for example 1gtco2 pulse with BHM model under 5 lags specification. 
-# Edited: June 2023
+# Last edited: January 2024
 #############################################################################
 
 
