@@ -1,72 +1,33 @@
 ##############################################################################
 # Mustafa Zahid, March 28th, 2022
 # This script is to read all the needed libraries
-# Last updated: June 2023
+# Last updated: March 2024 
 ##############################################################################
 #remove(list=ls())
 
-#Let us download the needed packages 
-# Data cleaning
-packs <- c("tidyr", 
-           "tidyverse", 
-           "dplyr", 
-           "plyr",
-           "statar",
-           "reshape",
-           "data.table",
-           "zoo",
-           "parallel",
-           "tictoc",
-           "lubridate",
-           "sp", 
-           "readxl",
-           "sf", 
-           "raster", 
-           "terra", 
-           "rgdal", 
-           "rgeos", 
-           "tmap", 
-           "spData",
-           "chron",
-           "ncdf4",
-           "maptools",
-           "scales",
-           "maptools",
-           "hrbrthemes",
-           "ggthemes",
-           "scales",
-           "MetBrewer",
-           "WDI",
-           "wbstats",
-           "maptools",
-           "scales",
-           "countrycode",
-           "ggalluvial",
-           "MetBrewer",
-           "RColorBrewer",
-           "shadowtext",
-           "doParallel",
-           "foreach",
-           "gt",
-           "gtable",
-           "cowplot"
-           )
+#Let us list the packages we are going to need throughout
+packs <- c("chron","countrycode","cowplot","data.table","doParallel","dplyr",
+           "foreach","ggalluvial","ggthemes","gt","gtable","hrbrthemes","lubridate",  
+           "maptools","maptools", "maptools","MetBrewer","MetBrewer","ncdf4",
+           "parallel","plyr","raster","RColorBrewer","readxl","reshape","rgdal", 
+           "rgeos","scales","scales","scales","sf","shadowtext","sp","spData",  
+           "statar","terra","tictoc","tidyr","tidyverse","tmap","wbstats","WDI",
+           "zoo")
 
 
-#for (i in 1:length(packs)){
-#  install.packages(packs[[i]])
-#  print(i)
-#}
+# check for uninstalled packaged
+uninstalled_packs <- packs[!(packs %in% installed.packages()[,"Package"])]
+# install the needed packages if they are uninstalled 
+if(length(uninstalled_packs)) install.packages(uninstalled_packs)
 
-
-
-# calling the packages
+# now calling the packages
 lapply(packs, 
        library, 
        character.only = TRUE)
 
 
 # run any functions that could be needed in the future
+# function for constructing table 
 gt_theme_538 <- function(data,...) {
   data %>%
     opt_all_caps()  %>%
@@ -144,7 +105,6 @@ gt_theme_538_nocaps <- function(data,...) {
     ) 
 }
 
-
 # create a function to add a unit letter next to the total amount displayed 
 addUnits <- function(n) {
   labels <- ifelse(n < -1e12, paste0(round(n/-1e12), 'T'), # negative trillions (benefits)
@@ -159,7 +119,6 @@ addUnits <- function(n) {
 }
 
 
-
 # set paths 
 dropbox_path <- "~/BurkeLab Dropbox/Projects/loss_damage/"
 # get user login 
@@ -171,7 +130,6 @@ dir.create(file.path(paste0(dropbox_path, "data/output/", run_date)))
 #dir.create(file.path(paste0(dropbox_path, "data/figures/", run_date)))
 dir.create(file.path(paste0(getwd(), "/data/figures/", run_date)))
 dir.create(file.path(paste0(dropbox_path, "/data/processed/", run_date)))
-
 output_path <- paste0(dropbox_path, "data/output/", run_date)
 processed_path <- paste0(dropbox_path, "data/processed/")
 raw_path <- paste0(dropbox_path, "data/raw/")
