@@ -31,22 +31,23 @@ We first start by calculating the temperature response to emissions preturbation
 - `FaIR/2_calc_marginals1.ipynb`
 - `FaIR/2_calc_pulse_marginals.ipynb`
 
-After calculating the temperature response 
-
 #### b. Calculating grid level warming ratio 
 To generate the grid level warming ratio (relative to global warming), we utilize 30 global CGM models to generate the grid level ratio. We then calculate the median ratio for each of the locations. 
 - `scripts/1_r_cgm.R`
 
 ### **2. run the analysis**
-We take the temperature change from emissions preturbing from FaIR and the warming ratio, and integrate it with our temperature-GDP panel to compute the damages resulting from the preturbation. All the scripts are stored under `scripts/` and are called in the main analysis script `scripts/run_scripts_ld.R`. The scripts containing the functions are: 
-- 3a0_run_gdptemp_panel.R
-- 3a1_run_gdptemp_panel_bhmbs.R
-- 3a2_run_gdptemp_panel_5lags.R
-- 3b0_run_bhm_model.R
-- 3b1_run_gdptemp_panel_5lag.R
-- 3c0_calc_total_damages_bilateral.R
-- 3c1_calc_total_damages.R
-- 3c2_calc_total_damages_5lags.R
+We take the temperature change from emissions preturbing from FaIR and the warming ratio, and integrate it with our temperature-GDP panel to compute the damages resulting from the preturbation. All the scripts are stored under `scripts/` and are called in the main analysis script `scripts/run_scripts_ld.R`. The scripts containing the functions are 
+- `scripts/2a_FaIR_deltaT_hist.R`
+- `scripts/2b_FaIR_deltaT_hist_fut.R`
+- `scripts/2c_FaIR_deltaT_hist_fut_disagg.R`
+- `scripts/3a0_run_gdptemp_panel.R`
+- `scripts/3a1_run_gdptemp_panel_bhmbs.R`
+- `scripts/3a2_run_gdptemp_panel_5lags.R`
+- `scripts/3b0_run_bhm_model.R`
+- `scripts/3b1_run_gdptemp_panel_5lag.R`
+- `scripts/3c0_calc_total_damages_bilateral.R`
+- `scripts/3c1_calc_total_damages.R`
+- `scripts/3c2_calc_total_damages_5lags.R`
 
 ### Figures scripts
 
