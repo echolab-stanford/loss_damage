@@ -17,18 +17,16 @@ The software used for processing and analyzing the data is done through python (
 ### Data Acess 
 Raw data are publicly available and are obtained from the following links. We process the raw data in order to prepare them for analysis. 
 
-## Scripts 
+## Analysis  
 - The pipeline for producing this paper's results rely on output dataframes produced through the run_scripts_ld.R script. Inside this script the needed custom functions are sourced from scripts in the same folders. Each with thier own jobs.
 - Some of the script are run through sherlock. These are batch scripts (R scripts) with shell files (.sh) specifiying the resources needed to run the script. 
 
-### Processing scripts 
-
+### **1. prepare data **
 #### FaIR temperature response to emissions preturbations 
 #### Calculating grid level warming ratio `1_r_cgm.R`
-#### Running the analysis `run_scripts_ld.R`
+### **2. run the analysis **
 
-
-### Analysis scripts 
+#### Analysis scripts 
 
 - run_scripts_ld.R
 - 0_read_libs.R
