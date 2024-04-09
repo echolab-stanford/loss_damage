@@ -9,9 +9,7 @@ This repository provides the code and guidance necessary to run the analysis and
 - `figures\`
 - `scripts\`
 
-## User suitability 
-
-## Folders 
+## User requirements and data access
 
 # Set up 
 
