@@ -48,12 +48,12 @@ This repository provides the code and guidance necessary to run the analysis and
 
 - Figure 2:
     - before running the scripts sync the following files in your desktop:
-        - "~/BurkeLab Dropbox/projects/loss_damage/FaIR/"
-        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/world_gdp_pop/"
-        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/future_forecast/"
-        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/bhm/"
-        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/wdi_dat.rds"
-        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/minmax_data.rds"
+        - `~/BurkeLab Dropbox/projects/loss_damage/FaIR/`
+        - `~/BurkeLab Dropbox/projects/loss_damage/data/processed/world_gdp_pop/`
+        - `~/BurkeLab Dropbox/projects/loss_damage/data/processed/future_forecast/`
+        - `~/BurkeLab Dropbox/projects/loss_damage/data/processed/bhm/`
+        - `~/BurkeLab Dropbox/projects/loss_damage/data/processed/wdi_dat.rds`
+        - `~/BurkeLab Dropbox/projects/loss_damage/data/processed/minmax_data.rds`
         - downloads the github 'loss_damage' repo from the lab directory (5lag_pipeline branch NOT main)
     - panels a-b:
         - output dataframes through run_scripts_ld.R found under "~/GitHub/loss_damage/scripts/working/analysis/run_scripts_ld.R"
@@ -83,8 +83,8 @@ This repository provides the code and guidance necessary to run the analysis and
                 k. indicating whether to use the temperature-growth coeffeceints from base model or bootstrapped estimates
         - run figure preparation and plotting scripts
             - run the script fig2a_b_c_d.R found under "~/GitHub/loss_damage/scripts/working/figures/preparing_data/fig2a_b_c_d.R"
-                - Before running the scripts make sure to adjust the 'run_date' paramter uptop so that the script can pull the data you have just produced above for panels a-d. This script will save the dataset in the github repo "~/GitHub/loss_damage/data/figures/{run_date}/".
-            - now run the scripts 'fig2a_b_plot.R' and can be found here:  "~/GitHub/loss_damage/scripts/working/figures/plotting_data/". Also make sure you have updated the 'run_date' parameter up top. 
+                - Before running the scripts make sure to adjust the 'run_date' paramter uptop so that the script can pull the data you have just produced above for panels a-d. This script will save the dataset in the github repo `~/GitHub/loss_damage/data/figures/{run_date}/`.
+            - now run the scripts 'fig2a_b_plot.R' and can be found here:  `~/GitHub/loss_damage/scripts/working/figures/plotting_data/`. Also make sure you have updated the 'run_date' parameter up top. 
 
 
 
