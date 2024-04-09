@@ -11,15 +11,22 @@ This repository provides the code and guidance necessary to run the analysis and
 
 ## User requirements and data access
 
-# Set up 
+### User requirements
+The software used for processing and analyzing the data is done through python (jupyter notebook) and R scripts. Users will need to have access to both software. Some of the R scripts are computationally intensive. As such we run those files as batch scripts utilizing Stanford Sherlock servers. 
 
-## Python and R
+### Data Acess 
+Raw data are publicly available and are obtained from the following links. We process the raw data in order to prepare them for analysis. 
 
 ## Scripts 
 - The pipeline for producing this paper's results rely on output dataframes produced through the run_scripts_ld.R script. Inside this script the needed custom functions are sourced from scripts in the same folders. Each with thier own jobs.
 - Some of the script are run through sherlock. These are batch scripts (R scripts) with shell files (.sh) specifiying the resources needed to run the script. 
 
 ### Processing scripts 
+
+#### FaIR temperature response to emissions preturbations 
+#### Calculating grid level warming ratio `1_r_cgm.R`
+#### Running the analysis `run_scripts_ld.R`
+
 
 ### Analysis scripts 
 
