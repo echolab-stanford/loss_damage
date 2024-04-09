@@ -34,12 +34,12 @@ library(wbstats)
 ##############################################################################
 #new_wdi_cache <- WDIcache() 
 #WDIsearch("gdp.*ppp* *capita.*US\\$", cache = new_wdi_cache)
-#wdi_dat <- WDI(indicator = c("NY.GDP.PCAP.PP.KD", "NY.GDP.PCAP.KD",
-#                             "NY.GDP.MKTP.CD", "SP.DYN.LE00.IN", 
- #                            "SP.DYN.IMRT.IN", "SP.POP.TOTL"), 
-  #             start = 1960, 
-   #            end = 2021,
-    #           extra = TRUE) 
+wdi_dat <- WDI(indicator = c("NY.GDP.PCAP.PP.KD", "NY.GDP.PCAP.KD",
+                             "NY.GDP.MKTP.CD", "SP.DYN.LE00.IN", 
+                             "SP.DYN.IMRT.IN", "SP.POP.TOTL"), 
+               start = 1960, 
+               end = 2021,
+               extra = TRUE) 
 #names(wdi_dat)
 #length(unique(wdi_dat$iso3c))
 gdp_temp_data <- readRDS("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/temp_gdp_world_panel.rds")
@@ -63,6 +63,9 @@ gdp_temp_data <- left_join(gdp_temp_data,
                            by = c("ISO3" = "iso3c",
                                   "year" = "year"))
 
+gdp_temp_data <- wdi_dat
+
+colnames(wdi_dat)[4] <- "year"
 
 # before processing and using the GDP numbers, we need to rebase the numbers 
 # from 2015 numbers to 2020. In the next step we will want to  fill in missing years 
@@ -92,8 +95,6 @@ library("pwt10")
 pwt_dta <- pwt10::pwt10.0
 # select the needed data 
 pwt_dta <- pwt_dta %>% dplyr::select(c("isocode", "year", "rgdpna", "pop"))
-
-
 wdi_dat$ppp_d <- wdi_dat$NY.GDP.PCAP.KD / wdi_dat$NY.GDP.PCAP.PP.KD
 
 
@@ -133,9 +134,7 @@ wdi_dat$NY.GDP.PCAP.KD[wdi_dat$iso3c == "YEM" |
                                                                              wdi_dat$iso3c == "TKM"]
 
 wdi_dat$NY.GDP.PCAP.KD[(wdi_dat$iso3c == "KAZ" & is.na(wdi_dat$NY.GDP.PCAP.KD))] <- wdi_dat$NY.GDP.PCAP.CD[(wdi_dat$iso3c == "KAZ" & is.na(wdi_dat$NY.GDP.PCAP.KD))]
-
 wdi_dat$NY.GDP.PCAP.KD[(wdi_dat$iso3c == "KAZ") & wdi_dat$year == 1989] <- wdi_dat$NY.GDP.PCAP.KD[(wdi_dat$iso3c == "KAZ") & wdi_dat$year == 1990]
-
 wdi_dat_adjusted <- wdi_dat
 
 #devtools::install_github("vincentarelbundock/WDI")
@@ -146,7 +145,6 @@ wdi_dat <- wb_data(indicator = c("NY.GDP.PCAP.KD", "SP.POP.TOTL", "NY.GDP.PCAP.C
 
 #wdi_dat <- rbind(wdi_dat,wdi_dat1)
 colnames(wdi_dat)[4] <- "year"
-
 
 # now let us rescale data so that it is expressed in 2020 dollars 
 wdi_dat <- wdi_dat %>% dplyr::group_by(iso3c) %>% 
@@ -159,28 +157,10 @@ plot(wdi_dat$year[wdi_dat$iso3c == "ETH"],
 
 colnames(wdi_dat_adjusted)[6] <- paste0(colnames(wdi_dat_adjusted)[6], "_for_damages")
 
-colnames(wdi_dat) 
-
 wdi_dat <- wdi_dat %>% dplyr::select(c("iso3c", "year", "NY.GDP.PCAP.KD"))
-
 wdi_dat_adjusted <- left_join(wdi_dat_adjusted,
                               wdi_dat,
                               by = c("iso3c", "year"))
-
-plot(wdi_dat_adjusted$year[wdi_dat$iso3c == "ETH"],
-     wdi_dat_adjusted$NY.GDP.PCAP.KD_for_damages[wdi_dat$iso3c == "ETH"])
-
-lines(wdi_dat_adjusted$year[wdi_dat$iso3c == "ETH"],
-      wdi_dat_adjusted$NY.GDP.PCAP.KD[wdi_dat$iso3c == "ETH"],
-      type = "l", col = "red")
-
-plot(wdi_dat_adjusted$year[wdi_dat$iso3c == "VEN"],
-      wdi_dat_adjusted$NY.GDP.PCAP.KD_for_damages[wdi_dat$iso3c == "VEN"],
-      type = "l", col = "red")
-
-plot(wdi_dat_adjusted$year[wdi_dat$iso3c == "RUS"],
-     wdi_dat_adjusted$NY.GDP.PCAP.KD_for_damages[wdi_dat$iso3c == "RUS"],
-     type = "l", col = "red")
 
 
 gdp_temp_data <- left_join(gdp_temp_data,
