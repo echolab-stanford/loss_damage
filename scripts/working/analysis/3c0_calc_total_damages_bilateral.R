@@ -9,8 +9,8 @@
 # for the warming ratio used, as well as the dataframe from FaIR temperature 
 # response and the list of emitters (list_of_exps)
 calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_exps, 
-                                year_k, future_forecast, gdp_temp_dataset, bhm_model, 
-                                settlement_year){
+                                          year_k, future_forecast, gdp_temp_dataset, bhm_model, 
+                                          settlement_year){
   tic()
   #read raster data for warming ratio 
   deltat_df <- exactextractr::exact_extract(ratio_raster, 
@@ -38,15 +38,22 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
   
   # calculating model growth response after adjusting for the delta T by creating 
   # a function that takes in the temperature variable, as well as the model used
-  calc_delta_g <- function(dataset, temp_var, model, deltaT, coef1, coef2) {
-    response_tempnew <- ((temp_var - deltaT)*(coef1)) +
-      (((temp_var - deltaT)^2)*(coef2)) 
+  # calculating model growth response after adjusting for the delta T by creating 
+  # a function that takes in the temperature variable, as well as the model used
+  calc_delta_g <- function(dataset, temp_var, model, deltaT, coef1, coef2, 
+                           coef3, coef4,
+                           coef5, coef6,
+                           coef7, coef8,
+                           coef9, coef10,
+                           coef11, coef12) {
+    response_tempnew <- ((temp_var - deltaT)*(coef1 + coef3 + coef5 + coef7 + coef9 + coef11)) +
+      (((temp_var - deltaT)^2)*(coef2 + coef4 + coef6 + coef8 + coef10 + coef12)) 
     response_tempnew
   }
   toc()
   # start an empty dataframe 
   mother_df <- data.frame()
-  
+  i <- "USA"
   for (i in list_of_exps){
     tic()
     # subset by keeping one experiment for each loop
@@ -82,17 +89,39 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
                                                     bhm_model,
                                                     gdp_temp_data1$deltat,
                                                     coef(bhm_model)[1],
-                                                    coef(bhm_model)[2])
+                                                    coef(bhm_model)[2],
+                                                    coef(bhm_model)[3],
+                                                    coef(bhm_model)[4],
+                                                    coef(bhm_model)[5],
+                                                    coef(bhm_model)[6],
+                                                    coef(bhm_model)[7],
+                                                    coef(bhm_model)[8],
+                                                    coef(bhm_model)[9],
+                                                    coef(bhm_model)[10],
+                                                    coef(bhm_model)[11],
+                                                    coef(bhm_model)[12])
+    
+    gdp_temp_data1$response_tempactual_era <- ((gdp_temp_data1$era_mwtemp)*((coef(bhm_model)[1] +
+                                                                               coef(bhm_model)[3] + 
+                                                                               coef(bhm_model)[5] + 
+                                                                               coef(bhm_model)[7] + 
+                                                                               coef(bhm_model)[9] + 
+                                                                               coef(bhm_model)[11]))) + 
+      (((gdp_temp_data1$era_mwtemp)^2)*(coef(bhm_model)[2] +
+                                          coef(bhm_model)[4] + 
+                                          coef(bhm_model)[6] + 
+                                          coef(bhm_model)[8] + 
+                                          coef(bhm_model)[10] + 
+                                          coef(bhm_model)[12]))
     
     # now let us calculate deltaG
     gdp_temp_data1$delta_g_era <- gdp_temp_data1$response_tempactual_era - gdp_temp_data1$response_tempnew
-  
     
     maxtemp_2020 <- max(gdp_temp_data1$era_mwtemp[gdp_temp_data1$year < 2021], na.rm = T)
     gdp_temp_data1$max_delta_g_era <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2021 & gdp_temp_data1$era_mwtemp == maxtemp_2020 & !is.na(gdp_temp_data1$delta_g_era)]
     max_g <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2021 & gdp_temp_data1$era_mwtemp == maxtemp_2020 & !is.na(gdp_temp_data1$delta_g_era)]
     gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2020 & gdp_temp_data1$delta_g_era < max_g] <- max_g 
-
+    
     # test1 <- gdp_temp_data1 %>% dplyr::select(c("response_tempactual_era", "response_tempnew","delta_g_era", "ISO3", "year"))
     # let us bring in the population data at the country-year level
     gdp_temp_data1 <- left_join(gdp_temp_data1,
@@ -109,6 +138,7 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
     
     # now let us calculate adjusted growht rate by adding deltaG to observed growth
     gdp_temp_data1$adj_growth <- (gdp_temp_data1$delta_g_era + gdp_temp_data1$diff_lgdp_for_damages)
+    
     
     #colnames(gdp_temp_data_k80)
     
@@ -143,9 +173,9 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
       dplyr::mutate(cum_adj_growthz = cumprod(adj_growthxz),
                     cum_growth_real = cumprod(diff_lgdp1))
     # finally comput edamages...
+    
     damages_i_t4 <- damages_i_t4 %>% 
       dplyr::mutate(damages = (gdp_year * cum_adj_growthz) - (gdp_year * cum_growth_real))
-    
     #summary(damages_i_t4$damages)
     
     # scale by population
@@ -159,7 +189,7 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
                     weighted_damages1 = case_when(year <= 2020 ~ (damages_pop*((1+(0.01))^t_since_k)),
                                                   year > 2020 ~ (damages_pop*(1/(1+(0.01))^t_since_today))),
                     weighted_damages1_5 = case_when(year <= 2020 ~ (damages_pop*((1+(0.015))^t_since_k)),
-                                                  year > 2020 ~ (damages_pop*(1/(1+(0.015))^t_since_today))),
+                                                    year > 2020 ~ (damages_pop*(1/(1+(0.015))^t_since_today))),
                     weighted_damages2 = case_when(year <= 2020 ~ (damages_pop*((1+(0.02))^t_since_k)),
                                                   year > 2020 ~ (damages_pop*(1/(1+(0.02))^t_since_today))),
                     weighted_damages3 = case_when(year <= 2020 ~ (damages_pop*((1+(0.03))^t_since_k)),

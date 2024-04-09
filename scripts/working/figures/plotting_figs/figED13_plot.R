@@ -21,6 +21,14 @@ totals_cgm   <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_cgm.rds"))
 totals_fair  <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_fair.rds"))
 
 
+totals_all   <- readRDS("~/Desktop/totals_all.rds")
+totals_bhm   <- readRDS("~/Desktop/totals_bhm.rds")
+totals_cgm   <- readRDS("~/Desktop/totals_cgm.rds")
+totals_fair  <- readRDS("~/Desktop/totals_fair.rds")
+
+
+
+
 ################################################################################
 ################################################################################
 # plot data 
@@ -35,7 +43,6 @@ totals_all$uncertainty <- "all"
 totals_bhm$uncertainty <- "bhm"
 totals_fair$uncertainty <- "fair"
 totals_cgm$uncertainty <- "cgm"
-
 
 listofdfs <- list(totals_all,
                   totals_bhm,
@@ -68,7 +75,7 @@ for (i in 1:length(listofdfs)) {
 all_median <- median(totals_all$total_damages2)
 fair_median <- median(totals_fair$total_damages)
 cgm_median <- median(totals_cgm$total_damages)
-bhm_median <- median(totals_bhm$total_damages)
+bhm_median <- median(totals_bhm$total_damages2)
 
 pdf(paste0("figures/", run_date,"/figED13.pdf"), width=12, height=6)
 
