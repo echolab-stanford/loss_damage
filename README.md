@@ -21,10 +21,10 @@ Raw data are publicly available and are obtained from the following links. We pr
 - The pipeline for producing this paper's results rely on output dataframes produced through the run_scripts_ld.R script. Inside this script the needed custom functions are sourced from scripts in the same folders. Each with thier own jobs.
 - Some of the script are run through sherlock. These are batch scripts (R scripts) with shell files (.sh) specifiying the resources needed to run the script. 
 
-### **1. prepare data **
+### **1. prepare data**
 #### FaIR temperature response to emissions preturbations 
 #### Calculating grid level warming ratio `1_r_cgm.R`
-### **2. run the analysis **
+### **2. run the analysis**
 
 #### Analysis scripts 
 
