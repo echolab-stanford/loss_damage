@@ -14,26 +14,31 @@ This repository provides the code and guidance necessary to run the analysis and
 ### User requirements
 The software used for processing and analyzing the data is done through python (jupyter notebook) and R scripts. Users will need to have access to both software. Some of the R scripts are computationally intensive. As such we run those files as batch scripts utilizing Stanford Sherlock servers. 
 
-### Data Acess 
-Raw data are publicly available and are obtained from the following links. We process the raw data in order to prepare them for analysis. 
+### Data Access 
+Raw data are publicly available and are obtained from the following links. We process the raw data in order to prepare them for analysis. The processed data can be accessed through the ECHOLab dropbox. 
 
 ## Analysis  
 - The pipeline for producing this paper's results rely on output dataframes produced through the run_scripts_ld.R script. Inside this script the needed custom functions are sourced from scripts in the same folders. Each with thier own jobs.
 - Some of the script are run through sherlock. These are batch scripts (R scripts) with shell files (.sh) specifiying the resources needed to run the script. 
 
 ### **1. prepare data**
-#### FaIR temperature response to emissions preturbations 
-#### Calculating grid level warming ratio `1_r_cgm.R`
+#### a. FaIR temperature response to emissions preturbations
+We first start by calculating the temperature response to emissions preturbations. To do so we utilize the FaIR v2.0.0 as explained in the paper. To produce the results in the paper we calculated temperature changes from emisison preturbations using the following scripts: 
+- `Install fair .ipynb`
+- `FaIR/2_calc_FaIR_deltat_1Gt_tCo2_2300.ipynb`
+- `FaIR/2_calc_FaIR_deltat_bilateral.ipynb`
+- `FaIR/2_calc_FaIR_deltat_cc.ipynb`
+- `FaIR/2_calc_marginals1.ipynb`
+- `FaIR/2_calc_pulse_marginals.ipynb`
+
+After calculating the temperature response 
+
+#### b. Calculating grid level warming ratio 
+To generate the grid level warming ratio (relative to global warming), we utilize 30 global CGM models to generate the grid level ratio. We then calculate the median ratio for each of the locations. 
+- `scripts/1_r_cgm.R`
+
 ### **2. run the analysis**
-
-#### Analysis scripts 
-
-- run_scripts_ld.R
-- 0_read_libs.R
-- 1_r_cgm.R
-- 2a_FaIR_deltaT_hist.R
-- 2b_FaIR_deltaT_hist_fut.R
-- 2c_FaIR_deltaT_hist_fut_disagg.R
+We take the temperature change from emissions preturbing from FaIR and the warming ratio, and integrate it with our temperature-GDP panel to compute the damages resulting from the preturbation. All the scripts are stored under `scripts/` and are called in the main analysis script `scripts/run_scripts_ld.R`. The scripts containing the functions are: 
 - 3a0_run_gdptemp_panel.R
 - 3a1_run_gdptemp_panel_bhmbs.R
 - 3a2_run_gdptemp_panel_5lags.R
