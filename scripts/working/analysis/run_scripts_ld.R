@@ -4,7 +4,7 @@
 # will be up in github and any changes to the code will be committed to the 
 # repo in github. This is the master script and it sources the functions from 
 # other scripts in the same directory. the initial part of the script contains 
-# a fair amount of processing. As such I will save the processed data from this 
+# some processing. As such I will save the processed data from this 
 # script and just read it whenever I need to run the code. The processing code 
 # will be commented out 
 # Input(s): Libraries, created functions, raw CGM model rasters, world bank 
@@ -24,20 +24,8 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-# You have two options. The first option is to replicate the study (i.e. run the 
-# the scripts to produce the data underlying the study). The other option is to 
-# produce new data with updated parameters, such as fair parameters, year of 
-# start of damages, among others 
-#replicate <- F# change T to F if you want to create your own data  
-#if (replicate == T){
-#  run_date <- "20230523"
-#}
-#if (replicate == F){
-#  run_date <- gsub("-","",Sys.Date())
-#}
-
-#ADJUST THE RUN_DATE BEFORE RUNNING THE SCRIPT 
-run_date <- "20240314"
+# Asjust the running date for the scripts 
+run_date <- "20240409"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -114,7 +102,7 @@ wdi_dat <- readRDS("data/processed/wdi_dat.rds")
 
 
 # ok let us read in the list of all CGM ratio rasters
-load("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/r_cgm/list_r_rasters_20230822.RData")
+load(paste0(dropbox_path, "data/processed/r_cgm/list_r_rasters_20230822.RData"))
 #write_rds(list_r_rasters, "~/BurkeLab Dropbox/Projects/loss_damage/data/processed/r_cgm/list_r_rasters_20230822.rds")
 #
 ## now we have a raster for each of the models where we have grid level warming 
@@ -178,7 +166,7 @@ load("~/BurkeLab Dropbox/Projects/loss_damage/data/processed/r_cgm/list_r_raster
 
 # 1tCO2 
 ## temperature response through 2100 
-fair_exps_1tco2_2100_k90 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2100", 1990, aggregating = T) # fig2e_i, figED7_a figED7_d figED7_J
+fair_exps_1tco2_2100_k90 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2100", 1990, aggregating = T) # fig2e, figED7_a figED7_d figED7_J
 fair_exps_1tco2_2100_k80 <- process_exp_data_hist_fut("20230821", "1tCO2_hist_2100", 1980, aggregating = T) # figED8, fig3c, 
 ## temperature response through 2300 
 fair_exps_1tco2_2300_k90 <- process_exp_data_hist_fut("20230523", "1tCO2_hist_2300", 1990, aggregating = T) # fig3a, fig3b, figED7_i, figED7_j, figED7_k, figED7_l, figED7_m, figED7_n, figED7_o, figED13_i, figED13_k, figED13_l
@@ -187,7 +175,7 @@ fair_exps_1gtco2_disagg_2300 <- process_disagg_exp_data("20230809","1tCO2_hist_2
 
 # 1GtCO2 
 ## temperature response through 2100 
-fair_exps_1gtco2_2100_k90 <- process_exp_data_hist_fut("20230523", "1GtCO2_hist_2100", 1990, aggregating = T) # fig2ab, figcd, figED4, figED9b, 
+fair_exps_1gtco2_2100_k90 <- process_exp_data_hist_fut("20230523", "1GtCO2_hist_2100", 1990, aggregating = T) # fig2ab, fig2cd, figED4, figED9b, 
 ### temperature response dis-aggregated. In other words all runs. 
 fair_exps_1gtco2_disagg_2100 <- process_disagg_exp_data("20230523","1GtCO2_hist_2100", 1990) #fig2e_i, fig2e_j, fig2e_k
 #write_rds(fair_exps_1gtco2_disagg_2300, "~/BurkeLab Dropbox/Projects/loss_damage/sherlock_files_060223/fair_exps_disagg_20230822.rds")
@@ -227,9 +215,9 @@ fair_exps_100Gtco2_2100_k90 <- process_exp_data_hist_fut("20230807","100GtCO2_hi
 ## from the IPCC SSP3.7 scenario
 
 # first, we start by reading the future forecast dataset
-future_forecast_ssp370 <- readRDS("data/processed/future_forecast/future_forecast_ssp370.rds")
+future_forecast_ssp370 <- readRDS("data/processed/future_forecast/future_forecast_ssp370.rds") #fig2abcde
 # through 2300 with 2100 numbers 
-future_forecast_ssp370_2300 <- readRDS("data/processed/future_forecast/future_forecast_ssp370_2300.rds")
+future_forecast_ssp370_2300 <- readRDS("data/processed/future_forecast/future_forecast_ssp370_2300.rds") #fig2e
 # through 2300 with 1%
 future_forecast_ssp370_2300_1pct <- readRDS("data/processed/future_forecast/future_forecast_ssp370_2300_1pct.rds")
 # through 2300 with 2%
@@ -238,9 +226,9 @@ future_forecast_ssp370_2300_2pct <- readRDS("data/processed/future_forecast/futu
 ####################### generate country-year panel: #########################
 # ok let us read the processed country-year panel data frames 
 # for calculations with year k = 1990 and ending in 2100 
-gdp_temp_data_k90 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k90.rds")
+gdp_temp_data_k90 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k90.rds") 
 # k = 1990 and ending in 2300 
-gdp_temp_data_k90_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k90_2300.rds")
+gdp_temp_data_k90_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k90_2300.rds") #fig2e
 # k = 1990 and ending in 2300 with post 2100 growth rates fixed at 1%
 gdp_temp_data_k90_2300_1pct <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k90_2300_1pct.rds")
 # k = 1990 and ending in 2300 with post 2100 growth rates fixed at 2%
@@ -250,13 +238,10 @@ gdp_temp_data_k80 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k80.rds
 # k = 1980 and ending in 2300
 gdp_temp_data_k80_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k80_2300.rds")
 # for calculations with year k = 1990 and ending in 2300 with lagged temperatures
-gdp_temp_data_5lags_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_5lags_2300.rds")
+gdp_temp_data_5lags_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_5lags_2300.rds") #fig2a, 2b, 2c, 2d, 2e
 # now limited to 2100 
-gdp_temp_data_5lags_2100 <- subset(gdp_temp_data_5lags_2300, year < 2101)
+gdp_temp_data_5lags_2100 <- subset(gdp_temp_data_5lags_2300, year < 2101) #fig2a, 2b, 2c, 2d, 2e
 # before going on make sure canada and other countries' data are included 
-
-gdp_temp_data_k80$diff_lgdp_for_damages[gdp_temp_data_k80$diff_lgdp_for_damages< -1] <- -0.99999999999
-gdp_temp_data_k90$diff_lgdp_for_damages[gdp_temp_data_k90$diff_lgdp_for_damages< -1] <- -0.99999999999
 
 
 
@@ -264,7 +249,7 @@ gdp_temp_data_k90$diff_lgdp_for_damages[gdp_temp_data_k90$diff_lgdp_for_damages<
 # generating the pooled base model 
 #bhm_era_reg <- run_bhm_model_reg("pooled")
 #save(bhm_era_reg, file = "data/processed/bhm/bhm_era_reg.RData")
-load("data/processed/bhm/bhm_era_reg.RData")
+load("data/processed/bhm/bhm_era_reg.RData") # fig2e
 
 # generating the pooled lagged model regression
 bhm_era_reg_5lag <- run_bhm_model_reg_lag5("pooled")
@@ -280,18 +265,17 @@ bhm_era_reg_5lag <- run_bhm_model_reg_lag5("pooled")
 ##################### 1GtCO2/tCO2yr experiment ###########################
 # The data produced under this section is used for the following 
 # figures 
-
-################################################################################ Figures 3a, 3b, s3
-
-# first we need to set up the set of experimenet years to loop over inside the 
-# custom-made function
 years_of_exps_1990_2020 <- c(1990:2020)
+years_of_exps_1990_2022 <- c(1990:2022)
 years_of_exps_1980_2020 <- c(1980:2020)
 years_of_exps_1980_2022 <- c(1980:2022)
-years_of_exps_1990_2022 <- c(1990:2022)
 years_of_exps_2020_2100 <- c(2020:2100)
 
-# ok let us start with the 1gtco2 experiment (6 mins)  # fig2ab, fig2cd, fig3a, fig3b
+################################################################################ Figures 2a, 2b, 2c, 2d
+# first we need to set up the set of experiment years to loop over inside the 
+# custom-made function
+
+# ok let us start with the 1gtco2 experiment (6 mins)  # fig2ab, fig2cd
 total_damages_1gtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
                                                          fair_exps_1gtco2_2100_k90, 
                                                          years_of_exps_1990_2020,
