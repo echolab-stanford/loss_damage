@@ -53,6 +53,22 @@ generate_gdptemp_panel <- function(bhm_mode,
   
  # gdp_temp_data <- as.data.frame(gdp_temp_data)
   
+  # adjust the growth variable for some of the countries we augmented from pwt
+  for(i in unique(gdp_temp_data$ISO3)){
+    wdi_dat$diff_lgdp_for_damages[gdp_temp_data$ISO3 == i & is.na(gdp_temp_data$diff_lgdp_for_damages) & gdp_temp_data$year == 1990] <- 0
+  }
+  for(i in unique(wdi_dat$ISO3)){
+    if (i == "TKM" | i == "VEN" | i == "ERI" | i == "YEM"){
+      gdp_temp_data$diff_lgdp_for_damages[gdp_temp_data$ISO3 == i & is.na(gdp_temp_data$diff_lgdp_for_damages) & (gdp_temp_data$year > 2014 & gdp_temp_data$year <2021) ] <- 0
+    }
+  }
+  for(i in unique(wdi_dat$ISO3)){
+    if (i == "LBY"){
+      gdp_temp_data$diff_lgdp_for_damages[gdp_temp_data$ISO3 == i & is.na(gdp_temp_data$diff_lgdp_for_damages) & gdp_temp_data$year < 2000] <- 0
+    }
+  }
+  
+  
   # Now let us subset teh dataset to teh data that we will need
   
   if (bhm_mode_option == "pooled") {

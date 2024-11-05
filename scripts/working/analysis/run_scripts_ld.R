@@ -13,7 +13,7 @@
 # output(s): country-year panel with total damages from different emissions 
 # perturbations (past and future), emitter-harmed-year panel for bilateral 
 # damages, 
-# Last edited: March 2024
+# Last edited: November 2024
 ##############################################################################
 
 ################################################################################
@@ -37,7 +37,8 @@ setwd("~/GitHub/loss_damage")
 #}
 
 #ADJUST THE RUN_DATE BEFORE RUNNING THE SCRIPT 
-run_date <- "20240314"
+#run_date <- "20240314"
+run_date <- "20241104"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -51,11 +52,13 @@ source("scripts/working/analysis/2c_FaIR_deltaT_hist_fut_disagg.R")
 source("scripts/working/analysis/3a0_run_gdptemp_panel.R")
 source("scripts/working/analysis/3a1_run_gdptemp_panel_bhmbs.R")
 source("scripts/working/analysis/3a2_run_gdptemp_panel_5lags.R")
+source("scripts/working/analysis/3a2i_run_gdptemp_panel_lags.R")
 source("scripts/working/analysis/3b0_run_bhm_model.R")
 source("scripts/working/analysis/3b1_run_gdptemp_panel_5lag.R")
 source("scripts/working/analysis/3c0_calc_total_damages_bilateral.R")
 source("scripts/working/analysis/3c1_calc_total_damages.R")
 source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
+source("scripts/working/analysis/3c2i_calc_total_damages_lags.R")
 
 # let us set the path so we can read in the input data 
 setwd(dropbox_path)
@@ -253,11 +256,24 @@ gdp_temp_data_k80_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k8
 gdp_temp_data_5lags_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_5lags_2300.rds")
 # now limited to 2100 
 gdp_temp_data_5lags_2100 <- subset(gdp_temp_data_5lags_2300, year < 2101)
+# now let us create a dataset that includes all lagged temp and precip up to 10
+# years behind to run our supplemnental numbers for SCC under lower higher lags 
+# than 5 
+colnames(gdp_temp_data_5lags_2100)
+lag <- 6:10
+gdp_temp_data_10lags_2100 <- gdp_temp_data_5lags_2100
+for (lag in 6:10) {
+  gdp_temp_data_10lags_2100[[paste0("era_mwtemp_l", lag)]] <- plm::lag(gdp_temp_data_10lags_2100$era_mwtemp, lag)
+  gdp_temp_data_10lags_2100[[paste0("era_mwprecip_l", lag)]] <- plm::lag(gdp_temp_data_10lags_2100$era_mwprecip, lag)
+}
+
+
 # before going on make sure canada and other countries' data are included 
 
-gdp_temp_data_k80$diff_lgdp_for_damages[gdp_temp_data_k80$diff_lgdp_for_damages< -1] <- -0.99999999999
-gdp_temp_data_k90$diff_lgdp_for_damages[gdp_temp_data_k90$diff_lgdp_for_damages< -1] <- -0.99999999999
-
+# let us make sure that growth is bounded so that cumulative growth is calcuated
+# sensibly (there only 2 observations w/growth <-1)
+#gdp_temp_data_k80$diff_lgdp_for_damages[gdp_temp_data_k80$diff_lgdp_for_damages< -1] <- -0.99999999999
+#gdp_temp_data_k90$diff_lgdp_for_damages[gdp_temp_data_k90$diff_lgdp_for_damages< -1] <- -0.99999999999
 
 
 ################### generate country-year regression model: ##################
@@ -267,8 +283,38 @@ gdp_temp_data_k90$diff_lgdp_for_damages[gdp_temp_data_k90$diff_lgdp_for_damages<
 load("data/processed/bhm/bhm_era_reg.RData")
 
 # generating the pooled lagged model regression
-bhm_era_reg_5lag <- run_bhm_model_reg_lag5("pooled")
-#save(bhm_era_reg, file = "data/processed/bhm/bhm_era_reg.RData")
+#bhm_era_reg_5lag <- run_bhm_model_reg_lag5("pooled")
+#bhm_era_reg_1lag <- run_bhm_model_reg_lags("pooled", 1)
+#bhm_era_reg_2lag <- run_bhm_model_reg_lags("pooled", 2)
+#bhm_era_reg_3lag <- run_bhm_model_reg_lags("pooled", 3)
+#bhm_era_reg_4lag <- run_bhm_model_reg_lags("pooled", 4)
+#bhm_era_reg_6lag <- run_bhm_model_reg_lags("pooled", 6)
+#bhm_era_reg_7lag <- run_bhm_model_reg_lags("pooled", 7)
+#bhm_era_reg_8lag <- run_bhm_model_reg_lags("pooled", 8)
+#bhm_era_reg_9lag <- run_bhm_model_reg_lags("pooled", 9)
+#bhm_era_reg_10lag <- run_bhm_model_reg_lags("pooled", 10)
+#save(bhm_era_reg_1lag, file = "data/processed/bhm/bhm_era_reg_1lag.RData")
+#save(bhm_era_reg_2lag, file = "data/processed/bhm/bhm_era_reg_2lag.RData")
+#save(bhm_era_reg_3lag, file = "data/processed/bhm/bhm_era_reg_3lag.RData")
+#save(bhm_era_reg_4lag, file = "data/processed/bhm/bhm_era_reg_4lag.RData")
+#save(bhm_era_reg_6lag, file = "data/processed/bhm/bhm_era_reg_6lag.RData")
+#save(bhm_era_reg_7lag, file = "data/processed/bhm/bhm_era_reg_7lag.RData")
+#save(bhm_era_reg_8lag, file = "data/processed/bhm/bhm_era_reg_8lag.RData")
+#save(bhm_era_reg_9lag, file = "data/processed/bhm/bhm_era_reg_9lag.RData")
+#save(bhm_era_reg_10lag, file = "data/processed/bhm/bhm_era_reg_10lag.RData")
+
+#save(bhm_era_reg_5lag, file = "data/processed/bhm/bhm_era_reg_5lag.RData")
+load("data/processed/bhm/bhm_era_reg_5lag.RData")
+load("data/processed/bhm/bhm_era_reg_10lag.RData")
+load("data/processed/bhm/bhm_era_reg_9lag.RData")
+load("data/processed/bhm/bhm_era_reg_8lag.RData")
+load("data/processed/bhm/bhm_era_reg_7lag.RData")
+load("data/processed/bhm/bhm_era_reg_6lag.RData")
+load("data/processed/bhm/bhm_era_reg_4lag.RData")
+load("data/processed/bhm/bhm_era_reg_3lag.RData")
+load("data/processed/bhm/bhm_era_reg_2lag.RData")
+load("data/processed/bhm/bhm_era_reg_1lag.RData")
+
 
 ##############################################################################
 ############### calculate the total damages for each scenario ################
@@ -281,7 +327,7 @@ bhm_era_reg_5lag <- run_bhm_model_reg_lag5("pooled")
 # The data produced under this section is used for the following 
 # figures 
 
-################################################################################ Figures 3a, 3b, s3
+################################################################################ Figures 3a, 3b, s3, supplemental under diff lags
 
 # first we need to set up the set of experimenet years to loop over inside the 
 # custom-made function
@@ -291,7 +337,10 @@ years_of_exps_1980_2022 <- c(1980:2022)
 years_of_exps_1990_2022 <- c(1990:2022)
 years_of_exps_2020_2100 <- c(2020:2100)
 
-# ok let us start with the 1gtco2 experiment (6 mins)  # fig2ab, fig2cd, fig3a, fig3b
+bhm_coefs <- readRDS("/Users/mustafazahid/Desktop/distributedlag_differentlags.rds")
+
+
+# ok let us start with the 1gtco2 experiment (6 mins)  # fig2ab, fig2cd, fig3a, fig3b, 
 total_damages_1gtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
                                                          fair_exps_1gtco2_2100_k90, 
                                                          years_of_exps_1990_2020,
@@ -307,6 +356,177 @@ total_damages_1gtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
 write_rds(total_damages_1gtco2_k90, paste0("data/output/", 
                                            run_date, 
                                            "/total_damages_1gtco2_1990_2020.rds"))
+
+# now let us run the above number but under decreasing and increasing number of 
+# lags to cover the range 1:10 
+##1lag 
+total_damages_1gtco2_k90_5lag <- calculate_damages_pulse_lags(median_raster,
+                                                              fair_exps_1gtco2_2100_k90, 
+                                                              2020,
+                                                              1990,
+                                                              future_forecast_ssp370,
+                                                              gdp_temp_data_10lags_2100,
+                                                              "ERA",
+                                                              2020,
+                                                              F,
+                                                              F,
+                                                              F,
+                                                              subset(bhm_coefs, lag == 5))
+
+
+total_damages_1gtco2_k90_1lag <- calculate_damages_pulse_lags(median_raster,
+                                                         fair_exps_1gtco2_2100_k90, 
+                                                         2020,
+                                                         1990,
+                                                         future_forecast_ssp370,
+                                                         gdp_temp_data_10lags_2100,
+                                                         "ERA",
+                                                         2020,
+                                                         F,
+                                                         F,
+                                                         F,
+                                                         subset(bhm_coefs, lag == 1))
+
+##2lag 
+total_damages_1gtco2_k90_2lag <- calculate_damages_pulse_lags(median_raster,
+                                                              fair_exps_1gtco2_2100_k90, 
+                                                              2020,
+                                                              1990,
+                                                              future_forecast_ssp370,
+                                                              gdp_temp_data_10lags_2100,
+                                                              "ERA",
+                                                              2020,
+                                                              F,
+                                                              F,
+                                                              F,
+                                                              subset(bhm_coefs, lag == 2))
+##3lag 
+total_damages_1gtco2_k90_3lag <- calculate_damages_pulse_lags(median_raster,
+                                                              fair_exps_1gtco2_2100_k90, 
+                                                              2020,
+                                                              1990,
+                                                              future_forecast_ssp370,
+                                                              gdp_temp_data_10lags_2100,
+                                                              "ERA",
+                                                              2020,
+                                                              F,
+                                                              F,
+                                                              F,
+                                                              subset(bhm_coefs, lag == 3))
+##4lag 
+total_damages_1gtco2_k90_4lag <- calculate_damages_pulse_lags(median_raster,
+                                                              fair_exps_1gtco2_2100_k90, 
+                                                              2020,
+                                                              1990,
+                                                              future_forecast_ssp370,
+                                                              gdp_temp_data_10lags_2100,
+                                                              "ERA",
+                                                              2020,
+                                                              F,
+                                                              F,
+                                                              F,
+                                                              subset(bhm_coefs, lag == 4))
+
+##6lag 
+total_damages_1gtco2_k90_6lag <- calculate_damages_pulse_lags(median_raster,
+                                                              fair_exps_1gtco2_2100_k90, 
+                                                              2020,
+                                                              1990,
+                                                              future_forecast_ssp370,
+                                                              gdp_temp_data_10lags_2100,
+                                                              "ERA",
+                                                              2020,
+                                                              F,
+                                                              F,
+                                                              F,
+                                                              subset(bhm_coefs, lag == 6))
+##7lag 
+total_damages_1gtco2_k90_7lag <- calculate_damages_pulse_lags(median_raster,
+                                                              fair_exps_1gtco2_2100_k90, 
+                                                              2020,
+                                                              1990,
+                                                              future_forecast_ssp370,
+                                                              gdp_temp_data_10lags_2100,
+                                                              "ERA",
+                                                              2020,
+                                                              F,
+                                                              F,
+                                                              F,
+                                                              subset(bhm_coefs, lag == 7))
+##8lag 
+total_damages_1gtco2_k90_8lag <- calculate_damages_pulse_lags(median_raster,
+                                                              fair_exps_1gtco2_2100_k90, 
+                                                              2020,
+                                                              1990,
+                                                              future_forecast_ssp370,
+                                                              gdp_temp_data_10lags_2100,
+                                                              "ERA",
+                                                              2020,
+                                                              F,
+                                                              F,
+                                                              F,
+                                                              subset(bhm_coefs, lag == 8))
+##9lag 
+total_damages_1gtco2_k90_9lag <- calculate_damages_pulse_lags(median_raster,
+                                                              fair_exps_1gtco2_2100_k90, 
+                                                              2020,
+                                                              1990,
+                                                              future_forecast_ssp370,
+                                                              gdp_temp_data_10lags_2100,
+                                                              "ERA",
+                                                              2020,
+                                                              F,
+                                                              F,
+                                                              F,
+                                                              subset(bhm_coefs, lag == 9))
+##10lag 
+total_damages_1gtco2_k90_10lag <- calculate_damages_pulse_lags(median_raster,
+                                                              fair_exps_1gtco2_2100_k90, 
+                                                              2020,
+                                                              1990,
+                                                              future_forecast_ssp370,
+                                                              gdp_temp_data_10lags_2100,
+                                                              "ERA",
+                                                              2020,
+                                                              F,
+                                                              F,
+                                                              F,
+                                                              subset(bhm_coefs, lag == 10))
+
+
+#let us output the processed dataset with the calculated damages
+write_rds(total_damages_1gtco2_k90_1lag, paste0("data/output/", 
+                                           run_date, 
+                                           "/total_damages_1gtco2_1lag_1990_2020.rds"))
+write_rds(total_damages_1gtco2_k90_2lag, paste0("data/output/", 
+                                                run_date, 
+                                                "/total_damages_1gtco2_2lag_1990_2020.rds"))
+write_rds(total_damages_1gtco2_k90_3lag, paste0("data/output/", 
+                                                run_date, 
+                                                "/total_damages_1gtco2_3lag_1990_2020.rds"))
+write_rds(total_damages_1gtco2_k90_4lag, paste0("data/output/", 
+                                                run_date, 
+                                                "/total_damages_1gtco2_4lag_1990_2020.rds"))
+write_rds(total_damages_1gtco2_k90_5lag, paste0("data/output/", 
+                                                run_date, 
+                                                "/total_damages_1gtco2_5lag_1990_2020.rds"))
+write_rds(total_damages_1gtco2_k90_6lag, paste0("data/output/", 
+                                                run_date, 
+                                                "/total_damages_1gtco2_6lag_1990_2020.rds"))
+write_rds(total_damages_1gtco2_k90_7lag, paste0("data/output/", 
+                                                run_date, 
+                                                "/total_damages_1gtco2_7lag_1990_2020.rds"))
+write_rds(total_damages_1gtco2_k90_8lag, paste0("data/output/", 
+                                                run_date, 
+                                                "/total_damages_1gtco2_8lag_1990_2020.rds"))
+write_rds(total_damages_1gtco2_k90_9lag, paste0("data/output/", 
+                                                run_date, 
+                                                "/total_damages_1gtco2_9lag_1990_2020.rds"))
+write_rds(total_damages_1gtco2_k90_10lag, paste0("data/output/", 
+                                                run_date, 
+                                                "/total_damages_1gtco2_10lag_1990_2020.rds"))
+
+
 
 
 ################################################################################  # fig3c

@@ -1,201 +1,161 @@
 ##############################################################################
-# Mustafa Zahid, January 7th, 2023
+# Mustafa Zahid, March 14, 2024
 # This R script reads the data and prepares the necessary data to plots figure
-# ED13. Figure ED13 demonstrates the different steps taken to calculate teh damages
+# ED13. 
 #############################################################################
 remove(list=ls())
 gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
-
-replicate <- F# change T to F if you want to create your own data  
-if (replicate == T){
-  run_date <- "20230523"
-}
-if (replicate == F){
-  run_date <- gsub("-","",Sys.Date())
-}
-
-run_date <- "20230821"
-
+run_date <- "20241104"
+#replicate <- F# change T to F if you want to create your own data  
+#if (replicate == T){
+#  run_date <- "20230523"
+#}
+#if (replicate == F){
+#  run_date <- gsub("-","",Sys.Date())
+#}
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
-# function for calculating warming ratio CGMs
-source("scripts/working/analysis/1_r_cgm.R")
-# functions for computing deltaT form fair
-source("scripts/working/analysis/2a_FaIR_deltaT_hist.R")
-source("scripts/working/analysis/2b_FaIR_deltaT_hist_fut.R")
-source("scripts/working/analysis/2c_FaIR_deltaT_hist_fut_disagg.R")
-# functions for prepping gdp-temp panel and for computing damages
-source("scripts/working/analysis/3a0_run_gdptemp_panel.R")
-source("scripts/working/analysis/3a1_run_gdptemp_panel_bhmbs.R")
-source("scripts/working/analysis/3a2_run_gdptemp_panel_5lags.R")
-source("scripts/working/analysis/3b0_run_bhm_model.R")
-source("scripts/working/analysis/3c0_calc_total_damages_bilateral.R")
-source("scripts/working/analysis/3c1_calc_total_damages.R")
-source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
 
-################################################################################
-################################################################################
-# read data 
-total_damages_uncertainty_cgm <- readRDS(paste0(output_path, "/total_damages_1gtco2_cgm.rds"))
-total_damages_uncertainty_fair <- readRDS(paste0(output_path, "/total_damages_1gtco2_fair.rds"))
-total_damages_uncertainty_bhm <- readRDS(paste0(output_path, "/total_damages_1gtco2_bhm.rds"))
+run_date <- "20241104"
+setwd("~/BurkeLab Dropbox/projects/loss_damage")
 
+#############################################################################
+#############################################################################
+########## read the data 
+# ok get the path to the files
+files <- list.files(paste0(getwd(), "/data/output/20240228/"),
+                    pattern = "bi",
+                    full.names = T)
 
-total_damages_uncertainty_cgm <- readRDS("~/Desktop/total_damages_1gtco2_cgm.rds")
-total_damages_uncertainty_fair <- readRDS("~/Desktop/total_damages_1gtco2_fair.rds")
-#total_damages_uncertainty_bhm <- readRDS(paste0(output_path, "/total_damages_1gtco2_bhm.rds"))
+########## we are gonna read the data in 2 chuncks
+list_files <- mclapply(files[1:500], readRDS)
+list_files2 <- mclapply(files[501:1000], readRDS)
 
+# now let us rbind all of them to calculate total damages for each of the emitter - reciever pair
+master_df <- do.call(rbind, list_files)
+master_df2 <- do.call(rbind, list_files2)
 
-################################################################################ no growth post 2100
-# generate list of files 
-path <- paste0("~/BurkeLab Dropbox/Projects/loss_damage/data/output/20240311/")
+# ok now let us collect them into one dataframe
+gran_master_df <- rbind(master_df,
+                        master_df2)
 
-all_data = list.files(path=path,
-                      pattern = "scc_" ,
-                      full.names = TRUE,
-                      recursive = TRUE,
-                      include.dirs = FALSE)
+#############################################################################
+#############################################################################
+########## prep the data 
+# ok now we can aggregate the dataset
+#aggregated_data_pos <- gran_master_df %>% 
+#  dplyr::group_by(sim_id, emitter, ISO3) %>% 
+#  subset(.,weighted_damages2 > 0) %>% 
+#  dplyr::summarise(total_transfer_pos_damages = sum(weighted_damages2, na.rm = T))
+#summary(aggregated_data_pos$total_transfer_pos_damages/1000000000000)
+#aggregated_data_pos <- aggregated_data_pos %>% 
+#  dplyr::group_by(sim_id, emitter) %>% 
+#  dplyr::summarise(total_transfer_pos_damages = sum(total_transfer_pos_damages, na.rm = T))
+## now let us save the 95th percentile and the median 
+#aggregated_data_pos <- aggregated_data_pos %>% 
+#  dplyr::group_by(emitter) %>% 
+#  dplyr::summarise(p_05 = quantile(total_transfer_pos_damages, 0.05), 
+#                   median = median(total_transfer_pos_damages),
+#                   p_95 = quantile(total_transfer_pos_damages, 0.95))
+#
+# ok now we can aggregate the dataset
+aggregated_data_neg <- gran_master_df %>% 
+  subset(.,weighted_damages2 <0) %>% 
+  dplyr::group_by(sim_id, emitter, ISO3) %>% 
+  dplyr::summarise(total_transfer_neg_damages = sum(weighted_damages2, na.rm = T))
+aggregated_data_neg <- aggregated_data_neg %>% 
+  dplyr::group_by(sim_id, emitter) %>% 
+  dplyr::summarise(total_transfer_neg_damages = sum(total_transfer_neg_damages, na.rm = T))
 
+summary(aggregated_data_neg$total_transfer_neg_damages[aggregated_data_neg$emitter == "USA"])
 
-# now read files into one list 
-#listofdfs_rams <- list()
-listofdfs_2dr <- list()
-for (i in 1:1000){
-  tic()
-  data_i <- readRDS(all_data[i])
-  #data_i$loop_id <- i
-  data_i <- data_i %>% 
-    dplyr::select(c("emitter", 
-                    "year",
-                    "sim_id",
-                    "weighted_damages2_scld", 
-                    "weighted_damages_ramsey_scld",
-                    "coef_id",
-                    "temp",
-                    "temp2"))
-  #  data_ramsey_i <- data_i %>% 
-  #    dplyr::group_by(emitter, sim_id) %>% 
-  #    dplyr::summarise(total_damages_ramsey = sum(weighted_damages_ramsey_scld, na.rm = T))
-  
-  data_dr2_i <- data_i %>% 
-    dplyr::group_by(emitter, coef_id) %>% 
-    dplyr::summarise(total_damages2 = sum(weighted_damages2_scld, na.rm = T))
-  
-  #  listofdfs_rams[[i]] <- data_ramsey_i
-  listofdfs_2dr[[i]] <- data_dr2_i
-  
-  toc()
-}
+# now let us save the 95th percentile and the median 
+aggregated_data_neg <- aggregated_data_neg %>% 
+  dplyr::group_by(emitter) %>% 
+  dplyr::summarise(p_05 = quantile(total_transfer_neg_damages, 0.05), 
+                   mean = mean(total_transfer_neg_damages),
+                   p_95 = quantile(total_transfer_neg_damages, 0.95))
 
-totals_nog_2dr <- do.call(rbind, listofdfs_2dr)
-#totals_nog_ramsey <- do.call(rbind, listofdfs_rams)
+# ok now we can aggregate the dataset
+#aggregated_data_net <- gran_master_df %>% 
+#  dplyr::group_by(sim_id, emitter, ISO3) %>% 
+#  dplyr::summarise(total_transfer_net_damages = sum(weighted_damages2, na.rm = T))
+#aggregated_data_net <- aggregated_data_net %>% 
+#  dplyr::group_by(sim_id, emitter) %>% 
+#  dplyr::summarise(total_transfer_net_damages = sum(total_transfer_net_damages, na.rm = T))
+## now let us save the 95th percentile and the median 
+#aggregated_data_net <- aggregated_data_net %>% 
+#  dplyr::group_by(emitter) %>% 
+#  dplyr::summarise(p_05 = quantile(total_transfer_net_damages, 0.05), 
+#                   mean = mean(total_transfer_net_damages),
+#                   p_95 = quantile(total_transfer_net_damages, 0.95))
+#
+#
+################# prep the data 
+# pos
+#aggregated_data_pos$median <- aggregated_data_pos$median/-1000000000000
+#aggregated_data_pos$p_05 <- aggregated_data_pos$p_05/-1000000000000
+#aggregated_data_pos$p_95 <- aggregated_data_pos$p_95/-1000000000000
+#aggregated_data_pos <- aggregated_data_pos[order(aggregated_data_pos$median),]
+#aggregated_data_pos$id <- 1:nrow(aggregated_data_pos)
 
+# neg
+aggregated_data_neg$mean <- aggregated_data_neg$mean/-1000000000000
+aggregated_data_neg$p_05 <- aggregated_data_neg$p_05/-1000000000000
+aggregated_data_neg$p_95 <- aggregated_data_neg$p_95/-1000000000000
+aggregated_data_neg <- aggregated_data_neg[order(-aggregated_data_neg$mean),]
+aggregated_data_neg$id <- 1:nrow(aggregated_data_neg)
 
+# net
+#aggregated_data_net$median <- aggregated_data_net$median/-1000000000000
+#aggregated_data_net$p_05 <- aggregated_data_net$p_05/-1000000000000
+#aggregated_data_net$p_95 <- aggregated_data_net$p_95/-1000000000000
+#aggregated_data_net <- aggregated_data_net[order(-aggregated_data_net$median),]
+#aggregated_data_net$id <- 1:nrow(aggregated_data_net)
+#
+#aggregated_data_pos <- subset(aggregated_data_pos, id <11)
+aggregated_data_neg <- subset(aggregated_data_neg, id <11)
+#aggregated_data_net <- subset(aggregated_data_net, id <11)
 
-################################################################################ no growth post 2100
-# generate list of files 
-# set path and get list of files from directory
+##### now let us focus on the US 
+us_transfers <- subset(gran_master_df, emitter == "USA")
 
-################################################################################ no growth post 2100
-# generate list of files 
-path <- paste0("~/BurkeLab Dropbox/Projects/loss_damage/data/output/20240311_2")
+#### ok now let us aggregate
+us_transfers <- us_transfers %>% 
+  dplyr::group_by(sim_id, emitter, ISO3) %>% 
+  dplyr::summarise(total_damages = sum(weighted_damages2, na.rm = T))
 
-all_data = list.files(path=path,
-                      pattern = "scc_" ,
-                      full.names = TRUE,
-                      recursive = TRUE,
-                      include.dirs = FALSE)
+us_transfers_median <- us_transfers %>% 
+  dplyr::group_by(emitter, ISO3) %>% 
+  dplyr::summarise(median(total_damages))
 
-
-# now read files into one list 
-#listofdfs_rams <- list()
-listofdfs_2dr <- list()
-for (i in 1:1000){
-  tic()
-  data_i <- readRDS(all_data[i])
-  #data_i$loop_id <- i
-  data_i <- data_i %>% 
-    dplyr::select(c("emitter", 
-                    "year",
-                    "sim_id",
-                    "weighted_damages2_scld", 
-                    "weighted_damages_ramsey_scld",
-                    "coef_id",
-                    "temp",
-                    "temp2"))
-#  data_ramsey_i <- data_i %>% 
-#    dplyr::group_by(emitter, sim_id) %>% 
-#    dplyr::summarise(total_damages_ramsey = sum(weighted_damages_ramsey_scld, na.rm = T))
-  
-  data_dr2_i <- data_i %>% 
-    dplyr::group_by(emitter, sim_id) %>% 
-    dplyr::summarise(total_damages2 = sum(weighted_damages2_scld, na.rm = T))
-  
-#  listofdfs_rams[[i]] <- data_ramsey_i
-  listofdfs_2dr[[i]] <- data_dr2_i
-  
-  toc()
-}
-
-totals_nog_2dr <- do.call(rbind, listofdfs_2dr)
-#totals_nog_ramsey <- do.call(rbind, listofdfs_rams)
-
-totals_nog_2dr <- subset(totals_nog_2dr, sim_id > 1000 & sim_id < 2001)
-
-#total_damages_uncertainty_total <- readRDS(paste0(output_path, "/total_damages_1gtco2_total.rds"))
-#total_damages_uncertainty_total2 <- readRDS(paste0(output_path, "/total_damages_1gtco2_total2.rds"))
-#total_damages_uncertainty_total3 <- readRDS(paste0(output_path, "/total_damages_1gtco2_total3.rds"))
-#total_damages_uncertainty_total <- rbind(total_damages_uncertainty_total,
-#                                         total_damages_uncertainty_total2,
-#                                         total_damages_uncertainty_total3)
-# prepare data for plotting
-
-# cgm uncertainty
-totals_cgm <- total_damages_uncertainty_cgm %>% dplyr::group_by(cgm_id) %>% 
-  dplyr::summarise(total_damages = sum(weighted_damages2_scld, na.rm = T))
-
-# bhm uncertainty
-totals_bhm <- totals_nog_2dr %>% dplyr::group_by(coef_id) %>% 
-  dplyr::summarise(total_damages = sum(weighted_damages2_scld, na.rm = T))
+us_top_transfers <- subset(us_transfers, ISO3 %in% c("USA", "CHN", "JPN", "IND", "BRA", 
+                                                     "ITA", "SAU", "DEU", "FRA", "MEX"))
 
 
-# fair uncertainty
-totals_fair <- total_damages_uncertainty_fair %>% dplyr::group_by(fair_id) %>% 
-  dplyr::summarise(total_damages = sum(weighted_damages2_scld, na.rm = T))
-median(totals_fair$total_damages)
+# now let us save the 95th percentile and the median 
+us_top_transfers <- us_top_transfers %>% 
+  dplyr::group_by(emitter, ISO3) %>% 
+  dplyr::summarise(p_05 = quantile(total_damages, 0.05), 
+                   median = median(total_damages),
+                   p_95 = quantile(total_damages, 0.95))
 
+us_top_transfers$median <- us_top_transfers$median/-1000000000000
+us_top_transfers$p_05 <- us_top_transfers$p_05/-1000000000000
+us_top_transfers$p_95 <- us_top_transfers$p_95/-1000000000000
+us_top_transfers <- us_top_transfers[order(-us_top_transfers$median),]
+us_top_transfers$id <- 1:nrow(us_top_transfers)
 
-# total uncertainty
-totals_all <- totals_nog_2dr 
-totals_all <- ungroup(totals_all)
-totals_all <- totals_all %>% dplyr::select(-c("emitter"))
-
-median(totals_all$total_damages2)
-
-
-totals_bhm <- ungroup(totals_bhm)
-totals_bhm <- totals_bhm %>% dplyr::select(-c("emitter"))
-
-median(totals_all$total_damages2)
-median(totals_bhm$total_damages2)
-median(totals_cgm$total_damages)
-median(totals_fair$total_damages)
-
-#totals_all <- totals_all %>% dplyr::select(-c("emitter"))
-
-
-# ok now write the data 
-write_rds(totals_all, paste0(fig_prepped_dta, run_date,"/totals_all.rds"))
-write_rds(totals_bhm, paste0(fig_prepped_dta, run_date,"/totals_bhm.rds"))
-write_rds(totals_cgm, paste0(fig_prepped_dta, run_date,"/totals_cgm.rds"))
-write_rds(totals_fair, paste0(fig_prepped_dta,run_date, "/totals_fair.rds"))
+#############################################################################
+#############################################################################
+########## save the data 
+run_date <- "20241104"
+setwd("~/GitHub/loss_damage")
+write_rds(aggregated_data_neg, paste0(getwd(), "/data/figures/", run_date, "/aggregated_transfers_neg.rds"))
+#write_rds(aggregated_data_pos, paste0(getwd(), "/data/figures/", run_date, "/aggregated_transfers_pos.rds"))
+#write_rds(aggregated_data_net, paste0(getwd(), "/data/figures/", run_date, "/aggregated_transfers_net.rds"))
+write_rds(us_top_transfers, paste0(getwd(), "/data/figures/", run_date, "/us_top_transfers.rds"))
 
 # end of script
-
-write_rds(totals_all,"~/Desktop/totals_all.rds")
-write_rds(totals_bhm, "~/Desktop/totals_bhm.rds")
-write_rds(totals_cgm, "~/Desktop/totals_cgm.rds")
-write_rds(totals_fair, "~/Desktop/totals_fair.rds")
-

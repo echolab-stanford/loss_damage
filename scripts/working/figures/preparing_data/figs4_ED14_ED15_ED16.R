@@ -306,30 +306,30 @@ write_rds(damages_and_benefits_k90_consump, paste0(fig_prepped_dta, run_date, "/
 
 # end of script
 
-a <- as.data.frame(unique(damages_and_benefits_transfers2a$stratum))
-b <- as.data.frame(c(damages_transfers2_owing$owing_real,
-                     as.character(unique(damages_and_benefits_transfers2a$stratum)[40]),
-                     as.character(unique(damages_and_benefits_transfers2a$stratum)[1]),
-                     as.character(unique(damages_and_benefits_transfers2a$stratum)[17]),
-                     benefits_transfers2_owing$owing_real,
-                     damages_transfers2_owed_to$owed_to_real,
-                     as.character(unique(damages_and_benefits_transfers2a$stratum)[24]),
-                     benefits_transfers2_owed_to$owed_to_real))
-
-)
-
-colnames(a)[1] <- "id"
-colnames(b)[1] <- "id"
-
-a <- as.data.frame(a)
-a$id <- as.character(a$id)
-a <- a[order(a$id),]
-a$nrow <- 1:nrow(a)
-
-b$id <- as.character(b$id)
-b <- b[order(b$id),]
-b <- as.data.frame(b)
-b$nrow <- 1:nrow(b)
-
-
-c <- left_join(b,a, by = c("nrow"))
+#a <- as.data.frame(unique(damages_and_benefits_transfers2a$stratum))
+#b <- as.data.frame(c(damages_transfers2_owing$owing_real,
+#                     as.character(unique(damages_and_benefits_transfers2a$stratum)[40]),
+#                     as.character(unique(damages_and_benefits_transfers2a$stratum)[1]),
+#                     as.character(unique(damages_and_benefits_transfers2a$stratum)[17]),
+#                     benefits_transfers2_owing$owing_real,
+#                     damages_transfers2_owed_to$owed_to_real,
+#                     as.character(unique(damages_and_benefits_transfers2a$stratum)[24]),
+#                     benefits_transfers2_owed_to$owed_to_real))
+#
+#)
+#
+#colnames(a)[1] <- "id"
+#colnames(b)[1] <- "id"
+#
+#a <- as.data.frame(a)
+#a$id <- as.character(a$id)
+#a <- a[order(a$id),]
+#a$nrow <- 1:nrow(a)
+#
+#b$id <- as.character(b$id)
+#b <- b[order(b$id),]
+#b <- as.data.frame(b)
+#b$nrow <- 1:nrow(b)
+#
+#
+#c <- left_join(b,a, by = c("nrow"))

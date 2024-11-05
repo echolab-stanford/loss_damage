@@ -7,20 +7,18 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230821"
+run_date <- "loss_damage_r1"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
+
 ################################################################################
 ################################################################################
-
-run_date <- "20240307"
-
 # read data
-load(paste0(fig_prepped_dta, run_date,"/listof_scc_est_dfs_figs13.RData"))
+load(paste0(fig_prepped_dta, run_date,"/listof_scc_est_dfs_fig2e.RData"))
 
-load("~/Desktop/listof_scc_est_dfs_figs13.RData")
+#load("~/Desktop/listof_scc_est_dfs_figs13.RData")
 listofdfs
 
 i <- 5
@@ -57,7 +55,7 @@ for (i in 1:length(listofdfs)) {
 # plot data
 dev.off()
 
-pdf(paste0("~/Desktop/fig2e_5lag_v3.pdf"), width=14, height=5.75)
+pdf(paste0(getwd(), "/figures/", run_date, "/fig2e_5lag_v3.pdf"), width=14, height=5.75)
 
 par(mfrow = c(1,1))
 par(mar= c(8,6,2,2))

@@ -7,7 +7,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230713"
+run_date <- "loss_damage_r1"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -28,42 +28,29 @@ test_df_for_table %>%
   gt(rowname_col = "emitter") %>% 
   #dplyr::mutate(total_damages_2020_dr2 = paste0("$", total_damages_2020_dr2)) %>% 
   tab_spanner(label = "Damages Accumulated Through 2020 (in Billions of $USD)",
-              columns = vars(total_damages_2020_dr2,
+              columns = vars(total_damages_2020_dr1_5,
+                             total_damages_2020_dr2,
                              total_damages_2020_dr3,
                              total_damages_2020_dr5,
                              total_damages_2020_dr7)) %>% 
   tab_spanner(label = "Damages Accumulated 2021-2100 (in Billions of $USD)",
-              columns = vars(total_damages_2100_dr2,
+              columns = vars(total_damages_2100_dr1_5,
+                             total_damages_2100_dr2,
                              total_damages_2100_dr3,
                              total_damages_2100_dr5,
                              total_damages_2100_dr7)) %>% 
-  cols_label(total_damages_2020_dr2 = "2%",
+  cols_label(total_damages_2020_dr1_5 = "1.5%",
+             total_damages_2020_dr2 = "2%",
              total_damages_2020_dr3 = "3%",
              total_damages_2020_dr5 = "5%",
              total_damages_2020_dr7 = "7%",
+             total_damages_2100_dr1_5 = "1.5%",
              total_damages_2100_dr2 = "2%",
              total_damages_2100_dr3 = "3%",
              total_damages_2100_dr5 = "5%",
              total_damages_2100_dr7 = "7%") %>% 
   gt_theme_538(table.width = px(550)) %>% 
-  #tab_style(style = list(cell_text(font = "Times",
-  #                                align = "center",
-  #                               weight = "bold")),
-  #       cell_borders(sides = "bottom", weight = px(3))),
-  #) %>% 
-  #  tab_style(
-  #   locations = cells_column_labels(columns = everything()),
-  #  style     = list(
-  #   #Give a thick border below
-  #  cell_borders(sides = "bottom", weight = px(3)),
-  # #Make text bold
-#cell_text(weight = "bold")
-#  )) %>% 
-#tab_header(
-#  title = md("Total Damages from 1GtCO2 Pulse in a Given Year"),
-#  subtitle = md("By Year of Pulse (1990-2020) & Discount Rate (2%, 3%, 5%, 7%) ")
-#) %>%
-  gtsave(paste0("figures/", run_date,"/figED4.png"))
+  gtsave(paste0("figures/", run_date,"/figED5.png"))
 
 
 ################################################################################ Figure 3b
@@ -76,27 +63,32 @@ plot(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all
      y = total_damages_by_pulse_2020_all$total_damages[total_damages_by_pulse_2020_all$discount_rate == "7%"],
      # log = "y",
      #yaxt = "n",
-     ylim = range(c(0,10)),
+     ylim = range(c(0,350)),
      col = "#023b70",
      pch = 3, xlim = range(c(1990, 2020)),
-     xlab = "Year of 1GtCO2 Pulse",  ylab = "Per tonne damages in 2020 $USD\n",
+     xlab = "Year of CO2 Pulse",  ylab = "Per tonne damages in 2020 $USD\n",
      las = 1, lwd = 2, cex.axis = 1.25, cex.lab = 1.5, 
      cex.main = 1.12,
-     frame.plot = F,
-     main = "a)  Accumulated damages through 2020") 
+     frame.plot = F)
+     #main = "a)  Accumulated damages through 2020") 
 
+title("a)  Accumulated damages through 2020", adj = 0)
+
+#par(f = 2)
 #axis(side = 2, at = c(0, 100, 200, 300, 400), labels =c("0", "5", '10', '15', '20'))
 
-segments(x0 = 2002, x1 = 2004, y0 = 9.6, y1 = 9.6, col = "#de3623", lwd = 3)
-segments(x0 = 2002, x1 = 2004, y0 = 9.2, y1 = 9.2, col = "#f0da32", lwd = 3)
-segments(x0 = 2002, x1 = 2004, y0 = 8.8, y1 = 8.8, col = "#2aa83f", lwd = 3)
-segments(x0 = 2002, x1 = 2004, y0 = 8.4, y1 = 8.4, col = "#023b70", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 285, y1 = 285, col = "#8a5cb4", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 265, y1 = 265, col = "#de3623", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 245, y1 = 245, col = "#f0da32", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 225, y1 = 225, col = "#2aa83f", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 205, y1 = 205, col = "#023b70", lwd = 3)
 
-text(2006, 9.6, " 2%")
-text(2006, 9.2, " 3%")
-text(2006, 8.8, " 5%")
-text(2006, 8.4, " 7%")
-text(2002, 10, "Discount rates:", col = "black", cex = 1.2, adj = 0)
+text(2014, 285, " 1.5%")
+text(2014, 265, " 2%")
+text(2014, 245, " 3%")
+text(2014, 225, " 5%")
+text(2014, 205, " 7%")
+text(2009, 298, "Discount rates:", col = "black", cex = 1.2, adj = 0)
 
 
 points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all$discount_rate == "5%"], 
@@ -114,6 +106,11 @@ points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_a
        pch = 3, col = "#de3623",
        lwd = 2)
 
+points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all$discount_rate == "1.5%"], 
+       y = total_damages_by_pulse_2020_all$total_damages[total_damages_by_pulse_2020_all$discount_rate == "1.5%"],
+       pch = 3, col = "#8a5cb4",
+       lwd = 2)
+
 
 #total_damages_by_pulse_2100_all$emitter <- 2100 - total_damages_by_pulse_2100_all$emitter
 
@@ -121,14 +118,16 @@ points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_a
 plot(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "7%"], 
      y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "7%"],
      # log = "y",
-     ylim = range(c(0,450)),
+     ylim = range(c(0,2500)),
      col = "#023b70",
-     pch = 3, xlim = range(c(1990, 2020)),
-     xlab = "Year of 1GtCO2 Pulse",  ylab = "Per tonne damages in 2020 $USD\n",
+     pch = 3, xlim = range(c(1990, 2021)),
+     xlab = "Year of CO2 Pulse",  ylab = "Per tonne damages in 2020 $USD\n",
      las = 1, lwd = 2, cex.axis = 1.25, cex.lab = 1.5, 
      cex.main = 1.12,
-     main = "b)  Accumulated damages 2021-2100",
+     #main = "b)  Accumulated damages 2021-2100",
      frame.plot = F) 
+
+title("b)  Accumulated damages 2021-2100", adj = 0)
 
 points(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "5%"], 
        y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "5%"],
@@ -145,6 +144,20 @@ points(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_a
        y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "2%"],
        pch = 3, col = "#de3623",
        lwd = 2)
+points(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "1.5%"], 
+       y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "1.5%"],
+       pch = 3, col = "#8a5cb4",
+       lwd = 2)
+
+
+segments(x0 = 2020, 
+         x1 = 2020, 
+         y0 = 0, 
+         y1 = 2000, 
+         lty = 2)
+
+text("SC-CO2", x = 2020, y = 2100)
+
 dev.off()
 
 # end of script 

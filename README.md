@@ -49,9 +49,10 @@ A Repo supporting project on estimating global loss and damage from emissions. T
         - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/world_gdp_pop/"
         - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/future_forecast/"
         - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/bhm/"
+        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/r_cgm/"
         - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/wdi_dat.rds"
-        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/minmax_data.rds"
-        - downloads the github 'loss_damage' repo from the lab directory (5lag_pipeline branch NOT main)
+        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/minmax_data.rds"        
+        - downloads the github 'loss_damage' repo from the lab directory (5lag_pipeline or 5lag_pipeline_r2 branch NOT main)
     - panels a-b:
         - output dataframes through run_scripts_ld.R found under "~/GitHub/loss_damage/scripts/working/analysis/run_scripts_ld.R"
             1. set up the directories to access the input data and to output the outcome data by syncing the above folders
