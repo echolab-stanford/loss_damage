@@ -10,20 +10,8 @@ rm(list=ls())
 
 # download the needed packages
 require(pacman)
-p_load(raster, 
-       maptools, 
-       dplyr, 
-       rio, 
-       ggplot2, 
-       sf, 
-       grid, 
-       gridExtra, 
-       plm, 
-       fixest, 
-       data.table, 
-       foreign,
-       ncdf4)
-
+p_load(raster, maptools, dplyr, rio, ggplot2, sf, grid, gridExtra, plm, fixest, 
+       data.table, foreign,ncdf4)
 #install.packages("WDI")
 #install.packages("wbstats")
 library(WDI)
@@ -49,13 +37,7 @@ wdi_dat <- wb_data(indicator = c("NY.GDP.PCAP.KD", "SP.POP.TOTL", "NY.GDP.PCAP.C
 
 #wdi_dat <- rbind(wdi_dat,wdi_dat1)
 colnames(wdi_dat)[4] <- "year"
-
 wdi_dat <- wdi_dat %>% dplyr::select("iso3c", "year", "SP.POP.TOTL")
-gdp_temp_data <- left_join(gdp_temp_data,
-                           wdi_dat,
-                           by = c("ISO3" = "iso3c",
-                                  "year" = "year"))
-gdp_temp_data <- wdi_dat
 colnames(wdi_dat)[4] <- "year"
 
 # before processing and using the GDP numbers, we need to rebase the numbers 
@@ -154,12 +136,12 @@ wdi_dat_adjusted <- left_join(wdi_dat_adjusted,
                               by = c("iso3c", "year"))
 
 
-gdp_temp_data <- left_join(gdp_temp_data,
-                           wdi_dat_adjusted,
-                           by = c("ISO3" = "iso3c",
-                                  "year" = "year"))
-
-head(gdp_temp_data)
+#gdp_temp_data <- left_join(gdp_temp_data,
+#                           wdi_dat_adjusted,
+#                           by = c("ISO3" = "iso3c",
+#                                  "year" = "year"))
+#
+#head(gdp_temp_data)
 
 
 

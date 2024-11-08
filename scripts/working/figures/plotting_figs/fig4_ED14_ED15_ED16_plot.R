@@ -7,14 +7,14 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230713"
+run_date <- "loss_damage_r1"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
 # establish a function
 `%not_in%` <- purrr::negate(`%in%`)
 
-run_date <- "20240314"
+#run_date <- "20240314"
 ################################################################################
 ################################################################################
 # read data 
@@ -99,7 +99,7 @@ sankey_k90 <- ggplot(damages_and_benefits_k90,
     size=9
   ) + scale_fill_manual(values = colorRampPalette(brewer.pal(9, "Set1"))(23), 
                         breaks = unique(damages_and_benefits_k90$owed_to_real)) +
-  scale_y_continuous(labels = addUnits, limits = range(-8000000000000,12000000000000)) 
+  scale_y_continuous(labels = addUnits, limits = range(-80000000000,65000000000000)) 
 ################################################################################ Sankey-> k = 1980
 # we need to use "owed to" as a category for determining the different colors
 owed_to_colors <- subset(damages_and_benefits_k80, x == "owed_to_real")
@@ -332,11 +332,11 @@ sankey_k90_consump <- ggplot(damages_and_benefits_k90_consump,
 
 save_plot(paste0('figures/',run_date, '/fig4.pdf'),plot=sankey_k90, 
           base_width=26.5, base_height=28, scale=1.1)
-save_plot(paste0('figures/', run_date, '/figED10.pdf'),plot=sankey_k80, 
+save_plot(paste0('figures/', run_date, '/figED14.pdf'),plot=sankey_k80, 
           base_width=26.5, base_height=28, scale=1.1)
-save_plot(paste0('figures/', run_date, '/figED12.pdf'),plot=sankey_k90_prod, 
+save_plot(paste0('figures/', run_date, '/figED15.pdf'),plot=sankey_k90_prod, 
           base_width=26.5, base_height=28, scale=1.1)
-save_plot(paste0('figures/', run_date, '/figED11.pdf'),plot=sankey_k90_consump, 
+save_plot(paste0('figures/', run_date, '/figED16.pdf'),plot=sankey_k90_consump, 
           base_width=26.5, base_height=28, scale=1.1)
 
 # end of script

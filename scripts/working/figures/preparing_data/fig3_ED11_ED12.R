@@ -11,13 +11,13 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-replicate <- F# change T to F if you want to create your own data  
-if (replicate == T){
-  run_date <- "20230523"
-}
-if (replicate == F){
-  run_date <- gsub("-","",Sys.Date())
-}
+#replicate <- F# change T to F if you want to create your own data  
+#if (replicate == T){
+#  run_date <- "20230523"
+#}
+#if (replicate == F){
+#  run_date <- gsub("-","",Sys.Date())
+#}
 
 run_date <- "20230821"
 # read in the needed libraries 
@@ -58,8 +58,8 @@ individual_beh_emms$behavior[individual_beh_emms$behavior == "recycling"] <- "No
 individual_beh_emms$behavior[individual_beh_emms$behavior == "installing heat pump"] <- "Installing heat pump"
 
 # now let us read in the 1gtc/yr exp data 
-damages_per_1tco2yr <- readRDS(paste0(output_path, "/total_damages_1tco2_1980_2022.rds"))
-
+#damages_per_1tco2yr <- readRDS(paste0(output_path, "/total_damages_1tco2_1980_2022.rds"))
+damages_per_1tco2yr <- readRDS(paste0(output_path, "/total_damages_1tco2_k80.rds"))
 #sum(damages_per_1tco2yr$weighted_damages2_scld[damages_per_1tco2yr$emitter == 2020], na.rm = T)
 
 #############################################################################
@@ -82,8 +82,8 @@ colnames(damages_per_1tco2yr_sum)[1] <- "emission_year"
 # now we have the estimates for each 1tco2 / yr, let us bring in the 
 carb_majors <- subset(carb_majors, years >= 1988 & years <= 2015)
 carb_majors <- left_join(carb_majors, damages_per_1tco2yr_sum,
-                             by = c("years" = "emission_year"),
-                             relationship = "many-to-many")
+                         by = c("years" = "emission_year"),
+                         relationship = "many-to-many")
 carb_majors1 <- carb_majors %>% 
   dplyr::mutate(debt = (emissions*1000000) * total_damages) %>% 
   dplyr::group_by(years, year, emitter) %>% 
@@ -113,11 +113,11 @@ carb_majors2 <- subset(carb_majors2)
 total_carb_majors <- subset(carb_majors2, year == 2100)
 carb_majors2_2020 <- subset(carb_majors2, year == 2020)
 carb_majors2_2020 <- carb_majors2_2020 %>% dplyr::select(c("emitter", 
-                                                                   "total_debt_cum"))
+                                                           "total_debt_cum"))
 colnames(carb_majors2_2020) <- c("emitter", "total_debt_cum_2020")
 total_carb_majors <- left_join(total_carb_majors,
-                                   carb_majors2_2020,
-                                   by = c("emitter"))
+                               carb_majors2_2020,
+                               by = c("emitter"))
 
 total_carb_majors <- total_carb_majors[order(total_carb_majors$total_debt_cum),] 
 total_carb_majors$emitter <- factor(total_carb_majors$emitter, levels = total_carb_majors$emitter)
@@ -146,21 +146,21 @@ oil_majors_rev_long <- subset(oil_majors_rev_long, !is.na(oil_majors_rev_long$va
 oil_majors_rev_long$value <- oil_majors_rev_long$value * 1000000
 
 # now let us read the american companies data 
-exxon_oil_rev <- read_excel("~/Downloads/statistic_id264119_exxonmobils-operating-revenue-2001-2021.xlsx", 
+exxon_oil_rev <- read_excel(paste0(raw_path, "emissions/statistic_id264119_exxonmobils-operating-revenue-2001-2021.xlsx"), 
                             sheet = 2)
 exxon_oil_rev <- exxon_oil_rev[-1:-2,]
 colnames(exxon_oil_rev) <- c("year", "rev")
 exxon_oil_rev$rev <- exxon_oil_rev$rev * 1000000
 exxon_oil_rev$company <- "ExxonMobil"
 
-chevron_oil_rev <- read_excel("~/Downloads/statistic_id269079_chevrons-operating-revenue-2008-2021.xlsx",
+chevron_oil_rev <- read_excel(paste0(raw_path, "emissions/statistic_id269079_chevrons-operating-revenue-2008-2021.xlsx"),
                               sheet = 2)
 chevron_oil_rev <- chevron_oil_rev[-1:-2,]
 colnames(chevron_oil_rev) <- c("year", "rev")
 chevron_oil_rev$rev <- chevron_oil_rev$rev * 1000000000
 chevron_oil_rev$company <- "Chevron"
 
-shell_oil_rev <- read_excel("~/Downloads/statistic_id268734_shells-revenue-2005-2021.xlsx",
+shell_oil_rev <- read_excel(paste0(raw_path, "emissions/statistic_id268734_shells-revenue-2005-2021.xlsx"),
                             sheet = 2)
 shell_oil_rev <- shell_oil_rev[-1:-2,]
 colnames(shell_oil_rev) <- c("year", "rev")
@@ -199,8 +199,8 @@ oil_majors_rev_2021 <- oil_majors_rev_2021 %>%
 
 oil_majors_rev_2021 <- oil_majors_rev_2021 %>% dplyr::select(-c("year"))
 total_carb_majors <- left_join(total_carb_majors,
-                                   oil_majors_rev_2021,
-                                   by = c("emitter"= "company"))
+                               oil_majors_rev_2021,
+                               by = c("emitter"= "company"))
 
 total_carb_majors$rev[total_carb_majors$emitter == "BP PLC"] <- 164200000000
 total_carb_majors$rev[total_carb_majors$emitter == "Royal Dutch Shell PLC"] <- 261500000000
@@ -269,8 +269,8 @@ colnames(damages_per_1tco2yr_sum)[1] <- "emission_year"
 # now we have the estimates for each 1tco2 / yr, let us bring in the 
 carb_majors_scp1 <- subset(carb_majors_scp1, years >= 1988 & years <= 2015)
 carb_majors_scp1 <- left_join(carb_majors_scp1, damages_per_1tco2yr_sum,
-                         by = c("years" = "emission_year"),
-                         relationship = "many-to-many")
+                              by = c("years" = "emission_year"),
+                              relationship = "many-to-many")
 carb_majors_scp11 <- carb_majors_scp1 %>% 
   dplyr::mutate(debt = (emissions*1000000) * total_damages) %>% 
   dplyr::group_by(years, year, emitter) %>% 
@@ -300,11 +300,11 @@ carb_majors_scp12 <- subset(carb_majors_scp12)
 total_carb_majors_scp1 <- subset(carb_majors_scp12, year == 2100)
 carb_majors_scp12_2020 <- subset(carb_majors_scp12, year == 2020)
 carb_majors_scp12_2020 <- carb_majors_scp12_2020 %>% dplyr::select(c("emitter", 
-                                                           "total_debt_cum"))
+                                                                     "total_debt_cum"))
 colnames(carb_majors_scp12_2020) <- c("emitter", "total_debt_cum_2020")
 total_carb_majors_scp1 <- left_join(total_carb_majors_scp1,
-                               carb_majors_scp12_2020,
-                               by = c("emitter"))
+                                    carb_majors_scp12_2020,
+                                    by = c("emitter"))
 
 total_carb_majors_scp1 <- total_carb_majors_scp1[order(total_carb_majors_scp1$total_debt_cum),] 
 total_carb_majors_scp1$emitter <- factor(total_carb_majors_scp1$emitter, levels = total_carb_majors_scp1$emitter)
@@ -333,21 +333,21 @@ oil_majors_rev_long <- subset(oil_majors_rev_long, !is.na(oil_majors_rev_long$va
 oil_majors_rev_long$value <- oil_majors_rev_long$value * 1000000
 
 # now let us read the american companies data 
-exxon_oil_rev <- read_excel("~/Downloads/statistic_id264119_exxonmobils-operating-revenue-2001-2021.xlsx", 
+exxon_oil_rev <- read_excel(paste0(raw_path, "emissions/statistic_id264119_exxonmobils-operating-revenue-2001-2021.xlsx"), 
                             sheet = 2)
 exxon_oil_rev <- exxon_oil_rev[-1:-2,]
 colnames(exxon_oil_rev) <- c("year", "rev")
 exxon_oil_rev$rev <- exxon_oil_rev$rev * 1000000
 exxon_oil_rev$company <- "ExxonMobil"
 
-chevron_oil_rev <- read_excel("~/Downloads/statistic_id269079_chevrons-operating-revenue-2008-2021.xlsx",
+chevron_oil_rev <- read_excel(paste0(raw_path, "emissions/statistic_id269079_chevrons-operating-revenue-2008-2021.xlsx"),
                               sheet = 2)
 chevron_oil_rev <- chevron_oil_rev[-1:-2,]
 colnames(chevron_oil_rev) <- c("year", "rev")
 chevron_oil_rev$rev <- chevron_oil_rev$rev * 1000000000
 chevron_oil_rev$company <- "Chevron"
 
-shell_oil_rev <- read_excel("~/Downloads/statistic_id268734_shells-revenue-2005-2021.xlsx",
+shell_oil_rev <- read_excel(paste0(raw_path, "emissions/statistic_id268734_shells-revenue-2005-2021.xlsx"),
                             sheet = 2)
 shell_oil_rev <- shell_oil_rev[-1:-2,]
 colnames(shell_oil_rev) <- c("year", "rev")
@@ -386,8 +386,8 @@ oil_majors_rev_2021 <- oil_majors_rev_2021 %>%
 
 oil_majors_rev_2021 <- oil_majors_rev_2021 %>% dplyr::select(-c("year"))
 total_carb_majors_scp1 <- left_join(total_carb_majors_scp1,
-                               oil_majors_rev_2021,
-                               by = c("emitter"= "company"))
+                                    oil_majors_rev_2021,
+                                    by = c("emitter"= "company"))
 
 total_carb_majors_scp1$rev[total_carb_majors_scp1$emitter == "BP PLC"] <- 164200000000
 total_carb_majors_scp1$rev[total_carb_majors_scp1$emitter == "Royal Dutch Shell PLC"] <- 261500000000
@@ -429,9 +429,9 @@ total_carb_majors_scp1_ex3 <- total_carb_majors_scp1
 
 total_carb_majors_scp1_ex3 <- total_carb_majors_scp1_ex3 %>% 
   dplyr::mutate(emitter = case_when(emitter == "Gazprom OAO" ~ paste0(emitter, 
-                                                                                             " (Total 2021 Revenue = $", 
-                                                                                             round(rev, 2), "T, ",
-                                                                                             "% of 2021 Revenue = %", round(pct_2020*100, 0), ")"),
+                                                                      " (Total 2021 Revenue = $", 
+                                                                      round(rev, 2), "T, ",
+                                                                      "% of 2021 Revenue = %", round(pct_2020*100, 0), ")"),
                                     is.na(rev) ~ paste0(emitter, " "),
                                     TRUE ~ paste0(emitter, " ($", round(rev, 2), "T, %",
                                                   round(pct_2020*100, 0), ")")))
@@ -829,8 +829,8 @@ colnames(damages_per_1tco2yr_sum)[1] <- "emission_year"
 # now we have the estimates for each 1tco2 / yr, let us bring in the 
 individual_beh_emms <- subset(individual_beh_emms, years >= 2010 & years <= 2020)
 individual_beh_emms <- left_join(individual_beh_emms, damages_per_1tco2yr_sum,
-                              by = c("years" = "emission_year"),
-                              relationship = "many-to-many")
+                                 by = c("years" = "emission_year"),
+                                 relationship = "many-to-many")
 individual_beh_emms1 <- individual_beh_emms %>% 
   dplyr::mutate(debt = (emissions) * total_damages) %>% 
   dplyr::group_by(years, year, behavior) %>% 
@@ -861,11 +861,11 @@ individual_beh_emms2 <- left_join(total_by_emitter, individual_beh_emms2, by = c
 individual_beh_emms2_2100 <- subset(individual_beh_emms2, year == 2100)
 individual_beh_emms2_2020 <- subset(individual_beh_emms2, year == 2020)
 individual_beh_emms2_2020 <- individual_beh_emms2_2020 %>% dplyr::select(c("behavior", 
-                                                                     "total_debt_cum"))
+                                                                           "total_debt_cum"))
 colnames(individual_beh_emms2_2020) <- c("behavior", "total_debt_cum_2020")
 individual_beh_emms2_2100 <- left_join(individual_beh_emms2_2100,
                                        individual_beh_emms2_2020,
-                                    by = c("behavior"))
+                                       by = c("behavior"))
 
 individual_beh_emms2_2100 <- individual_beh_emms2_2100[order(individual_beh_emms2_2100$total_debt_cum),] 
 individual_beh_emms2_2100$behavior <- factor(individual_beh_emms2_2100$behavior, levels = individual_beh_emms2_2100$behavior)
@@ -875,8 +875,8 @@ individual_beh_emms2_2100$total_debt_cum_2021_2100 <- individual_beh_emms2_2100$
 #individual_beh_emms2_2100$total_debt_cum_2020 <- individual_beh_emms2_2100$total_debt_cum_2020 / 1000000000 
 
 
-
 # alright data is ready for plotting 
+run_date <- "loss_damage_r1"
 write_rds(total_carb_majors_ex3, paste0(fig_prepped_dta, run_date,"/carbon_debt_majors_hist.rds"))
 write_rds(total_carb_majors_scp1_ex3, paste0(fig_prepped_dta, run_date,"/carbon_debt_majors_hist_scp1.rds"))
 #write_rds(total_carb_majors_scp3_ex3, paste0(fig_prepped_dta, run_date,"/carbon_debt_majors_hist_scp3.rds"))
@@ -884,3 +884,5 @@ write_rds(all_celebs_tot, paste0(fig_prepped_dta, run_date,"/carbon_debt_celebs_
 write_rds(individual_beh_emms2_2100, paste0(fig_prepped_dta, run_date,"/carbon_debt_ind_beh.rds"))
 
 # end of script 
+
+

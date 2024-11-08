@@ -23,7 +23,7 @@ setwd("~/GitHub/loss_damage")
 #  run_date <- gsub("-","",Sys.Date())
 #}
 
-run_date <- "20240314"
+run_date <- "loss_damage_r1"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -40,7 +40,6 @@ total_damages_k90_consump <- readRDS(paste0(output_path, "/total_damages_k90_con
 #############################################################################
 #############################################################################
 # prepa data  
-dataset <- total_damages_k90_consump
 # we will build a funciton that takes in the dataset and prepares it and then 
 # just loop over the 4 datasets 
 prep_data_for_sankey <- function(dataset){
@@ -277,17 +276,31 @@ prep_data_for_sankey <- function(dataset){
   benefits_transfers2_owed_to <- subset(benefits_transfers2_owed_to, 
                                        owed_to_real != "Other emitters.")
   
-  damages_and_benefits_transfers2a <- damages_and_benefits_transfers2a %>% 
-    dplyr::mutate(stratum = ordered(stratum, levels=c(damages_transfers2_owing$owing_real,
-                                                      as.character(unique(damages_and_benefits_transfers2a$stratum)[40]),
-                                                      as.character(unique(damages_and_benefits_transfers2a$stratum)[1]),
-                                                      as.character(unique(damages_and_benefits_transfers2a$stratum)[17]),
-                                                      benefits_transfers2_owing$owing_real,
-                                                      damages_transfers2_owed_to$owed_to_real,
-                                                      as.character(unique(damages_and_benefits_transfers2a$stratum)[24]),
-                                                      benefits_transfers2_owed_to$owed_to_real[1:3], 
-                                                      benefits_transfers2_owed_to$owed_to_real[5:6])))
- 
+  if (min(dataset$year) == 1980){
+    damages_and_benefits_transfers2a <- damages_and_benefits_transfers2a %>% 
+      dplyr::mutate(stratum = ordered(stratum, levels=c(damages_transfers2_owing$owing_real,
+                                                        as.character(unique(damages_and_benefits_transfers2a$stratum)[40]),
+                                                        as.character(unique(damages_and_benefits_transfers2a$stratum)[1]),
+                                                        as.character(unique(damages_and_benefits_transfers2a$stratum)[17]),
+                                                        benefits_transfers2_owing$owing_real,
+                                                        damages_transfers2_owed_to$owed_to_real,
+                                                        as.character(unique(damages_and_benefits_transfers2a$stratum)[24]),
+                                                        "CAN ($0T) ",
+                                                        benefits_transfers2_owed_to$owed_to_real[2:3], 
+                                                        benefits_transfers2_owed_to$owed_to_real[5:6])))
+  }
+  if (min(dataset$year) == 1990){
+    damages_and_benefits_transfers2a <- damages_and_benefits_transfers2a %>% 
+      dplyr::mutate(stratum = ordered(stratum, levels=c(damages_transfers2_owing$owing_real,
+                                                        as.character(unique(damages_and_benefits_transfers2a$stratum)[40]),
+                                                        as.character(unique(damages_and_benefits_transfers2a$stratum)[1]),
+                                                        as.character(unique(damages_and_benefits_transfers2a$stratum)[17]),
+                                                        benefits_transfers2_owing$owing_real,
+                                                        damages_transfers2_owed_to$owed_to_real,
+                                                        as.character(unique(damages_and_benefits_transfers2a$stratum)[24]),
+                                                        benefits_transfers2_owed_to$owed_to_real[1:3], 
+                                                        benefits_transfers2_owed_to$owed_to_real[5:6])))
+  }
 
   return(damages_and_benefits_transfers2a)
 }

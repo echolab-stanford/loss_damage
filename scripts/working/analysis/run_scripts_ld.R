@@ -37,8 +37,8 @@ setwd("~/GitHub/loss_damage")
 #}
 
 #ADJUST THE RUN_DATE BEFORE RUNNING THE SCRIPT 
-#run_date <- "20240314"
-run_date <- "20241104"
+run_date <- "20240314"
+#run_date <- "20241104"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -304,17 +304,17 @@ load("data/processed/bhm/bhm_era_reg.RData")
 #save(bhm_era_reg_10lag, file = "data/processed/bhm/bhm_era_reg_10lag.RData")
 
 #save(bhm_era_reg_5lag, file = "data/processed/bhm/bhm_era_reg_5lag.RData")
-load("data/processed/bhm/bhm_era_reg_5lag.RData")
-load("data/processed/bhm/bhm_era_reg_10lag.RData")
-load("data/processed/bhm/bhm_era_reg_9lag.RData")
-load("data/processed/bhm/bhm_era_reg_8lag.RData")
-load("data/processed/bhm/bhm_era_reg_7lag.RData")
-load("data/processed/bhm/bhm_era_reg_6lag.RData")
-load("data/processed/bhm/bhm_era_reg_4lag.RData")
-load("data/processed/bhm/bhm_era_reg_3lag.RData")
-load("data/processed/bhm/bhm_era_reg_2lag.RData")
-load("data/processed/bhm/bhm_era_reg_1lag.RData")
-
+#load("data/processed/bhm/bhm_era_reg_5lag.RData")
+#load("data/processed/bhm/bhm_era_reg_10lag.RData")
+#load("data/processed/bhm/bhm_era_reg_9lag.RData")
+#load("data/processed/bhm/bhm_era_reg_8lag.RData")
+#load("data/processed/bhm/bhm_era_reg_7lag.RData")
+#load("data/processed/bhm/bhm_era_reg_6lag.RData")
+#load("data/processed/bhm/bhm_era_reg_4lag.RData")
+#load("data/processed/bhm/bhm_era_reg_3lag.RData")
+#load("data/processed/bhm/bhm_era_reg_2lag.RData")
+#load("data/processed/bhm/bhm_era_reg_1lag.RData")
+bhm_coefs <- readRDS("data/processed/bhm/distributedlag_differentlags.rds")
 
 ##############################################################################
 ############### calculate the total damages for each scenario ################
@@ -337,7 +337,6 @@ years_of_exps_1980_2022 <- c(1980:2022)
 years_of_exps_1990_2022 <- c(1990:2022)
 years_of_exps_2020_2100 <- c(2020:2100)
 
-bhm_coefs <- readRDS("/Users/mustafazahid/Desktop/distributedlag_differentlags.rds")
 
 
 # ok let us start with the 1gtco2 experiment (6 mins)  # fig2ab, fig2cd, fig3a, fig3b, 
@@ -803,7 +802,7 @@ total_damages_k80 <- calculate_bidamages_bilateral(median_raster,
 # write teh dataframe in to the output arm of teh directory 
 #write_rds(total_damages_k80, "data/output/041023/total_damages_k80_v2022.rds")
 #write_rds(total_damages_k80, "data/output/060223/total_damages_k80_v2022.rds")
-write_rds(total_damages_k80, paste0(output_path, "/total_damages_k80_v2022.rds"))
+#write_rds(total_damages_k80, paste0(output_path, "/total_damages_k80_v2022.rds"))
 
 # now let us do k = 1990 #fig4
 gdp_temp_data_k90_2020 <- subset(gdp_temp_data_k90, year <= 2020)
@@ -816,10 +815,10 @@ total_damages_k90 <- calculate_bidamages_bilateral(median_raster,
                                                    bhm_era_reg_5lag,
                                                    2020)
 
+sum(total_damages_k90$weighted_damages2[total_damages_k90$emitter == "USA"], na.rm = T)/1000000000000
+
 # write the dataframe
-#write_rds(total_damages_k90, "data/output/060223/total_damages_k90_v2022.rds")
-#write_rds(total_damages_k90, "data/output/041023/total_damages_k90_v2022.rds")
-write_rds(total_damages_k90, paste0(output_path, "/total_damages_k90_v2022.rds"))
+#write_rds(total_damages_k90, paste0(output_path, "/total_damages_k90_v2022.rds"))
 
 # now let us just do consumption emissions 
 #gdp_temp_data_k90 <- subset(gdp_temp_data_k90, year <= 2020) #figED11
@@ -834,7 +833,7 @@ total_damages_k90_consump <- calculate_bidamages_bilateral(median_raster,
                                                    2020)
 
 #write_rds(total_damages_k90_consump, "data/output/060223/total_damages_k90_consump_v2022.rds")
-write_rds(total_damages_k90_consump, paste0(output_path, "/total_damages_k90_consump_v2022.rds"))
+#write_rds(total_damages_k90_consump, paste0(output_path, "/total_damages_k90_consump_v2022.rds"))
 
 #sum(total_damages_k90$weighted_damages2[total_damages_k90$emitter == "USA" & total_damages_k90$weighted_damages2 < 0], na.rm = T)
 

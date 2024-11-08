@@ -120,7 +120,7 @@ addUnits <- function(n) {
 
 
 # set paths 
-dropbox_path <- "~/BurkeLab Dropbox/Projects/loss_damage/"
+dropbox_path <- "~/BurkeLab Dropbox/projects/loss_damage/"
 # get user login 
 user <- as.character(Sys.info()["user"])
 
