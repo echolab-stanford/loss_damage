@@ -8,15 +8,15 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-replicate <- F# change T to F if you want to create your own data  
-if (replicate == T){
-  run_date <- "20230523"
-}
-if (replicate == F){
-  run_date <- gsub("-","",Sys.Date())
-}
+#replicate <- F# change T to F if you want to create your own data  
+#if (replicate == T){
+#  run_date <- "20230523"
+#}
+#if (replicate == F){
+#  run_date <- gsub("-","",Sys.Date())
+#}
 
-run_date <- "20230821"
+run_date <- "loss_damage_r1"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -30,10 +30,14 @@ source("scripts/working/analysis/2c_FaIR_deltaT_hist_fut_disagg.R")
 source("scripts/working/analysis/3a0_run_gdptemp_panel.R")
 source("scripts/working/analysis/3a1_run_gdptemp_panel_bhmbs.R")
 source("scripts/working/analysis/3a2_run_gdptemp_panel_5lags.R")
+source("scripts/working/analysis/3a2i_run_gdptemp_panel_lags.R")
 source("scripts/working/analysis/3b0_run_bhm_model.R")
+source("scripts/working/analysis/3b1_run_gdptemp_panel_5lag.R")
 source("scripts/working/analysis/3c0_calc_total_damages_bilateral.R")
 source("scripts/working/analysis/3c1_calc_total_damages.R")
 source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
+source("scripts/working/analysis/3c2i_calc_total_damages_lags.R")
+
 
 setwd(dropbox_path)
 
@@ -83,8 +87,8 @@ world_emissions$total <- (world_emissions$total / 1000)/3.67
 world_minus_us_emms$total <- (world_minus_us_emms$total / 1000)/3.67
 
 #This data is ready for plotting 
-write_rds(world_minus_us_emms, paste0(fig_prepped_dta, run_date,"world_minus_us_emms.rds"))
-write_rds(world_emissions, paste0(fig_prepped_dta, run_date,"world_emissions.rds"))
+write_rds(world_minus_us_emms, paste0(fig_prepped_dta, run_date,"/world_minus_us_emms.rds"))
+write_rds(world_emissions, paste0(fig_prepped_dta, run_date,"/world_emissions.rds"))
 
 ################################################################################
 ################################################################################
@@ -123,13 +127,12 @@ gtc1_fair_exp <- gtc1_fair_exp[order(gtc1_fair_exp$year),]
 gtc1_fair_exp <- as.list(as.data.frame(gtc1_fair_exp))
 gtc1_fair_exp <- as.data.frame(gtc1_fair_exp)
 
-write_rds(gtc1_fair_exp, paste0(fig_prepped_dta, run_date,"gtc1_fair_exp.rds"))
+write_rds(gtc1_fair_exp, paste0(fig_prepped_dta, run_date,"/gtc1_fair_exp.rds"))
 
 ################################################################################
 ################################################################################
 # 1c
 raster_cgm <- raster(paste0(dropbox_path, "data/processed/r_cgm/median_raster.tiff"))
-
 
 world <- spData::world
 world <- st_as_sf(world)
@@ -137,21 +140,16 @@ world <- subset(world, name_long != "Antarctica")
 world$ISO3 <- countrycode::countrycode(sourcevar = world$iso_a2,origin = "iso2c",
                                        destination = "iso3c"
 )
-
 world <- subset(world, !is.na(ISO3))
-
 library(terra)
 world <- terra::vect(world)
 r <- terra::rast(raster_cgm)
 r2 <- terra::disagg(r, 15)
 v <- world
-
 us_fair_median_dt <- subset(fair_exps_isos_k90, experiment_iso == "USA" & year == 2020)
-
 fair_exps_isos_k90_usa_2020 <- us_fair_median_dt %>% 
   dplyr::group_by(year) %>% 
   dplyr::summarise(median_deltat = median(deltaT, ma.rm = T))
-
 fair_exps_isos_k90_usa_2020 <- subset(fair_exps_isos_k90_usa_2020, year == 2020)
 
 deltat_cgm <- r2 * fair_exps_isos_k90_usa_2020$median_deltat
@@ -161,8 +159,8 @@ y <- terra::mask(x, world)
 y <- mean(y)
 
 # data is ready 
-writeVector(v, paste0(fig_prepped_dta, run_date,"v.shp"), overwrite= TRUE)
-writeRaster(y, paste0(fig_prepped_dta, run_date,"y.tiff"), overwrite= TRUE)
+writeVector(v, paste0(fig_prepped_dta, run_date,"/v.shp"), overwrite= TRUE)
+writeRaster(y, paste0(fig_prepped_dta, run_date,"/y.tiff"), overwrite= TRUE)
 
 
 ################################################################################
@@ -192,8 +190,7 @@ gdp_temp_data_k90 <- readRDS(paste0(dropbox_path, "/data/processed/world_gdp_pop
 load(paste0(dropbox_path, "/data/processed/bhm/bhm_era_reg.RData"))
 pop_wdi <- readRDS(paste0(dropbox_path, "/data/processed/world_gdp_pop/pop_wdi.rds"))
 future_forecast_ssp370 <- readRDS(paste0(dropbox_path, "/data/processed/future_forecast/future_forecast_ssp370.rds"))
-
-
+gdp_temp_data_k90 <- subset(gdp_temp_data_k90, year < 2021)
 total_damages_k90_usa <- calculate_bidamages_bilateral(raster_cgm,
                                                        fair_exps_isos_k90,
                                                        "USA",
@@ -214,7 +211,7 @@ annual_observed <- subset(annual_observed, year <= 2020)
 annual_observed$observed - annual_observed$corrected
 
 # ready for plotting 
-write_rds(annual_observed, paste0(fig_prepped_dta,run_date, "annual_observed.rds"))
+write_rds(annual_observed, paste0(fig_prepped_dta,run_date, "/annual_observed.rds"))
 
 ################################################################################
 ################################################################################
@@ -232,7 +229,7 @@ usa_bra$gdp1 <- usa_bra$observed_gdp / 1000000000
 usa_bra$adjusted_gdp1 <- usa_bra$counterfactual_gdp / 1000000000
 
 # ready for plotting
-write_rds(usa_bra, paste0(fig_prepped_dta,run_date, "usa_bra.rds"))
+write_rds(usa_bra, paste0(fig_prepped_dta,run_date, "/usa_bra.rds"))
 
 ################################################################################
 ################################################################################
@@ -245,6 +242,6 @@ sum_usa_bra <- usa_bra1 %>% ungroup() %>%
 sum_usa_bra$cumsum2 <- (sum_usa_bra$cumsum2) / 1000000000 
 
 # ready for plotting 
-write_rds(sum_usa_bra, paste0(fig_prepped_dta,run_date, "sum_usa_bra.rds"))
+write_rds(sum_usa_bra, paste0(fig_prepped_dta,run_date, "/sum_usa_bra.rds"))
 
 # end of script 

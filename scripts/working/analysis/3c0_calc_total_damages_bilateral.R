@@ -40,7 +40,7 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
   # a function that takes in the temperature variable, as well as the model used
   # calculating model growth response after adjusting for the delta T by creating 
   # a function that takes in the temperature variable, as well as the model used
-  calc_delta_g <- function(dataset, temp_var, model, deltaT, coef1, coef2, 
+  calc_delta_g_5lag <- function(dataset, temp_var, model, deltaT, coef1, coef2, 
                            coef3, coef4,
                            coef5, coef6,
                            coef7, coef8,
@@ -50,6 +50,12 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
       (((temp_var - deltaT)^2)*(coef2 + coef4 + coef6 + coef8 + coef10 + coef12)) 
     response_tempnew
   }
+  calc_delta_g <- function(dataset, temp_var, model, deltaT, coef1, coef2) {
+    response_tempnew <- ((temp_var - deltaT)*(coef1)) +
+      (((temp_var - deltaT)^2)*(coef2)) 
+    response_tempnew
+  }
+  
   toc()
   # start an empty dataframe 
   mother_df <- data.frame()
@@ -83,36 +89,52 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
                                 gdp_temp_data1,
                                 by = c("ISO3", "year"))
     
-    # calculate reposnse from added temperature
-    gdp_temp_data1$response_tempnew <- calc_delta_g(gdp_temp_data1,
-                                                    gdp_temp_data1$era_mwtemp,
-                                                    bhm_model,
-                                                    gdp_temp_data1$deltat,
-                                                    coef(bhm_model)[1],
-                                                    coef(bhm_model)[2],
-                                                    coef(bhm_model)[3],
-                                                    coef(bhm_model)[4],
-                                                    coef(bhm_model)[5],
-                                                    coef(bhm_model)[6],
-                                                    coef(bhm_model)[7],
-                                                    coef(bhm_model)[8],
-                                                    coef(bhm_model)[9],
-                                                    coef(bhm_model)[10],
-                                                    coef(bhm_model)[11],
-                                                    coef(bhm_model)[12])
     
-    gdp_temp_data1$response_tempactual_era <- ((gdp_temp_data1$era_mwtemp)*((coef(bhm_model)[1] +
-                                                                               coef(bhm_model)[3] + 
-                                                                               coef(bhm_model)[5] + 
-                                                                               coef(bhm_model)[7] + 
-                                                                               coef(bhm_model)[9] + 
-                                                                               coef(bhm_model)[11]))) + 
-      (((gdp_temp_data1$era_mwtemp)^2)*(coef(bhm_model)[2] +
-                                          coef(bhm_model)[4] + 
-                                          coef(bhm_model)[6] + 
-                                          coef(bhm_model)[8] + 
-                                          coef(bhm_model)[10] + 
-                                          coef(bhm_model)[12]))
+    if(length(bhm_model) > 37){
+      # calculate reposnse from added temperature
+      gdp_temp_data1$response_tempnew <- calc_delta_g_5lag(gdp_temp_data1,
+                                                      gdp_temp_data1$era_mwtemp,
+                                                      bhm_model,
+                                                      gdp_temp_data1$deltat,
+                                                      coef(bhm_model)[1],
+                                                      coef(bhm_model)[2],
+                                                      coef(bhm_model)[3],
+                                                      coef(bhm_model)[4],
+                                                      coef(bhm_model)[5],
+                                                      coef(bhm_model)[6],
+                                                      coef(bhm_model)[7],
+                                                      coef(bhm_model)[8],
+                                                      coef(bhm_model)[9],
+                                                      coef(bhm_model)[10],
+                                                      coef(bhm_model)[11],
+                                                      coef(bhm_model)[12])
+      
+      gdp_temp_data1$response_tempactual_era <- ((gdp_temp_data1$era_mwtemp)*((coef(bhm_model)[1] +
+                                                                                 coef(bhm_model)[3] + 
+                                                                                 coef(bhm_model)[5] + 
+                                                                                 coef(bhm_model)[7] + 
+                                                                                 coef(bhm_model)[9] + 
+                                                                                 coef(bhm_model)[11]))) + 
+        (((gdp_temp_data1$era_mwtemp)^2)*(coef(bhm_model)[2] +
+                                            coef(bhm_model)[4] + 
+                                            coef(bhm_model)[6] + 
+                                            coef(bhm_model)[8] + 
+                                            coef(bhm_model)[10] + 
+                                            coef(bhm_model)[12]))
+      
+    }
+    if(length(bhm_model) == 37){
+      # calculate reposnse from added temperature
+      gdp_temp_data1$response_tempnew <- calc_delta_g(gdp_temp_data1,
+                                                      gdp_temp_data1$era_mwtemp,
+                                                      bhm_model,
+                                                      gdp_temp_data1$deltat,
+                                                      coef(bhm_model)[1],
+                                                      coef(bhm_model)[2])
+      
+      gdp_temp_data1$response_tempactual_era <- ((gdp_temp_data1$era_mwtemp)*((coef(bhm_model)[1]))) + 
+        (((gdp_temp_data1$era_mwtemp)^2)*(coef(bhm_model)[2]))
+      }
     
     # now let us calculate deltaG
     gdp_temp_data1$delta_g_era <- gdp_temp_data1$response_tempactual_era - gdp_temp_data1$response_tempnew
