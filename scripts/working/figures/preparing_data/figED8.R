@@ -8,52 +8,45 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-replicate <- F# change T to F if you want to create your own data  
-if (replicate == T){
-  run_date <- "20230523"
-}
-if (replicate == F){
-  run_date <- gsub("-","",Sys.Date())
-}
+#replicate <- F# change T to F if you want to create your own data  
+#if (replicate == T){
+#  run_date <- "20230523"
+#}
+#if (replicate == F){
+#  run_date <- gsub("-","",Sys.Date())
+#}
 
-run_date <- "20230821"
+run_date <- "loss_damage_r1"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
-# function for calculating warming ratio CGMs
-source("scripts/working/analysis/1_r_cgm.R")
-# functions for computing deltaT form fair
-source("scripts/working/analysis/2a_FaIR_deltaT_hist.R")
-source("scripts/working/analysis/2b_FaIR_deltaT_hist_fut.R")
-source("scripts/working/analysis/2c_FaIR_deltaT_hist_fut_disagg.R")
-# functions for prepping gdp-temp panel and for computing damages
-source("scripts/working/analysis/3a0_run_gdptemp_panel.R")
-source("scripts/working/analysis/3a1_run_gdptemp_panel_bhmbs.R")
-source("scripts/working/analysis/3a2_run_gdptemp_panel_5lags.R")
-source("scripts/working/analysis/3b0_run_bhm_model.R")
-source("scripts/working/analysis/3c0_calc_total_damages_bilateral.R")
-source("scripts/working/analysis/3c1_calc_total_damages.R")
-source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
-
 setwd(dropbox_path)
 #############################################################################
 #############################################################################
 # read data 
+## figED8a
 total_damages_1000tco2 <- readRDS(paste0(output_path,"/total_damages_1000tco2_k90_compare.rds"))
 total_damages_1mtco2 <- readRDS(paste0(output_path,"/total_damages_1mtco2_k90_compare.rds"))
 total_damages_1gtco2 <- readRDS(paste0(output_path,"/total_damages_1gtco2_k90_compare.rds"))
 total_damages_10gtco2 <- readRDS(paste0(output_path,"/total_damages_10gtco2_k90_compare.rds"))
 total_damages_100gtco2 <- readRDS(paste0(output_path,"/total_damages_100gtco2_k90_compare.rds"))
 
-total_damages_1000tco2 <- total_damages_1000tco2_k90
-total_damages_1mtco2 <- total_damages_1mtco2_k90
-total_damages_1gtco2 <- total_damages_1gtco2_k90
-total_damages_10gtco2 <- total_damages_10gtco2_k90
-total_damages_100gtco2 <- total_damages_100gtco2_k90
+## figED8b
+usa_damages_10pct <- readRDS(paste0(output_path, "/usa_damages_10pct.rds"))
+usa_damages_30pct <- readRDS(paste0(output_path, "/usa_damages_30pct.rds"))
+usa_damages_50pct <- readRDS(paste0(output_path, "/usa_damages_50pct.rds"))
+usa_damages_70pct <- readRDS(paste0(output_path, "/usa_damages_70pct.rds"))
+
+#total_damages_1000tco2 <- total_damages_1000tco2_k90
+#total_damages_1mtco2 <- total_damages_1mtco2_k90
+#total_damages_1gtco2 <- total_damages_1gtco2_k90
+#total_damages_10gtco2 <- total_damages_10gtco2_k90
+#total_damages_100gtco2 <- total_damages_100gtco2_k90
 
 
 #############################################################################
 #############################################################################
+################################fig ED8a#####################################
 
 datasets <- list(total_damages_1000tco2,
                  total_damages_1mtco2,
@@ -221,9 +214,23 @@ ex <- ex %>% dplyr::select(c("pulse", "hd_actual", "hd_pct", "fd_actual", "fd_pc
 #ex <- ex[-1:-2,]
 
 # write out ex 
-run_date <- "20241104"
+run_date <- "loss_damage_r1"
 setwd("~/GitHub/loss_damage/")
-write_rds(ex, paste0(getwd(), "data/figures/",run_date, "/damages_under_diff_marginals.rds"))
+write_rds(ex, paste0(getwd(), "/data/figures/",run_date, "/damages_under_diff_marginals.rds"))
+
+################################fig ED8b#####################################
+figed8b <- as.data.frame(data_frame(scenario = c("baseline", "90% of emissions",
+                                                 "70%", "50%" , "30%"), 
+                              value = c(-10.26/-10.26,
+                                        round(((sum(usa_damages_10pct$weighted_damages2[usa_damages_10pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26)),
+                                        ((sum(usa_damages_30pct$weighted_damages2[usa_damages_30pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26),
+                                        ((sum(usa_damages_50pct$weighted_damages2[usa_damages_50pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26),
+                                        ((sum(usa_damages_70pct$weighted_damages2[usa_damages_70pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26))))
+# write out teh table 
+run_date <- "loss_damage_r1"
+setwd("~/GitHub/loss_damage/")
+write_rds(figed8b, paste0(getwd(), "/data/figures/",run_date, "/damages_under_diff_baseline_scenarios.rds"))
+
 
 # end of script 
 

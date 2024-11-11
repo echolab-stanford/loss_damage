@@ -5,7 +5,6 @@
 # Last edited: January 2024
 #############################################################################
 
-
 calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_exps, 
                                          year_k, future_forecast, gdp_temp_dataset, 
                                          temp_dataset, settlement_year, growth_past_2100, 
@@ -54,7 +53,7 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
   
   # start an empty dataframe 
   mother_df <- data.frame()
-
+i <- 1990
   # now loop over the years and calculate total damages for each of the years
   for (i in list_of_exps){
     tic()
@@ -129,7 +128,7 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
     }
     
     # read the bhm model under 5;ag 
-    bhm_model <- run_bhm_model_reg_lag5("pooled")
+    bhm_model <- bhm_era_reg_5lag
     
     #assign teh coeffeceints to the country-year dataset
     gdp_temp_data1$temp <- coef(bhm_model)[1]

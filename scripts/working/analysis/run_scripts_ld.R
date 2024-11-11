@@ -37,8 +37,9 @@ setwd("~/GitHub/loss_damage")
 #}
 
 #ADJUST THE RUN_DATE BEFORE RUNNING THE SCRIPT 
-run_date <- "20240314"
+#run_date <- "20240314"
 #run_date <- "20241104"
+run_date <- "loss_damage_r1"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -223,6 +224,21 @@ fair_exps_1Mtco2_2100_k90 <- process_exp_data_hist_fut("20230807","1MtCO2_hist_2
 fair_exps_10Gtco2_2100_k90 <- process_exp_data_hist_fut("20230807","10GtCO2_hist_2300",1990,aggregating = T) # figED6_l
 fair_exps_100Gtco2_2100_k90 <- process_exp_data_hist_fut("20230807","100GtCO2_hist_2300",1990,aggregating = T) # figED6_m
 
+####################### Experiment (30%, 50%, 70%, and 90% of emissions): #########################
+# this experiment is to run the emissions damage calculation for 1gtco2 under 
+# different baseline emissions
+fair_exps_isos_usa_k90_10pct <- process_exp_data_hist("20231206", "hist_bi_2100_10pct", 1990, aggregating = T)
+fair_exps_isos_k90_10pct <- process_exp_data_hist("20231207", "hist_bi_10pct_2100", 1990, aggregating = T)
+
+fair_exps_isos_usa_k90_30pct <- process_exp_data_hist("20231206", "hist_bi_2100_30pct", 1990, aggregating = T)
+fair_exps_isos_k90_30pct <- process_exp_data_hist("20231207", "hist_bi_30pct_2100", 1990, aggregating = T)
+
+fair_exps_isos_usa_k90_50pct <- process_exp_data_hist("20231206", "hist_bi_2100_50pct", 1990, aggregating = T)
+fair_exps_isos_k90_50pct <- process_exp_data_hist("20231207", "hist_bi_50pct_2100", 1990, aggregating = T)
+
+fair_exps_isos_usa_k90_70pct <- process_exp_data_hist("20231206", "hist_bi_2100_70pct", 1990, aggregating = T)
+fair_exps_isos_k90_70pct <- process_exp_data_hist("20231207", "hist_bi_70pct_2100", 1990, aggregating = T)
+
 ################################################################################
 ##################### PART III: Calculate Total Damages ########################
 ################################################################################
@@ -256,6 +272,8 @@ gdp_temp_data_k80_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k8
 gdp_temp_data_5lags_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_5lags_2300.rds")
 # now limited to 2100 
 gdp_temp_data_5lags_2100 <- subset(gdp_temp_data_5lags_2300, year < 2101)
+
+
 # now let us create a dataset that includes all lagged temp and precip up to 10
 # years behind to run our supplemnental numbers for SCC under lower higher lags 
 # than 5 
@@ -304,7 +322,7 @@ load("data/processed/bhm/bhm_era_reg.RData")
 #save(bhm_era_reg_10lag, file = "data/processed/bhm/bhm_era_reg_10lag.RData")
 
 #save(bhm_era_reg_5lag, file = "data/processed/bhm/bhm_era_reg_5lag.RData")
-#load("data/processed/bhm/bhm_era_reg_5lag.RData")
+load("data/processed/bhm/bhm_era_reg_5lag.RData")
 #load("data/processed/bhm/bhm_era_reg_10lag.RData")
 #load("data/processed/bhm/bhm_era_reg_9lag.RData")
 #load("data/processed/bhm/bhm_era_reg_8lag.RData")
@@ -336,8 +354,6 @@ years_of_exps_1980_2020 <- c(1980:2020)
 years_of_exps_1980_2022 <- c(1980:2022)
 years_of_exps_1990_2022 <- c(1990:2022)
 years_of_exps_2020_2100 <- c(2020:2100)
-
-
 
 # ok let us start with the 1gtco2 experiment (6 mins)  # fig2ab, fig2cd, fig3a, fig3b, 
 total_damages_1gtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
@@ -550,18 +566,19 @@ write_rds(total_damages_1tco2_k80, paste0("data/output/",
 # The data produced under this section is used for the following 
 # figures 
 # ok let us start with the 1tco2 experiment 
-total_damages_1tco2_k90 <- calculate_damages_pulse(median_raster,
-                                                    fair_exps_1tco2_2100_k90, 
-                                                    1990,
-                                                    1990,
-                                                    future_forecast_ssp370,
-                                                    gdp_temp_data_k90,
-                                                    "ERA",
-                                                    bhm_era_reg,
-                                                    F,
-                                                    "no",
-                                                    "no",
-                                                    2020)
+total_damages_1tco2_k90 <- calculate_damages_pulse_5lag(median_raster,
+                                                         fair_exps_1tco2_2100_k90, 
+                                                         1990,
+                                                         1990,
+                                                         future_forecast_ssp370,
+                                                         gdp_temp_data_5lags_2100,
+                                                         "ERA",
+                                                         2020,
+                                                         F,
+                                                         F,
+                                                         F)
+
+
 
 # ok let us start with the 10tco2 experiment 
 #total_damages_10tco2_k90 <- calculate_damages_pulse(median_raster,
@@ -577,71 +594,67 @@ total_damages_1tco2_k90 <- calculate_damages_pulse(median_raster,
 #                                                    "no",
 #                                                    2020)
 # ok let us start with the 1000tco2 experiment
-total_damages_1000tco2_k90 <- calculate_damages_pulse(median_raster,
-                                                    fair_exps_1000tco2_2100_k90, 
-                                                    1990,
-                                                    1990,
-                                                    future_forecast_ssp370,
-                                                    gdp_temp_data_k90,
-                                                    "ERA",
-                                                    bhm_era_reg,
-                                                    F,
-                                                    "no",
-                                                    "no",
-                                                    2020)
-# ok let us start with the 1mtco2 experiment 
-total_damages_1mtco2_k90 <- calculate_damages_pulse(median_raster,
-                                                    fair_exps_1Mtco2_2100_k90, 
-                                                    1990,
-                                                    1990,
-                                                    future_forecast_ssp370,
-                                                    gdp_temp_data_k90,
-                                                    "ERA",
-                                                    bhm_era_reg,
-                                                    F,
-                                                    "no",
-                                                    "no",
-                                                    2020)
-# ok let us start with the 1gtco2 experiment 
-total_damages_1gtco2_k90 <- calculate_damages_pulse(median_raster,
-                                                    fair_exps_1gtco2_2100_k90, 
-                                                    1990,
-                                                    1990,
-                                                    future_forecast_ssp370,
-                                                    gdp_temp_data_k90,
-                                                    "ERA",
-                                                    bhm_era_reg,
-                                                    F,
-                                                    "no",
-                                                    "no",
-                                                    2020)
-# ok let us start with the 10gtco2 experiment
-total_damages_10gtco2_k90 <- calculate_damages_pulse(median_raster,
-                                                    fair_exps_10Gtco2_2100_k90, 
-                                                    1990,
-                                                    1990,
-                                                    future_forecast_ssp370,
-                                                    gdp_temp_data_k90,
-                                                    "ERA",
-                                                    bhm_era_reg,
-                                                    F,
-                                                    "no",
-                                                    "no",
-                                                    2020)
-# ok let us start with the 100gtco2 experiment 
-total_damages_100gtco2_k90 <- calculate_damages_pulse(median_raster,
-                                                    fair_exps_100Gtco2_2100_k90, 
-                                                    1990,
-                                                    1990,
-                                                    future_forecast_ssp370,
-                                                    gdp_temp_data_k90,
-                                                    "ERA",
-                                                    bhm_era_reg,
-                                                    F,
-                                                    "no",
-                                                    "no",
-                                                    2020)
+total_damages_1000tco2_k90 <- calculate_damages_pulse_5lag(median_raster,
+                                                           fair_exps_1000tco2_2100_k90, 
+                                                           1990,
+                                                           1990,
+                                                           future_forecast_ssp370,
+                                                           gdp_temp_data_5lags_2100,
+                                                           "ERA",
+                                                           2020,
+                                                           F,
+                                                           F,
+                                                           F)
 
+# ok let us start with the 1mtco2 experiment 
+total_damages_1mtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
+                                                         fair_exps_1Mtco2_2100_k90, 
+                                                         1990,
+                                                         1990,
+                                                         future_forecast_ssp370,
+                                                         gdp_temp_data_5lags_2100,
+                                                         "ERA",
+                                                         2020,
+                                                         F,
+                                                         F,
+                                                         F)
+
+# ok let us start with the 1gtco2 experiment 
+total_damages_1gtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
+                                                         fair_exps_1gtco2_2100_k90, 
+                                                         1990,
+                                                         1990,
+                                                         future_forecast_ssp370,
+                                                         gdp_temp_data_5lags_2100,
+                                                         "ERA",
+                                                         2020,
+                                                         F,
+                                                         F,
+                                                         F)
+# ok let us start with the 10gtco2 experiment
+total_damages_10gtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
+                                                          fair_exps_10Gtco2_2100_k90, 
+                                                          1990,
+                                                          1990,
+                                                          future_forecast_ssp370,
+                                                          gdp_temp_data_5lags_2100,
+                                                          "ERA",
+                                                          2020,
+                                                          F,
+                                                          F,
+                                                          F)
+# ok let us start with the 100gtco2 experiment 
+total_damages_100gtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
+                                                           fair_exps_100Gtco2_2100_k90, 
+                                                           1990,
+                                                           1990,
+                                                           future_forecast_ssp370,
+                                                           gdp_temp_data_5lags_2100,
+                                                           "ERA",
+                                                           2020,
+                                                           F,
+                                                           F,
+                                                           F)
 write_rds(total_damages_1tco2_k90, paste0("data/output/", run_date, "/total_damages_1tco2_k90_compare.rds"))
 #write_rds(total_damages_10tco2_k90, paste0("data/output/", run_date, "/total_damages_10tco2_k90_compare.rds"))
 write_rds(total_damages_1000tco2_k90, paste0("data/output/", run_date, "/total_damages_1000tco2_k90_compare.rds"))
@@ -649,6 +662,7 @@ write_rds(total_damages_1mtco2_k90, paste0("data/output/", run_date, "/total_dam
 write_rds(total_damages_1gtco2_k90, paste0("data/output/", run_date, "/total_damages_1gtco2_k90_compare.rds"))
 write_rds(total_damages_10gtco2_k90, paste0("data/output/", run_date, "/total_damages_10gtco2_k90_compare.rds"))
 write_rds(total_damages_100gtco2_k90, paste0("data/output/", run_date, "/total_damages_100gtco2_k90_compare.rds"))
+
 
 
 ######################## SCC Uncertainty Sources ############################
@@ -815,8 +829,6 @@ total_damages_k90 <- calculate_bidamages_bilateral(median_raster,
                                                    bhm_era_reg_5lag,
                                                    2020)
 
-sum(total_damages_k90$weighted_damages2[total_damages_k90$emitter == "USA"], na.rm = T)/1000000000000
-
 # write the dataframe
 #write_rds(total_damages_k90, paste0(output_path, "/total_damages_k90_v2022.rds"))
 
@@ -851,6 +863,123 @@ total_damages_k90_prod <- calculate_bidamages_bilateral(median_raster,
 
 #write_rds(total_damages_k90_prod, "data/output/060223/total_damages_k90_prod_v2022.rds")
 write_rds(total_damages_k90_prod, paste0(output_path, "/total_damages_k90_prod_v2022.rds"))
+
+
+############# 30%,50%,70%,90% emissions baseline experiment #################### figED8
+
+## first we need to calculate delta T and damages under baseline emissions
+### 10%
+total_damages_k90_10pct <- calculate_bidamages_bilateral(median_raster, 
+                                                   fair_exps_isos_k90_10pct, 
+                                                   "pct",
+                                                   1990, 
+                                                   future_forecast_ssp370,
+                                                   gdp_temp_data_k90_2020,
+                                                   bhm_era_reg_5lag,
+                                                   2020)
+total_damages_k90_10pct$era_mwtemp <- total_damages_k90_10pct$era_mwtemp - total_damages_k90_10pct$deltat
+total_damages_k90_10pct <- total_damages_k90_10pct %>% 
+  dplyr::select(c("year", "ISO3", "era_mwtemp"))
+gdp_temp_data_k90_2020_10pct <- gdp_temp_data_k90_2020 %>% 
+  dplyr::select(-c("era_mwtemp")) %>% 
+  dplyr::left_join(.,total_damages_k90_10pct, by = c("year", "ISO3"))
+gdp_temp_data_k90_2020_10pct$response_tempactual_era <- ((gdp_temp_data_k90_2020_10pct$era_mwtemp)*(coef(bhm_era_reg_5lag)[1] + coef(bhm_era_reg_5lag)[3] + coef(bhm_era_reg_5lag)[5] + coef(bhm_era_reg_5lag)[7] + coef(bhm_era_reg_5lag)[9] + coef(bhm_era_reg_5lag)[11])) +
+  (((gdp_temp_data_k90_2020_10pct$era_mwtemp)^2)*(coef(bhm_era_reg_5lag)[2] + coef(bhm_era_reg_5lag)[4] + coef(bhm_era_reg_5lag)[6] + coef(bhm_era_reg_5lag)[8] + coef(bhm_era_reg_5lag)[10] + coef(bhm_era_reg_5lag)[12])) 
+usa_damages_10pct <- calculate_bidamages_bilateral(median_raster, 
+                                                   fair_exps_isos_usa_k90_10pct, 
+                                                   "USA",
+                                                   1990, 
+                                                   future_forecast_ssp370,
+                                                   gdp_temp_data_k90_2020_10pct,
+                                                   bhm_era_reg_5lag,
+                                                   2020)
+### 30% 
+total_damages_k90_30pct <- calculate_bidamages_bilateral(median_raster, 
+                                                   fair_exps_isos_k90_30pct, 
+                                                   "pct",
+                                                   1990, 
+                                                   future_forecast_ssp370,
+                                                   gdp_temp_data_k90_2020,
+                                                   bhm_era_reg_5lag,
+                                                   2020)
+total_damages_k90_30pct$era_mwtemp <- total_damages_k90_30pct$era_mwtemp - total_damages_k90_30pct$deltat
+total_damages_k90_30pct <- total_damages_k90_30pct %>% 
+  dplyr::select(c("year", "ISO3", "era_mwtemp"))
+gdp_temp_data_k90_2020_30pct <- gdp_temp_data_k90_2020 %>% 
+  dplyr::select(-c("era_mwtemp")) %>% 
+  dplyr::left_join(.,total_damages_k90_30pct, by = c("year", "ISO3"))
+gdp_temp_data_k90_2020_30pct$response_tempactual_era <- ((gdp_temp_data_k90_2020_30pct$era_mwtemp)*(coef(bhm_era_reg_5lag)[1] + coef(bhm_era_reg_5lag)[3] + coef(bhm_era_reg_5lag)[5] + coef(bhm_era_reg_5lag)[7] + coef(bhm_era_reg_5lag)[9] + coef(bhm_era_reg_5lag)[11])) +
+  (((gdp_temp_data_k90_2020_30pct$era_mwtemp)^2)*(coef(bhm_era_reg_5lag)[2] + coef(bhm_era_reg_5lag)[4] + coef(bhm_era_reg_5lag)[6] + coef(bhm_era_reg_5lag)[8] + coef(bhm_era_reg_5lag)[10] + coef(bhm_era_reg_5lag)[12])) 
+usa_damages_30pct <- calculate_bidamages_bilateral(median_raster, 
+                                                   fair_exps_isos_usa_k90_30pct, 
+                                                   "USA",
+                                                   1990, 
+                                                   future_forecast_ssp370,
+                                                   gdp_temp_data_k90_2020_30pct,
+                                                   bhm_era_reg_5lag,
+                                                   2020)
+
+### 50% 
+total_damages_k90_50pct <- calculate_bidamages_bilateral(median_raster, 
+                                                         fair_exps_isos_k90_50pct, 
+                                                         "pct",
+                                                         1990, 
+                                                         future_forecast_ssp370,
+                                                         gdp_temp_data_k90_2020,
+                                                         bhm_era_reg_5lag,
+                                                         2020)
+total_damages_k90_50pct$era_mwtemp <- total_damages_k90_50pct$era_mwtemp - total_damages_k90_50pct$deltat
+total_damages_k90_50pct <- total_damages_k90_50pct %>% 
+  dplyr::select(c("year", "ISO3", "era_mwtemp"))
+gdp_temp_data_k90_2020_50pct <- gdp_temp_data_k90_2020 %>% 
+  dplyr::select(-c("era_mwtemp")) %>% 
+  dplyr::left_join(.,total_damages_k90_50pct, by = c("year", "ISO3"))
+gdp_temp_data_k90_2020_50pct$response_tempactual_era <- ((gdp_temp_data_k90_2020_50pct$era_mwtemp)*(coef(bhm_era_reg_5lag)[1] + coef(bhm_era_reg_5lag)[3] + coef(bhm_era_reg_5lag)[5] + coef(bhm_era_reg_5lag)[7] + coef(bhm_era_reg_5lag)[9] + coef(bhm_era_reg_5lag)[11])) +
+  (((gdp_temp_data_k90_2020_50pct$era_mwtemp)^2)*(coef(bhm_era_reg_5lag)[2] + coef(bhm_era_reg_5lag)[4] + coef(bhm_era_reg_5lag)[6] + coef(bhm_era_reg_5lag)[8] + coef(bhm_era_reg_5lag)[10] + coef(bhm_era_reg_5lag)[12])) 
+usa_damages_50pct <- calculate_bidamages_bilateral(median_raster, 
+                                                   fair_exps_isos_usa_k90_50pct, 
+                                                   "USA",
+                                                   1990, 
+                                                   future_forecast_ssp370,
+                                                   gdp_temp_data_k90_2020_50pct,
+                                                   bhm_era_reg_5lag,
+                                                   2020)
+
+### 70% 
+total_damages_k90_70pct <- calculate_bidamages_bilateral(median_raster, 
+                                                         fair_exps_isos_k90_70pct, 
+                                                         "pct",
+                                                         1990, 
+                                                         future_forecast_ssp370,
+                                                         gdp_temp_data_k90_2020,
+                                                         bhm_era_reg_5lag,
+                                                         2020)
+
+total_damages_k90_70pct$era_mwtemp <- total_damages_k90_70pct$era_mwtemp - total_damages_k90_70pct$deltat
+total_damages_k90_70pct <- total_damages_k90_70pct %>% 
+  dplyr::select(c("year", "ISO3", "era_mwtemp"))
+gdp_temp_data_k90_2020_70pct <- gdp_temp_data_k90_2020 %>% 
+  dplyr::select(-c("era_mwtemp")) %>% 
+  dplyr::left_join(.,total_damages_k90_70pct, by = c("year", "ISO3"))
+gdp_temp_data_k90_2020_70pct$response_tempactual_era <- ((gdp_temp_data_k90_2020_70pct$era_mwtemp)*(coef(bhm_era_reg_5lag)[1] + coef(bhm_era_reg_5lag)[3] + coef(bhm_era_reg_5lag)[5] + coef(bhm_era_reg_5lag)[7] + coef(bhm_era_reg_5lag)[9] + coef(bhm_era_reg_5lag)[11])) +
+  (((gdp_temp_data_k90_2020_70pct$era_mwtemp)^2)*(coef(bhm_era_reg_5lag)[2] + coef(bhm_era_reg_5lag)[4] + coef(bhm_era_reg_5lag)[6] + coef(bhm_era_reg_5lag)[8] + coef(bhm_era_reg_5lag)[10] + coef(bhm_era_reg_5lag)[12])) 
+usa_damages_70pct <- calculate_bidamages_bilateral(median_raster, 
+                                                   fair_exps_isos_usa_k90_70pct, 
+                                                   "USA",
+                                                   1990, 
+                                                   future_forecast_ssp370,
+                                                   gdp_temp_data_k90_2020_70pct,
+                                                   bhm_era_reg_5lag,
+                                                   2020)
+
+
+## Now let us write out the datasets 
+write_rds(usa_damages_10pct, paste0(output_path, "/usa_damages_10pct.rds"))
+write_rds(usa_damages_30pct, paste0(output_path, "/usa_damages_30pct.rds"))
+write_rds(usa_damages_50pct, paste0(output_path, "/usa_damages_50pct.rds"))
+write_rds(usa_damages_70pct, paste0(output_path, "/usa_damages_70pct.rds"))
+
+
 
 ######################## SCC Under Diff Scenarios ############################
 

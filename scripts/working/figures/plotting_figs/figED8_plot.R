@@ -8,28 +8,20 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230821"
+run_date <- "loss_damage_r1"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
-# function for calculating warming ratio CGMs
-source("scripts/working/analysis/1_r_cgm.R")
-# functions for computing deltaT form fair
-source("scripts/working/analysis/2a_FaIR_deltaT_hist.R")
-source("scripts/working/analysis/2b_FaIR_deltaT_hist_fut.R")
-source("scripts/working/analysis/2c_FaIR_deltaT_hist_fut_disagg.R")
-# functions for prepping gdp-temp panel and for computing damages
-source("scripts/working/analysis/3a0_run_gdptemp_panel.R")
-source("scripts/working/analysis/3a1_run_gdptemp_panel_bhmbs.R")
-source("scripts/working/analysis/3a2_run_gdptemp_panel_5lags.R")
-source("scripts/working/analysis/3b0_run_bhm_model.R")
-source("scripts/working/analysis/3c0_calc_total_damages_bilateral.R")
-source("scripts/working/analysis/3c1_calc_total_damages.R")
-source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
+
+################################################################################
+################################################################################
+# read the data 
+ex <- readRDS(paste0(getwd(), "/data/figures/", run_date, "/damages_under_diff_marginals.rds"))
+figed8b <- readRDS(paste0(getwd(), "/data/figures/", run_date, "/damages_under_diff_baseline_scenarios.rds"))
 
 ################################################################################
 ################################################################################
 # plot data 
-################################################################################ FigED6
+################################################################################ FigED8a
 ex %>%
   tibble%>%
   #group_by(emitter) %>% 
@@ -54,10 +46,32 @@ ex %>%
              columns = c(hd_pct,
                          fd_pct)) %>% 
   gt_theme_538_nocaps(table.width = px(700)) %>%
-  gtsave("~/Desktop/figED8_a.png")
-
-gtsave(paste0("~/GitHub/loss_damage/figures/", run_date, "/figED6.png"))
+  gtsave(paste0("~/GitHub/loss_damage/figures/", run_date, "/figED8.png"))
 #  gtsave(paste0("/Users/mustafazahid/GitHub/loss_damage/figures/", 
 #               run_date,"/fig_compare_est.png"))
+
+################################################################################ FigED8b
+# ok now let us plot 
+
+egy <- MetBrewer::met.brewer("Egypt")[2]
+figed8b$scenario_id <- 1:5
+pdf(file = paste0("~/GitHub/loss_damage/figures/",run_date,"/figED8b.pdf"),   # The directory you want to save the file in
+    width = 7.85, # The width of the plot in inches
+    height = 4.85) # The height of the plot in inches
+
+
+par(mar= c(6,8,2,2))
+
+plot(figed8b$scenario_id, figed8b$value, type = "l", xaxt = "n", 
+     frame.plot = F, las = 1, 
+     ylab = "USA damages\nrelative to baseline scenario", 
+     xlab = "Baseline emissions for 1990-2020 period", cex.axis = 1.15, cex.lab = 1.25)
+points(figed8b$scenario_id, figed8b$value, col = egy, pch = 19, cex = 2.25)
+points(figed8b$scenario_id, figed8b$value, col = "black", pch = 21, cex = 2.3, lwd = 1.55)
+axis(1, figed8b$scenario, at = figed8b$scenario_id, cex.axis = 1.15)
+
+dev.off()
+
+
 
 #end of script
