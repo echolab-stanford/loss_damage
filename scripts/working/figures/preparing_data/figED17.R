@@ -7,15 +7,15 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-replicate <- F# change T to F if you want to create your own data  
-if (replicate == T){
-  run_date <- "20230523"
-}
-if (replicate == F){
-  run_date <- gsub("-","",Sys.Date())
-}
+#replicate <- F# change T to F if you want to create your own data  
+#if (replicate == T){
+#  run_date <- "20230523"
+#}
+#if (replicate == F){
+#  run_date <- gsub("-","",Sys.Date())
+#}
 
-run_date <- "20230821"
+run_date <- "loss_damage_r1"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 

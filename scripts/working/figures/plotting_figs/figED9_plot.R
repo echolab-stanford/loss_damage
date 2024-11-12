@@ -7,7 +7,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230821"
+run_date <- "loss_damage_r1"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -15,11 +15,10 @@ source("scripts/working/analysis/0_read_libs.R")
 ################################################################################
 # read data 
 scc_est <- readRDS(paste0(fig_prepped_dta, run_date,"/scc_under_diff_scenarios.rds"))
-scc_est <- readRDS(paste0(fig_prepped_dta, "20231208","/scc_under_diff_scenarios.rds"))
+
 ################################################################################
 ################################################################################
 # plot data 
-run_date <- "20231212"
 scc_est %>%
   tibble%>%
   #group_by() %>% 
@@ -37,7 +36,7 @@ scc_est %>%
              time_horizon = "Time Horizon",
              post_2100_growth = "Post-2100 Growth",
              regression_model = "Regression Model") %>% 
-  gt_theme_538(table.width = px(950)) %>% 
+  gt_theme_538(table.width = px(840)) %>% 
   cols_align(align = "center") %>% 
   fmt_currency(
     columns = vars(dr1,
@@ -46,7 +45,7 @@ scc_est %>%
                    dr_ramsey),
     currency = "USD",
     decimals = F
-  ) %>% gtsave(paste0("/figures/", run_date,"/figED8_new_rr.pdf"))
+  ) %>% gtsave(paste0(getwd(),"/figures/", run_date,"/figED9.pdf"))
 
 #end of script
 

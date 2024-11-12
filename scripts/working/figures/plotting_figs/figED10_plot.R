@@ -7,7 +7,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230821"
+run_date <- "loss_damage_r1"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -19,15 +19,6 @@ totals_all   <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_all.rds"))
 totals_bhm   <- subset(readRDS(paste0(fig_prepped_dta,run_date, "/totals_bhm.rds")), !is.na(coef_id))
 totals_cgm   <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_cgm.rds"))
 totals_fair  <- readRDS(paste0(fig_prepped_dta,run_date, "/totals_fair.rds"))
-
-
-totals_all   <- readRDS("~/Desktop/totals_all.rds")
-totals_bhm   <- readRDS("~/Desktop/totals_bhm.rds")
-totals_cgm   <- readRDS("~/Desktop/totals_cgm.rds")
-totals_fair  <- readRDS("~/Desktop/totals_fair.rds")
-
-
-
 
 ################################################################################
 ################################################################################
@@ -77,17 +68,16 @@ fair_median <- median(totals_fair$total_damages)
 cgm_median <- median(totals_cgm$total_damages)
 bhm_median <- median(totals_bhm$total_damages2)
 
-pdf(paste0("figures/", run_date,"/figED13.pdf"), width=12, height=6)
+pdf(paste0(getwd(),"/figures/", run_date,"/figED10.pdf"), width=12, height=6)
 
 par(mfrow = c(1,1))
 par(mar= c(8,6,2,2))
 plot(-1,-1,pch = 15, #xlim = range(0,4), 
      ylim = range(0,15), 
-     xlim = range(0,2800),
+     xlim = range(0,10000),
      cex= 0, yaxt = "n",
      frame.plot = F, col = "#d1def0", ylab = "", 
      xlab = "\n \n SC-CO2 (per tonne damages in $USD)", cex.lab = 2, cex.axis = 1.25)
-
 
 polygon(x = c(min(totals_5_95_all$total_damages), max(totals_5_95_all$total_damages),
               max(totals_5_95_all$total_damages), min(totals_5_95_all$total_damages)),
@@ -191,24 +181,24 @@ polygon(x = c(cgm_median - 5, cgm_median + 5,
         col = "gold1")  
 
 #legend 
-polygon(x = c(2100, 2300,
-              2300, 2100),
+polygon(x = c(7000, 7500,
+              7500, 7000),
         border = "#581795",      # X-Coordinates of polygon
         y = c(10.5, 10.5,10, 10),                             # Y-Coordinates of polygon
         col = "#581795")  
-polygon(x = c(2100, 2300,
-              2300, 2100),
+polygon(x = c(7000, 7500,
+              7500, 7000),
         border = "#127450",      # X-Coordinates of polygon
         y = c(9.5, 9.5,9, 9),                             # Y-Coordinates of polygon
         col = "#127450")  
 
-polygon(x = c(2100, 2300,
-              2300, 2100),
+polygon(x = c(7000, 7500,
+              7500, 7000),
         border = "#0056b3",      # X-Coordinates of polygon
         y = c(8.5, 8.5,8, 8),                             # Y-Coordinates of polygon
         col = "#0056b3")  
-polygon(x = c(2100, 2300,
-              2300, 2100),
+polygon(x = c(7000, 7500,
+              7500, 7000),
         border = "#990000",      # X-Coordinates of polygon
         y = c(7.5, 7.5,7, 7),                             # Y-Coordinates of polygon
         col = "#990000")  
@@ -220,56 +210,60 @@ polygon(x = c(2100, 2300,
 #        col = "gold1")  
 
 
-polygon(x = c(2000, 2400,
-              2400, 2000),
+
+
+
+polygon(x = c(7500, 9000,
+              9000, 7500),
         border = "grey95",      # X-Coordinates of polygon
         y = c(4.75, 4.75,5.25, 5.25),                             # Y-Coordinates of polygon
         col = "grey95")  
-polygon(x = c(2100, 2300,
-              2300, 2100),
+polygon(x = c(7800, 8700,
+              8700, 7800),
         border = "grey",      # X-Coordinates of polygon
         y = c(4.75, 4.75,5.25, 5.25),                             # Y-Coordinates of polygon
         col = "grey")  
 
-polygon(x = c(2150, 2250,
-              2250, 2150),
+polygon(x = c(8150, 8350,
+              8350, 8150),
         border = "black",      # X-Coordinates of polygon
         y = c(4.75, 4.75,5.25, 5.25),                             # Y-Coordinates of polygon
         col = "black")  
 
-polygon(x = c(2195, 2205,
-              2205, 2195),
+polygon(x = c(8275, 8225,
+              8225, 8275),
         border = "gold1",      # X-Coordinates of polygon
         y = c(4.75, 4.75,5.25, 5.25),                             # Y-Coordinates of polygon
         col = "gold1")  
 
-segments(x0 = 2200, x1 = 2200, y0 = 5.25, y1 = 5.5)
-text(2200,5.8, "median")
+segments(x0 = 8250, x1 = 8250, y0 = 5.25, y1 = 5.5)
+text(8250,5.8, "median")
 
-segments(x0 = 2400, x1 = 2400, y0 = 4.60, y1 = 1.6)
-segments(x0 = 2000, x1 = 2400, y0 = 1.6, y1 = 1.6)
-segments(x0 = 2000, x1 = 2000, y0 = 1.6, y1 = 4.6)
-segments(x0 = 2200, x1 = 2200, y0 = 1.6, y1 = 1.2)
-text(2200, 1, "95% range", cex = 0.75)
+segments(x0 = 9000, x1 = 9000, y0 = 4.60, y1 = 1.6)
+segments(x0 = 7500, x1 = 9000, y0 = 1.6, y1 = 1.6)
+segments(x0 = 7500, x1 = 7500, y0 = 1.6, y1 = 4.6)
+segments(x0 = 8250, x1 = 8250, y0 = 1.6, y1 = 1.2)
+text(8250, 1, "95% range", cex = 1)
 
-segments(x0 = 2100, x1 = 2300, y0 = 2.60, y1 = 2.6)
-segments(x0 = 2300, x1 = 2300, y0 = 4.6, y1 = 2.6)
-segments(x0 = 2100, x1 = 2100, y0 = 2.6, y1 = 4.6)
-segments(x0 = 2200, x1 = 2200, y0 = 2.6, y1 = 2.4)
-text(2200, 2.2, "90% range", cex = 0.75)
+segments(x0 = 7800, x1 = 8700, y0 = 2.60, y1 = 2.6)
+segments(x0 = 8700, x1 = 8700, y0 = 4.6, y1 = 2.6)
+segments(x0 = 7800, x1 = 7800, y0 = 2.6, y1 = 4.6)
+segments(x0 = 8250, x1 = 8250, y0 = 2.6, y1 = 2.4)
+text(8250, 2.2, "90% range", cex = 1)
 
 
-segments(x0 = 2150, x1 = 2150, y0 = 4.60, y1 = 3.6)
-segments(x0 = 2250, x1 = 2150, y0 = 3.6, y1 = 3.6)
-segments(x0 = 2250, x1 = 2250, y0 = 3.6, y1 = 4.6)
-segments(x0 = 2200, x1 = 2200, y0 = 3.6, y1 = 3.4)
-text(2200, 3.2, "IQR", cex = 0.75)
+segments(x0 = 8150, x1 = 8150, y0 = 4.60, y1 = 3.6)
+segments(x0 = 8350, x1 = 8150, y0 = 3.6, y1 = 3.6)
+segments(x0 = 8350, x1 = 8350, y0 = 3.6, y1 = 4.6)
+segments(x0 = 8250, x1 = 8250, y0 = 3.6, y1 = 3.4)
+text(8250, 3.2, "IQR", cex = 0.75)
 
-text(2075,10.15, "climate pattern uncertainty", adj = c(1,0))
-text(2075,9.15, "climate sensitivity uncertainty", adj = c(1,0))
-text(2075,8.15, "regression uncertainty", adj = c(1,0))
-text(2075,7.15, "total uncertainty", adj = c(1,0))
+text(7775,10.15, "climate pattern uncertainty", adj = 0)
+text(7775,9.15, "climate sensitivity uncertainty", adj = 0)
+text(7775,8.15, "regression uncertainty", adj = 0)
+text(7775,7.15, "total uncertainty", adj = 0)
 #text(2075,6.35, "median estimate", adj = c(1,0))
+
 
 dev.off()
 # end of script

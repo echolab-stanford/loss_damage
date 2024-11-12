@@ -620,6 +620,19 @@ total_damages_1mtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
                                                          F)
 
 # ok let us start with the 1gtco2 experiment 
+# ok let us start with the 1gtco2 experiment (6 mins)  # fig2ab, fig2cd, fig3a, fig3b, 
+total_damages_1gtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
+                                                         fair_exps_1gtco2_2100_k90, 
+                                                         years_of_exps_1990_2020,
+                                                         1990,
+                                                         future_forecast_ssp370,
+                                                         gdp_temp_data_5lags_2100,
+                                                         "ERA",
+                                                         2020,
+                                                         F,
+                                                         F,
+                                                         F)
+
 total_damages_1gtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
                                                          fair_exps_1gtco2_2100_k90, 
                                                          1990,
@@ -655,6 +668,7 @@ total_damages_100gtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
                                                            F,
                                                            F,
                                                            F)
+
 write_rds(total_damages_1tco2_k90, paste0("data/output/", run_date, "/total_damages_1tco2_k90_compare.rds"))
 #write_rds(total_damages_10tco2_k90, paste0("data/output/", run_date, "/total_damages_10tco2_k90_compare.rds"))
 write_rds(total_damages_1000tco2_k90, paste0("data/output/", run_date, "/total_damages_1000tco2_k90_compare.rds"))

@@ -7,7 +7,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20230821"
+run_date <- "loss_damage_r1"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -33,7 +33,7 @@ df$y[df$x == 2030] <- -1
 par(mfrow = c(2, 1))
 
 #dev.off()
-pdf(paste0("figures/" ,run_date,"/figED9.pdf"), width=6, height=9)
+pdf(paste0("figures/" ,run_date,"/figED17_pre_illustrator.pdf"), width=6, height=9)
 #gsub("-", "", Sys.Date()) 
 # 1 column figure with 3 plots using relative heights
 layout(matrix(1:4, ncol=1), heights=c(0.38, 0.38, 0.5, 0.8))

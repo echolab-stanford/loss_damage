@@ -128,7 +128,8 @@ i <- 1990
     }
     
     # read the bhm model under 5;ag 
-    bhm_model <- bhm_era_reg_5lag
+    bhm_model <- run_bhm_model_reg_lag5("pooled")
+    #bhm_model <- bhm_era_reg_5lag
     
     #assign teh coeffeceints to the country-year dataset
     gdp_temp_data1$temp <- coef(bhm_model)[1]
