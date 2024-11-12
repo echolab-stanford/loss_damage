@@ -7,22 +7,22 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "20241104"
+run_date <- "loss_damage_r1"
 
 #############################################################################
 #############################################################################
 # read the data first
 aggregated_data_neg <- readRDS(paste0(getwd(),"/data/figures/", run_date, "/aggregated_transfers_neg.rds"))
-aggregated_data_pos <- readRDS(paste0(getwd(),"/data/figures/", run_date, "/aggregated_transfers_pos.rds"))
-aggregated_data_net <- readRDS(paste0(getwd(),"/data/figures/", run_date, "/aggregated_transfers_net.rds"))
+#aggregated_data_pos <- readRDS(paste0(getwd(),"/data/figures/", run_date, "/aggregated_transfers_pos.rds"))
+#aggregated_data_net <- readRDS(paste0(getwd(),"/data/figures/", run_date, "/aggregated_transfers_net.rds"))
 us_top_transfers <- readRDS(paste0(getwd(),"/data/figures/", run_date, "/us_top_transfers.rds"))
 
 #############################################################################
 #############################################################################
 # now plot the data 
 pdf(file = paste0(getwd(), "/figures/", run_date, "/figED13.pdf"),   # The directory you want to save the file in
-    width = 10.85, # The width of the plot in inches
-    height = 5.85) # The height of the plot in inches
+    width = 8.85, # The width of the plot in inches
+    height = 6.85) # The height of the plot in inches
     
 ### let us start with a) 
 par(mfrow = c(2, 1), mar = c(2, 6, 4, 2))
@@ -84,11 +84,11 @@ text(2, us_top_transfers$p_05[2] + 0.75, "CHN")
 text(3, us_top_transfers$p_05[3] + 0.75, "JPN")
 text(4, us_top_transfers$p_05[4] + 0.75, "IND")
 text(5, us_top_transfers$p_05[5] + 0.75, "BRA")
-text(6, us_top_transfers$p_95[6] + 0.95, "ITA")
-text(7, us_top_transfers$p_95[7] + 0.95, "SAU")
-text(8, us_top_transfers$p_95[8] + 0.95, "DEU")
-text(9, us_top_transfers$p_95[9] + 0.95, "FRA")
-text(10, us_top_transfers$p_95[10] + 0.95, "MEX")
+text(6, us_top_transfers$p_95[6] + 0.95, "SAU")
+text(7, us_top_transfers$p_95[7] + 0.95, "ITA")
+text(8, us_top_transfers$p_95[8] + 0.95, "MEX")
+text(9, us_top_transfers$p_95[9] + 0.95, "IDN")
+text(10, us_top_transfers$p_95[10] + 0.95, "FRA")
 
 dev.off()
 

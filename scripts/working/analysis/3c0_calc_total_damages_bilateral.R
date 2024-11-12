@@ -59,7 +59,7 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
   toc()
   # start an empty dataframe 
   mother_df <- data.frame()
-  i <- "USA"
+  i <- "SAU"
   for (i in list_of_exps){
     tic()
     # subset by keeping one experiment for each loop
@@ -146,15 +146,20 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
     
     # test1 <- gdp_temp_data1 %>% dplyr::select(c("response_tempactual_era", "response_tempnew","delta_g_era", "ISO3", "year"))
     # let us bring in the population data at the country-year level
+    gdp_temp_data1 <- gdp_temp_data1[, !(names(gdp_temp_data1) %in% "SP.POP.TOTL")]
+    
     gdp_temp_data1 <- left_join(gdp_temp_data1,
                                 pop_wdi,
                                 by = c("ISO3" = "iso3c",
                                        "year" = "year"))
+    if (year_k != 1960){
+      gdp_temp_data1 <- gdp_temp_data1 %>% 
+        dplyr::mutate(SP.POP.TOTL = case_when(is.na(SP.POP.TOTL) ~ pop,
+                                              TRUE ~ SP.POP.TOTL))
+    }
     
-    gdp_temp_data1 <- gdp_temp_data1 %>% 
-      dplyr::mutate(SP.POP.TOTL = case_when(is.na(SP.POP.TOTL) ~ pop,
-                                            TRUE ~ SP.POP.TOTL))
-    
+    #gdp_temp_data1 <- subset(gdp_temp_data1, year < 2021)
+  
     # unlist...
     gdp_temp_data1$delta_g_era <- unlist(gdp_temp_data1$delta_g_era)
     
@@ -175,7 +180,9 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
     
     # we now want to set 0 growth to NA
     gdp_temp_data1$diff_lgdp_for_damages <- gdp_temp_data1$diff_lgdp_for_damages - 1
-    gdp_temp_data1$diff_lgdp_for_damages[gdp_temp_data1$diff_lgdp_for_damages == 0.000] <- NA
+    if (year_k != 1960){
+      gdp_temp_data1$diff_lgdp_for_damages[gdp_temp_data1$diff_lgdp_for_damages == 0.000] <- NA
+    }
     # then let us calculate adjusted growth rate
     gdp_temp_data1 <- gdp_temp_data1 %>% 
       dplyr::mutate(adj_growthx = delta_g_era + diff_lgdp_for_damages)
@@ -220,7 +227,7 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
                                                   year > 2020 ~ (damages_pop*(1/(1+(0.05))^t_since_today))),
                     weighted_damages7 = case_when(year <= 2020 ~ (damages_pop*((1+(0.07))^t_since_k)),
                                                   year > 2020 ~ (damages_pop*(1/(1+(0.07))^t_since_today))))
-    
+  
     # keep only negative damages
     damages_neg <- subset(damages_i_t4, damages_pop < 0)
     
@@ -230,9 +237,9 @@ calculate_bidamages_bilateral <- function(ratio_raster, experiment_df, list_of_e
     # add to data frame
     mother_df <- rbind(mother_df, damages_i_t4)
     toc()
+    print(i)
   }
   return(mother_df)
-  
 }
 
 # end of script 

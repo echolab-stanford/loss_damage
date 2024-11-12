@@ -214,6 +214,8 @@ fair_exps_isos_k90 <- process_exp_data_hist("20230523", "hist_bi_v2022", 1990, a
 fair_exps_isos_k90_consump <- process_exp_data_hist("20230523", "hist_biconsump_v2022", 1990, aggregating = T) # figED11
 #for year_k = 1990 and only production emissions
 fair_exps_isos_k90_prod <- process_exp_data_hist("20230523", "hist_biprod_v2022", 1990, aggregating = T) # figED12
+# for year_k = 1960 (11/2024 addition)
+fair_exps_isos_k60 <- process_exp_data_hist("20241112", "hist_bi_2100", 1960, aggregating = T) # supplemental fig
 
 ####################### Experiment (1/10/1000/1M/1G/10G/100G/tCO2/yr): ########################
 # this experiment is run to estimate the temperature effects of pulsing 
@@ -272,6 +274,8 @@ gdp_temp_data_k80_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k8
 gdp_temp_data_5lags_2300 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_5lags_2300.rds")
 # now limited to 2100 
 gdp_temp_data_5lags_2100 <- subset(gdp_temp_data_5lags_2300, year < 2101)
+# for calculations with year k = 1960 and ending in 2100 
+gdp_temp_data_k60 <- readRDS("data/processed/world_gdp_pop/gdp_temp_data_k60.rds")
 
 
 # now let us create a dataset that includes all lagged temp and precip up to 10
@@ -877,6 +881,58 @@ total_damages_k90_prod <- calculate_bidamages_bilateral(median_raster,
 
 #write_rds(total_damages_k90_prod, "data/output/060223/total_damages_k90_prod_v2022.rds")
 write_rds(total_damages_k90_prod, paste0(output_path, "/total_damages_k90_prod_v2022.rds"))
+
+
+# let's do k = 1960 
+gdp_temp_data_k60_2020 <- subset(gdp_temp_data_k60, year <= 2020)
+# we need to back-extrapolate the dataset to 1960 to calculate damages
+gdp_temp_data_k60_2020 <- gdp_temp_data_k60_2020 %>% 
+  dplyr::group_by(ISO3) %>%
+  # Calculate year-over-year changes and take the average change for each country
+  dplyr::mutate(
+    annual_change = c(NA, diff(NY.GDP.PCAP.KD_for_damages)),
+    avg_annual_change = mean(annual_change, na.rm = TRUE)
+  ) %>%
+  # Identify first available year and value, handle missing cases
+  dplyr::mutate(
+    first_non_na_year = min(year[!is.na(NY.GDP.PCAP.KD_for_damages)], na.rm = TRUE),
+    first_non_na_value = ifelse(is.finite(first_non_na_year), 
+                                NY.GDP.PCAP.KD_for_damages[year == first_non_na_year], 
+                                NA_real_)
+  ) %>%
+  # Back-extrapolate with non-negative constraint
+  dplyr::mutate(
+    NY.GDP.PCAP.KD_for_damages = if_else(
+      year < first_non_na_year & is.na(NY.GDP.PCAP.KD_for_damages), 
+      pmax(first_non_na_value - avg_annual_change * (first_non_na_year - year), 0),
+      NY.GDP.PCAP.KD_for_damages
+    )
+  ) %>%
+  # Update the first non-zero value after the back-extrapolation
+  dplyr::mutate(
+    first_non_zero_value_after_back_extrapolation = 
+      min(NY.GDP.PCAP.KD_for_damages[NY.GDP.PCAP.KD_for_damages > 0], na.rm = TRUE),
+    # Replace 0 values with the first non-zero value after the extrapolation
+    NY.GDP.PCAP.KD_for_damages = if_else(
+      NY.GDP.PCAP.KD_for_damages == 0, 
+      first_non_zero_value_after_back_extrapolation, 
+      NY.GDP.PCAP.KD_for_damages
+    )
+  ) %>%
+  ungroup()
+#gdp_temp_data_k60 <- subset(gdp_temp_data_k60,  !(ISO3 %in% c("ATF","ESH","FLK","PSE","TWN")))
+#pop_wdi <- subset(pop_wdi,  !(iso3c %in% c("ATF","ESH","FLK","PSE","TWN")))
+gdp_temp_data_k60_2020 <- subset(gdp_temp_data_k60_2020, year > 1959 & year < 2021)
+
+total_damages_k60 <- calculate_bidamages_bilateral(median_raster, 
+                                                   fair_exps_isos_k60, 
+                                                   list_of_exps,
+                                                   1960, 
+                                                   future_forecast_ssp370,
+                                                   gdp_temp_data_k60_2020,
+                                                   bhm_era_reg_5lag,
+                                                   2020)
+write_rds(total_damages_k60, paste0(output_path, "/total_damages_k60_v2022.rds"))
 
 
 ############# 30%,50%,70%,90% emissions baseline experiment #################### figED8

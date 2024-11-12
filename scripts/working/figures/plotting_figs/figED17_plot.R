@@ -37,7 +37,7 @@ pdf(paste0("figures/" ,run_date,"/figED17_pre_illustrator.pdf"), width=6, height
 #gsub("-", "", Sys.Date()) 
 # 1 column figure with 3 plots using relative heights
 layout(matrix(1:4, ncol=1), heights=c(0.38, 0.38, 0.5, 0.8))
-par(oma=c(0.5, 3, 0.5, 3), mar=c(2,5,2,5))
+par(oma=c(0.5, 3, 0.5, 3), mar=c(2,6,2,5))
 
 ################################################################################ panel a
 plot(df$x, df$y, type = "l", xlim = range(2019:2100),
@@ -92,41 +92,41 @@ segments(y0 = -1, y1 = 0.005,
          x0 = 2030, x1 = 2030, lty = 3, lwd = 1.35)
 
 ################################################################################ panel c
-plot(total_cc$emitter, total_cc$total_damages, type = "l",
+plot(1,1,#total_cc$emitter, total_cc$total_damages, type = "l",
      frame = F, 
      xlab = "Year",
      ylab = "", xlim = range(2019:2100),
      yaxt = "n",
      cex.axis = 1.75,
      cex.lab = 2)
-mtext(side=2, text="Damage/1tCO2 ($)", line=6, cex = 1.35)
-
-## Draw the x-axis with no labels.
-axis(side = 2, labels = FALSE)
-
-## Draw the y-axis.
-axis(side = 2,
-     ## Rotate the labels.
-     las = 2,
-     cex.axis = 1.75)
-
-segments(y0 = 0, y1 = 10000, 
-         x0 = 2030, x1 = 2030, 
-         lty = 3, lwd = 1.35)
-
-segments(y0 = total_cc$total_damages[total_cc$emitter == 2030], 
-         y1 = total_cc$total_damages[total_cc$emitter == 2030], 
-         x0 = 2032, x1 = 2040, lty = 1.45)
-
-text(2041, total_cc$total_damages[total_cc$emitter == 2030], 
-     adj = 0, paste0("Total /tC02 damage if capturing \n 2020 emissions in 2030"),
-     cex = 1.25)
-
-points(2030, total_cc$total_damages[total_cc$emitter == 2030], pch = 19, 
-       bg = "red", col = "black", lwd = 5.75)
-points(2030, total_cc$total_damages[total_cc$emitter == 2030], pch = 19, 
-       col = "red", lwd = 3.75)
-
+#mtext(side=2, text="Damage/1tCO2 ($)", line=6, cex = 1.35)
+#
+### Draw the x-axis with no labels.
+#axis(side = 2, labels = FALSE)
+#
+### Draw the y-axis.
+#axis(side = 2,
+#     ## Rotate the labels.
+#     las = 2,
+#     cex.axis = 1.75)
+#
+#segments(y0 = 0, y1 = 10000, 
+#         x0 = 2030, x1 = 2030, 
+#         lty = 3, lwd = 1.35)
+#
+#segments(y0 = total_cc$total_damages[total_cc$emitter == 2030], 
+#         y1 = total_cc$total_damages[total_cc$emitter == 2030], 
+#         x0 = 2032, x1 = 2040, lty = 1.45)
+#
+#text(2041, total_cc$total_damages[total_cc$emitter == 2030], 
+#     adj = 0, paste0("Total /tC02 damage if capturing \n 2020 emissions in 2030"),
+#     cex = 1.25)
+#
+#points(2030, total_cc$total_damages[total_cc$emitter == 2030], pch = 19, 
+#       bg = "red", col = "black", lwd = 5.75)
+#points(2030, total_cc$total_damages[total_cc$emitter == 2030], pch = 19, 
+#       col = "red", lwd = 3.75)
+#
 ##### let us add another panel (07/13)
 total_cc$pct_averted <- (total_cc$total_damages[total_cc$emitter == 2100] - total_cc$total_damages)/total_cc$total_damages[total_cc$emitter == 2100]
 
@@ -152,7 +152,7 @@ segments(y0 = 0, y1 = 10000,
          x0 = 2030, x1 = 2030, 
          lty = 3, lwd = 1.35)
 
-mtext(side=2, text="% of Damages Averted", line=6, cex = 1.35)
+mtext(side=2, text="% of Damages Averted\n(through 2100)", line=6, cex = 1.35)
 
 
 segments(y0 = total_cc$pct_averted[total_cc$emitter == 2030]*100, 

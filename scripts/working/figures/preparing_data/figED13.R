@@ -7,7 +7,7 @@ remove(list=ls())
 gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
-run_date <- "20241104"
+run_date <- "loss_damage_r1"
 #replicate <- F# change T to F if you want to create your own data  
 #if (replicate == T){
 #  run_date <- "20230523"
@@ -18,14 +18,14 @@ run_date <- "20241104"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
-run_date <- "20241104"
+run_date <- "loss_damage_r1"
 setwd("~/BurkeLab Dropbox/projects/loss_damage")
 
 #############################################################################
 #############################################################################
 ########## read the data 
 # ok get the path to the files
-files <- list.files(paste0(getwd(), "/data/output/20240228/"),
+files <- list.files(paste0(getwd(), "/data/output/", run_date, "/20240228/"),
                     pattern = "bi",
                     full.names = T)
 
@@ -132,7 +132,7 @@ us_transfers_median <- us_transfers %>%
   dplyr::summarise(median(total_damages))
 
 us_top_transfers <- subset(us_transfers, ISO3 %in% c("USA", "CHN", "JPN", "IND", "BRA", 
-                                                     "ITA", "SAU", "DEU", "FRA", "MEX"))
+                                                     "ITA", "SAU", "IDN", "FRA", "MEX"))
 
 
 # now let us save the 95th percentile and the median 
@@ -151,7 +151,7 @@ us_top_transfers$id <- 1:nrow(us_top_transfers)
 #############################################################################
 #############################################################################
 ########## save the data 
-run_date <- "20241104"
+run_date <- "loss_damage_r1"
 setwd("~/GitHub/loss_damage")
 write_rds(aggregated_data_neg, paste0(getwd(), "/data/figures/", run_date, "/aggregated_transfers_neg.rds"))
 #write_rds(aggregated_data_pos, paste0(getwd(), "/data/figures/", run_date, "/aggregated_transfers_pos.rds"))

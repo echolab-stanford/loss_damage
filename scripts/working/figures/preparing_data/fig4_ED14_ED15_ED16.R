@@ -36,6 +36,7 @@ total_damages_k90 <- readRDS(paste0(output_path, "/total_damages_k90_v2022.rds")
 total_damages_k80 <- readRDS(paste0(output_path, "/total_damages_k80_v2022.rds"))
 total_damages_k90_prod <- readRDS(paste0(output_path, "/total_damages_k90_prod_v2022.rds"))
 total_damages_k90_consump <- readRDS(paste0(output_path, "/total_damages_k90_consump_v2022.rds"))
+total_damages_k60 <- readRDS(paste0(output_path, "/total_damages_k60_v2022.rds"))
 
 #############################################################################
 #############################################################################
@@ -289,7 +290,7 @@ prep_data_for_sankey <- function(dataset){
                                                         benefits_transfers2_owed_to$owed_to_real[2:3], 
                                                         benefits_transfers2_owed_to$owed_to_real[5:6])))
   }
-  if (min(dataset$year) == 1990){
+  if (min(dataset$year) == 1990 | min(dataset$year) == 1960){
     damages_and_benefits_transfers2a <- damages_and_benefits_transfers2a %>% 
       dplyr::mutate(stratum = ordered(stratum, levels=c(damages_transfers2_owing$owing_real,
                                                         as.character(unique(damages_and_benefits_transfers2a$stratum)[40]),
@@ -310,12 +311,14 @@ damages_and_benefits_k90 <- prep_data_for_sankey(total_damages_k90)
 damages_and_benefits_k80 <- prep_data_for_sankey(total_damages_k80)
 damages_and_benefits_k90_prod <- prep_data_for_sankey(total_damages_k90_prod)
 damages_and_benefits_k90_consump <- prep_data_for_sankey(total_damages_k90_consump)
+damages_and_benefits_k60 <- prep_data_for_sankey(total_damages_k60)
 
 # data is ready 
 write_rds(damages_and_benefits_k90, paste0(fig_prepped_dta, run_date, "/damages_and_benefits_k90.rds"))
 write_rds(damages_and_benefits_k80, paste0(fig_prepped_dta, run_date, "/damages_and_benefits_k80.rds"))
 write_rds(damages_and_benefits_k90_prod, paste0(fig_prepped_dta, run_date, "/damages_and_benefits_k90_prod.rds"))
 write_rds(damages_and_benefits_k90_consump, paste0(fig_prepped_dta, run_date, "/damages_and_benefits_k90_consump.rds"))
+write_rds(damages_and_benefits_k60, paste0(fig_prepped_dta, run_date, "/damages_and_benefits_k60.rds"))
 
 # end of script
 
