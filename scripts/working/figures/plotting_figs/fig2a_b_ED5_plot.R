@@ -1,7 +1,14 @@
 ##############################################################################
 # Mustafa Zahid, January 7th, 2023
-# This R script prepares the data for plotting figure 3a and 3b 
-#############################################################################
+# This R script plots the data for figures 2a, 2b, and ED5 
+# input(s):
+# - "~/Github/loss_damage/data/figures/{run_date}/test_df_for_table.rds"
+# - "~/Github/loss_damage/data/figures/{run_date}/total_damages_by_pulse_2020.rds"
+# - "~/Github/loss_damage/data/figures/{run_date}/total_damages_by_pulse_2100.rds"
+# output(s):  
+# - "~/Github/loss_damage/figures/{run_date}/fig2a_b.pdf"
+# - "~/Github/loss_damage/figures/{run_date}/figED5.png"
+############################################################################# set up the env
 remove(list=ls())
 gc()
 sf::sf_use_s2(FALSE)
@@ -12,16 +19,14 @@ run_date <- "loss_damage_r1"
 source("scripts/working/analysis/0_read_libs.R")
 
 ################################################################################
-################################################################################
-# read data 
+################################################################################ read the data 
 test_df_for_table <- readRDS(paste0(fig_prepped_dta, run_date, "/test_df_for_table.rds"))
 total_damages_by_pulse_2020_all <- readRDS(paste0(fig_prepped_dta, run_date, "/total_damages_by_pulse_2020.rds"))
 total_damages_by_pulse_2100_all <- readRDS(paste0(fig_prepped_dta, run_date, "/total_damages_by_pulse_2100.rds"))
 
 ################################################################################
-################################################################################
-# plot data 
-################################################################################ Figure 3a
+################################################################################ plot the data 
+################################################################################ Figure ED5
 test_df_for_table %>%
   tibble%>%
   #group_by(emitter) %>% 
@@ -52,13 +57,13 @@ test_df_for_table %>%
   gt_theme_538(table.width = px(550)) %>% 
   gtsave(paste0("figures/", run_date,"/figED5.png"))
 
-
-################################################################################ Figure 3b
+################################################################################ Figure 2a, 2b
+# set up the parameters of the figure 
 pdf(paste0("figures/", run_date ,"/fig2a_b.pdf"), width=15, height=6)
 par(mfrow = (c(1,2)))
 par(mar = c(4,8,4,4))
-#par(family = "Helvetica")
 
+# now let us plot the figure 2a
 plot(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all$discount_rate == "7%"], 
      y = total_damages_by_pulse_2020_all$total_damages[total_damages_by_pulse_2020_all$discount_rate == "7%"],
      # log = "y",
@@ -71,50 +76,44 @@ plot(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all
      cex.main = 1.12,
      frame.plot = F)
      #main = "a)  Accumulated damages through 2020") 
-
+# title it
 title("a)  Accumulated damages through 2020", adj = 0)
 
-#par(f = 2)
-#axis(side = 2, at = c(0, 100, 200, 300, 400), labels =c("0", "5", '10', '15', '20'))
-
+# now add the legend
 segments(x0 = 2010, x1 = 2012, y0 = 285, y1 = 285, col = "#8a5cb4", lwd = 3)
 segments(x0 = 2010, x1 = 2012, y0 = 265, y1 = 265, col = "#de3623", lwd = 3)
 segments(x0 = 2010, x1 = 2012, y0 = 245, y1 = 245, col = "#f0da32", lwd = 3)
 segments(x0 = 2010, x1 = 2012, y0 = 225, y1 = 225, col = "#2aa83f", lwd = 3)
 segments(x0 = 2010, x1 = 2012, y0 = 205, y1 = 205, col = "#023b70", lwd = 3)
-
+# add to the legend
 text(2014, 285, " 1.5%")
 text(2014, 265, " 2%")
 text(2014, 245, " 3%")
 text(2014, 225, " 5%")
 text(2014, 205, " 7%")
 text(2009, 298, "Discount rates:", col = "black", cex = 1.2, adj = 0)
-
-
+# add the data 
 points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all$discount_rate == "5%"], 
        y = total_damages_by_pulse_2020_all$total_damages[total_damages_by_pulse_2020_all$discount_rate == "5%"],
        pch = 3, col = "#2aa83f",
        lwd = 2)
-
+# add the data 
 points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all$discount_rate == "3%"], 
        y = total_damages_by_pulse_2020_all$total_damages[total_damages_by_pulse_2020_all$discount_rate == "3%"],
        pch = 3, col = "#f0da32",
        lwd = 2)
-
+# add the data 
 points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all$discount_rate == "2%"], 
        y = total_damages_by_pulse_2020_all$total_damages[total_damages_by_pulse_2020_all$discount_rate == "2%"],
        pch = 3, col = "#de3623",
        lwd = 2)
-
+# add the data 
 points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all$discount_rate == "1.5%"], 
        y = total_damages_by_pulse_2020_all$total_damages[total_damages_by_pulse_2020_all$discount_rate == "1.5%"],
        pch = 3, col = "#8a5cb4",
        lwd = 2)
 
-
-#total_damages_by_pulse_2100_all$emitter <- 2100 - total_damages_by_pulse_2100_all$emitter
-
-
+# now plot 2b
 plot(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "7%"], 
      y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "7%"],
      # log = "y",
@@ -126,36 +125,34 @@ plot(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all
      cex.main = 1.12,
      #main = "b)  Accumulated damages 2021-2100",
      frame.plot = F) 
-
+# title it 
 title("b)  Accumulated damages 2021-2100", adj = 0)
-
+# add the data 
 points(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "5%"], 
        y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "5%"],
        pch = 3, col = "#2aa83f",
        lwd = 2)
-
-
+# add the data 
 points(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "3%"], 
        y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "3%"],
        pch = 3, col = "#f0da32",
        lwd = 2)
-
+# add the data 
 points(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "2%"], 
        y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "2%"],
        pch = 3, col = "#de3623",
        lwd = 2)
+# add the data 
 points(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "1.5%"], 
        y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "1.5%"],
        pch = 3, col = "#8a5cb4",
        lwd = 2)
-
-
+# add a label for sccco2
 segments(x0 = 2020, 
          x1 = 2020, 
          y0 = 0, 
          y1 = 2000, 
          lty = 2)
-
 text("SC-CO2", x = 2020, y = 2100)
 
 dev.off()

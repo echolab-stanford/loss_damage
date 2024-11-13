@@ -920,8 +920,6 @@ gdp_temp_data_k60_2020 <- gdp_temp_data_k60_2020 %>%
     )
   ) %>%
   ungroup()
-#gdp_temp_data_k60 <- subset(gdp_temp_data_k60,  !(ISO3 %in% c("ATF","ESH","FLK","PSE","TWN")))
-#pop_wdi <- subset(pop_wdi,  !(iso3c %in% c("ATF","ESH","FLK","PSE","TWN")))
 gdp_temp_data_k60_2020 <- subset(gdp_temp_data_k60_2020, year > 1959 & year < 2021)
 
 total_damages_k60 <- calculate_bidamages_bilateral(median_raster, 

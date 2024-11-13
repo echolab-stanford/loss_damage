@@ -1,7 +1,13 @@
 ##############################################################################
 # Mustafa Zahid, June 30th, 2023
 # This script is used to prepare the data needed to plot figure 2e. 
-##############################################################################
+# input(s): 
+#  - "~/BurkeLab Dropbox/loss_damage/data/output/{run_date}/20240311_3/..." 
+#  - "~/BurkeLab Dropbox/loss_damage/data/output/{run_date}/20240311_2/..." 
+#  - "~/BurkeLab Dropbox/loss_damage/data/output/{run_date}/20240311_5b/..." 
+# output(s):
+#  - "~/Github/loss_damage/data/figures/{run_date}/listof_scc_est_dfs_fig2e.RData"
+############################################################################### set up env
 remove(list=ls())
 gc()
 sf::sf_use_s2(FALSE)
@@ -13,12 +19,10 @@ source("scripts/working/analysis/0_read_libs.R")
 
 setwd(dropbox_path)
 #############################################################################
-#############################################################################
-# read data 
+############################################################################# read the data 
+################################################################################ ssp 2100 growth rates w/damages into 2300 (fig2eiii)
 # set path and get list of files from directory
 path <- paste0(output_path, "_3")
-
-################################################################################ ssp 2100 growth rates w/damages into 2300 (fig2eiii)
 # generate list of files 
 all_data = list.files(path=path,
                       pattern = "scc_", 
@@ -61,7 +65,7 @@ totals_2100g_2dr <- do.call(rbind, listofdfs_2dr)
 ################################################################################ no growth post 2100 w/damages into 2300 (fig2eii)
 # generate list of files 
 path <- paste0(output_path, "_2")
-
+# generate list of files 
 all_data = list.files(path=path,
                       pattern = "scc_" ,
                       full.names = TRUE,
@@ -101,10 +105,8 @@ for (i in 1:1000){
 totals_nog_2dr <- do.call(rbind, listofdfs_2dr)
 totals_nog_ramsey <- do.call(rbind, listofdfs_rams)
 
-
-################################################################################ no impacts post 2100
+################################################################################ no impacts post 2100 (fig2ei)
 path <- paste0(output_path, "_5b")
-
 # generate list of files 
 all_data = list.files(path=path,
                       pattern = "scc_" ,
@@ -148,15 +150,17 @@ totals_noi_ramsey <- do.call(rbind, listofdfs_rams)
 
 
 #############################################################################
-#############################################################################
-# prep data 
+############################################################################# prep the data 
 
+# ssp 2100 growth rates w/damages into 2300 (fig2eiii)
 totals_2100g_2dr$scenario <- "ssp_2100_2dr"
 totals_2100g_ramsey$scenario <- "ssp_2100_ramsey"
 
+# no growth post 2100 w/damages into 2300 (fig2eii)
 totals_nog_2dr$scenario <- "nogrowth_2dr"
 totals_nog_ramsey$scenario <- "nogrowth_ramsey"
 
+# no impacts post 2100 (fig2ei)
 totals_noi_2dr$scenario <- "noimpacts_2dr"
 totals_noi_ramsey$scenario <- "noimpacts_ramsey"
 
