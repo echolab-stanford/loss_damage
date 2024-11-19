@@ -195,6 +195,9 @@ fair_exps_1gtco2_2100_k90 <- process_exp_data_hist_fut("20230523", "1GtCO2_hist_
 ### temperature response dis-aggregated. In other words all runs. 
 fair_exps_1gtco2_disagg_2100 <- process_disagg_exp_data("20230523","1GtCO2_hist_2100", 1990) #fig2e_i, fig2e_j, fig2e_k
 #write_rds(fair_exps_1gtco2_disagg_2300, "~/BurkeLab Dropbox/Projects/loss_damage/sherlock_files_060223/fair_exps_disagg_20230822.rds")
+fair_exps_1gtco2_disagg_k80_2100 <- process_disagg_exp_data("20230821","1tCO2_hist_2100", 1980) 
+#write_rds(fair_exps_1gtco2_disagg_k80_2100, "~/BurkeLab Dropbox/Projects/loss_damage/sherlock_files_060223/fair_exps_disagg_k80_20230821.rds")
+
 
 ####################### Experiment (Carbon Capture): ########################
 # this experiment is to estimate the damages if we are to capture 1 tCO2 
@@ -924,7 +927,7 @@ gdp_temp_data_k60_2020 <- subset(gdp_temp_data_k60_2020, year > 1959 & year < 20
 
 total_damages_k60 <- calculate_bidamages_bilateral(median_raster, 
                                                    fair_exps_isos_k60, 
-                                                   list_of_exps,
+                                                   unique(fair_exps_isos_k60$experiment_iso),
                                                    1960, 
                                                    future_forecast_ssp370,
                                                    gdp_temp_data_k60_2020,
