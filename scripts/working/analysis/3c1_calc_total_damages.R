@@ -8,7 +8,8 @@
 calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps, 
                                     year_k, future_forecast, gdp_temp_dataset, 
                                     temp_dataset, bhm_model, bootstrapped, 
-                                    clamping, growth_past_2100, settlement_year){
+                                    clamping, growth_past_2100, settlement_year, 
+                                    adaptation){
   tic()
   #read raster data for warming ratio 
   deltat_df <- exactextractr::exact_extract(ratio_raster, 
@@ -159,6 +160,12 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
       
       gdp_temp_data1$delta_g_era <- gdp_temp_data1$resp_temp_preturb - gdp_temp_data1$resp_temp_fullemms
       
+    }
+    # if the adaptation parameter uis turned on, we slowly take dg to 0 
+    if (adaptation == T){
+      # ok here we need to include adaptation. What we need is to flatten the response function over time
+      gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2101] <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2101]*((2100-gdp_temp_data1$year[gdp_temp_data1$year < 2101])/(2100-i))
+      gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2100] <- 0 
     }
     
     if (growth_past_2100 == 0){

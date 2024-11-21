@@ -78,6 +78,46 @@ individual_beh_emms$behavior[individual_beh_emms$behavior == "installing heat pu
 #damages_per_1tco2yr <- readRDS(paste0(output_path, "/total_damages_1tco2_1980_2022.rds"))
 damages_per_1tco2yr <- readRDS(paste0(output_path, "/total_damages_1tco2_k80.rds"))
 
+# NOTE: 11/2024 addition: add the run with total uncertainty to exctract the 
+# spread statistics 
+damages_uncert_list <- list.files(path = paste0(dirname(output_path), "/20241119/"), 
+                                  pattern = "scc", 
+                                  full.names = T)
+listofdfs_2dr <- list()
+for (i in 1:length(damages_uncert_list)){
+  tic()
+  data_i <- readRDS(damages_uncert_list[i])
+  #data_i$loop_id <- i
+  data_i <- data_i %>% 
+    dplyr::select(c("emitter", 
+                    "year",
+                    #"loop_id",
+                    "sim_id",
+                    "weighted_damages2_scld", 
+                    "coef_id",
+                    "temp",
+                    "temp2"
+    ))
+  
+  data_dr2_i <- data_i %>% 
+    dplyr::group_by(emitter, sim_id, year) %>% 
+    dplyr::summarise(total_damages2 = sum(weighted_damages2_scld, na.rm = T))
+  
+  listofdfs_2dr[[i]] <- data_dr2_i
+  toc()
+}
+damages_uncert_2dr <- do.call(rbind, listofdfs_2dr)
+# now for each emitter let us extract the spread statistics 
+damages_uncert_spread <- damages_uncert_2dr %>% 
+  dplyr::group_by(emitter, year) %>% 
+  dplyr::summarise(p_05 = quantile(total_damages2, 0.05), 
+                   p_10 = quantile(total_damages2, 0.1),
+                   p_25 = quantile(total_damages2, 0.25),
+                   p_75 = quantile(total_damages2, 0.75),
+                   p_90 = quantile(total_damages2, 0.9),
+                   p_95 = quantile(total_damages2, 0.95))
+
+
 #############################################################################
 ################################################################################ prep the data 
 
@@ -96,6 +136,62 @@ carb_majors <- subset(carb_majors, years >= 1988 & years <= 2015)
 carb_majors <- left_join(carb_majors, damages_per_1tco2yr_sum,
                          by = c("years" = "emission_year"),
                          relationship = "many-to-many")
+
+carb_majors_spread <- left_join(carb_majors, damages_uncert_spread,
+                         by = c("years" = "emitter", "year"),
+                         relationship = "many-to-many")
+
+carb_majors_spread <- carb_majors_spread %>% 
+  dplyr::mutate(debt_05 = (emissions*1000000) * p_05, 
+                debt_10 = (emissions*1000000) * p_10, 
+                debt_25 = (emissions*1000000) * p_25, 
+                debt_75 = (emissions*1000000) * p_75, 
+                debt_90 = (emissions*1000000) * p_90, 
+                debt_95 = (emissions*1000000) * p_95) %>% 
+  dplyr::group_by(years, year, emitter) %>% 
+  dplyr::summarise(debt_05 = sum(debt_05, na.rm = T), 
+                   debt_10 = sum(debt_10, na.rm = T),
+                   debt_25 = sum(debt_25, na.rm = T),
+                   debt_75 = sum(debt_75, na.rm = T),
+                   debt_90 = sum(debt_90, na.rm = T),
+                   debt_95 = sum(debt_95, na.rm = T))
+
+carb_majors_spread <- carb_majors_spread %>% 
+  dplyr::group_by(year, emitter) %>% 
+  dplyr::summarise(debt_05 = sum(debt_05, na.rm = T), 
+                   debt_10 = sum(debt_10, na.rm = T),
+                   debt_25 = sum(debt_25, na.rm = T),
+                   debt_75 = sum(debt_75, na.rm = T),
+                   debt_90 = sum(debt_90, na.rm = T),
+                   debt_95 = sum(debt_95, na.rm = T))
+
+
+# let us try tp plot a bar plot 
+carb_majors_spread_2100 <- subset(carb_majors_spread, year > 2021)
+carb_majors_spread_2100 <- carb_majors_spread_2100 %>% 
+  dplyr::group_by(emitter) %>% 
+  dplyr::summarise(debt_05_2100 = sum(debt_05, na.rm = T),
+                   debt_10_2100 = sum(debt_10, na.rm = T),
+                   debt_25_2100 = sum(debt_25, na.rm = T),
+                   debt_75_2100 = sum(debt_75, na.rm = T),
+                   debt_90_2100 = sum(debt_90, na.rm = T),
+                   debt_95_2100 = sum(debt_95, na.rm = T))
+
+carb_majors_spread_2020 <- subset(carb_majors_spread, year <= 2020)
+carb_majors_spread_2020 <- carb_majors_spread_2020 %>% 
+  dplyr::group_by(emitter) %>% 
+  dplyr::summarise(debt_05_2020 = sum(debt_05, na.rm = T),
+                   debt_10_2020 = sum(debt_10, na.rm = T),
+                   debt_25_2020 = sum(debt_25, na.rm = T),
+                   debt_75_2020 = sum(debt_75, na.rm = T),
+                   debt_90_2020 = sum(debt_90, na.rm = T),
+                   debt_95_2020 = sum(debt_95, na.rm = T))
+
+carb_majors_spread_2020_2100 <- left_join(carb_majors_spread_2020,
+                                          carb_majors_spread_2100,
+                                          by = c("emitter"))
+
+
 carb_majors1 <- carb_majors %>% 
   dplyr::mutate(debt = (emissions*1000000) * total_damages) %>% 
   dplyr::group_by(years, year, emitter) %>% 
@@ -634,6 +730,99 @@ colnames(celebs_jet_emissions)[1] <- "emitter_name"
 # let us do private jets 
 #damages_per_1tco2yr_sum$total_damages <- damages_per_1tco2yr_sum$total_damages / 1000000000
 
+damages_uncert_spread_2022 <- subset(damages_uncert_spread, emitter == 2020)
+damages_uncert_spread_2022$emitter <- 2022
+
+celebsjet <- subset(celebsjet, years == 2022)
+
+celebsjet_spread <- left_join(celebsjet, damages_uncert_spread_2022,
+                                by = c("years" = "emitter"),
+                                relationship = "many-to-many")
+
+celebsjet_spread <- celebsjet_spread %>% 
+  dplyr::mutate(debt_05 = (emissions) * p_05, 
+                debt_10 = (emissions) * p_10, 
+                debt_25 = (emissions) * p_25, 
+                debt_75 = (emissions) * p_75, 
+                debt_90 = (emissions) * p_90, 
+                debt_95 = (emissions) * p_95) %>% 
+  dplyr::group_by(years, year, emitter) %>% 
+  dplyr::summarise(debt_05 = sum(debt_05, na.rm = T), 
+                   debt_10 = sum(debt_10, na.rm = T),
+                   debt_25 = sum(debt_25, na.rm = T),
+                   debt_75 = sum(debt_75, na.rm = T),
+                   debt_90 = sum(debt_90, na.rm = T),
+                   debt_95 = sum(debt_95, na.rm = T))
+
+celebsjet_spread <- celebsjet_spread %>% 
+  dplyr::group_by(year, emitter) %>% 
+  dplyr::summarise(debt_05 = sum(debt_05, na.rm = T), 
+                   debt_10 = sum(debt_10, na.rm = T),
+                   debt_25 = sum(debt_25, na.rm = T),
+                   debt_75 = sum(debt_75, na.rm = T),
+                   debt_90 = sum(debt_90, na.rm = T),
+                   debt_95 = sum(debt_95, na.rm = T))
+
+celebsjet_spread <- celebsjet_spread %>% 
+  dplyr::group_by(emitter) %>% 
+  dplyr::summarise(debt_05 = sum(debt_05, na.rm = T),
+                   debt_10 = sum(debt_10, na.rm = T),
+                   debt_25 = sum(debt_25, na.rm = T),
+                   debt_75 = sum(debt_75, na.rm = T),
+                   debt_90 = sum(debt_90, na.rm = T),
+                   debt_95 = sum(debt_95, na.rm = T))
+
+other_celebs <- rbind(gatesjet, 
+                      elonjet, 
+                      bezosjet)
+other_celebs <- subset(other_celebs, as.numeric(as.character(years)) == 2022)
+
+othercelebsjet_spread <- left_join(other_celebs, damages_uncert_spread_2022,
+                              by = c("years" = "emitter"),
+                              relationship = "many-to-many")
+
+othercelebsjet_spread <- othercelebsjet_spread %>% 
+  dplyr::mutate(debt_05 = (emissions) * p_05, 
+                debt_10 = (emissions) * p_10, 
+                debt_25 = (emissions) * p_25, 
+                debt_75 = (emissions) * p_75, 
+                debt_90 = (emissions) * p_90, 
+                debt_95 = (emissions) * p_95) %>% 
+  dplyr::group_by(years, year, emitter) %>% 
+  dplyr::summarise(debt_05 = sum(debt_05, na.rm = T), 
+                   debt_10 = sum(debt_10, na.rm = T),
+                   debt_25 = sum(debt_25, na.rm = T),
+                   debt_75 = sum(debt_75, na.rm = T),
+                   debt_90 = sum(debt_90, na.rm = T),
+                   debt_95 = sum(debt_95, na.rm = T))
+
+othercelebsjet_spread <- othercelebsjet_spread %>% 
+  dplyr::group_by(year, emitter) %>% 
+  dplyr::summarise(debt_05 = sum(debt_05, na.rm = T), 
+                   debt_10 = sum(debt_10, na.rm = T),
+                   debt_25 = sum(debt_25, na.rm = T),
+                   debt_75 = sum(debt_75, na.rm = T),
+                   debt_90 = sum(debt_90, na.rm = T),
+                   debt_95 = sum(debt_95, na.rm = T))
+
+othercelebsjet_spread <- othercelebsjet_spread %>% 
+  dplyr::group_by(emitter) %>% 
+  dplyr::summarise(debt_05 = sum(debt_05, na.rm = T),
+                   debt_10 = sum(debt_10, na.rm = T),
+                   debt_25 = sum(debt_25, na.rm = T),
+                   debt_75 = sum(debt_75, na.rm = T),
+                   debt_90 = sum(debt_90, na.rm = T),
+                   debt_95 = sum(debt_95, na.rm = T))
+othercelebsjet_spread$emitter <- gsub("'s",'',othercelebsjet_spread$emitter)
+othercelebsjet_spread$emitter <- gsub("jet",'',othercelebsjet_spread$emitter)
+othercelebsjet_spread$emitter <- trimws(othercelebsjet_spread$emitter)
+
+
+
+
+
+
+
 celebsjet <- subset(celebsjet, years == 2022)
 celebsjet <- left_join(celebsjet, damages_per_1tco2yr_sum,
                        by = c("years" = "emission_year"))
@@ -829,6 +1018,61 @@ colnames(damages_per_1tco2yr_sum)[1] <- "emission_year"
 
 # now we have the estimates for each 1tco2 / yr, let us bring in the 
 individual_beh_emms <- subset(individual_beh_emms, years >= 2010 & years <= 2020)
+
+damages_uncert_spread_2010_2020 <- subset(damages_uncert_spread, emitter >= 2010 & emitter <= 2020)
+individual_beh_emms_spread <- left_join(individual_beh_emms, damages_uncert_spread_2010_2020,
+                              by = c("years" = "emitter"),
+                              relationship = "many-to-many")
+#individual_beh_emms_spread <- subset(individual_beh_emms_spread, years >= 2010 & years <= 2020)
+
+individual_beh_emms_spread <- individual_beh_emms_spread %>% 
+  dplyr::mutate(debt_05 = (emissions) * p_05, 
+                debt_10 = (emissions) * p_10, 
+                debt_25 = (emissions) * p_25, 
+                debt_75 = (emissions) * p_75, 
+                debt_90 = (emissions) * p_90, 
+                debt_95 = (emissions) * p_95) %>% 
+  dplyr::group_by(years, year, behavior) %>% 
+  dplyr::summarise(debt_05 = sum(debt_05, na.rm = T), 
+                   debt_10 = sum(debt_10, na.rm = T),
+                   debt_25 = sum(debt_25, na.rm = T),
+                   debt_75 = sum(debt_75, na.rm = T),
+                   debt_90 = sum(debt_90, na.rm = T),
+                   debt_95 = sum(debt_95, na.rm = T))
+
+individual_beh_emms_spread <- individual_beh_emms_spread %>% 
+  dplyr::group_by(year, behavior) %>% 
+  dplyr::summarise(debt_05 = sum(debt_05, na.rm = T), 
+                   debt_10 = sum(debt_10, na.rm = T),
+                   debt_25 = sum(debt_25, na.rm = T),
+                   debt_75 = sum(debt_75, na.rm = T),
+                   debt_90 = sum(debt_90, na.rm = T),
+                   debt_95 = sum(debt_95, na.rm = T))
+
+individual_beh_emms_spread_2020 <- subset(individual_beh_emms_spread, year < 2021)
+individual_beh_emms_spread_2100 <- subset(individual_beh_emms_spread, year > 2020)
+
+individual_beh_emms_spread_2020 <- individual_beh_emms_spread_2020 %>% 
+  dplyr::group_by(behavior) %>% 
+  dplyr::summarise(debt_05_2020 = sum(debt_05, na.rm = T),
+                   debt_10_2020 = sum(debt_10, na.rm = T),
+                   debt_25_2020 = sum(debt_25, na.rm = T),
+                   debt_75_2020 = sum(debt_75, na.rm = T),
+                   debt_90_2020 = sum(debt_90, na.rm = T),
+                   debt_95_2020 = sum(debt_95, na.rm = T))
+
+individual_beh_emms_spread_2100 <- individual_beh_emms_spread_2100 %>% 
+  dplyr::group_by(behavior) %>% 
+  dplyr::summarise(debt_05_2100 = sum(debt_05, na.rm = T),
+                   debt_10_2100 = sum(debt_10, na.rm = T),
+                   debt_25_2100 = sum(debt_25, na.rm = T),
+                   debt_75_2100 = sum(debt_75, na.rm = T),
+                   debt_90_2100 = sum(debt_90, na.rm = T),
+                   debt_95_2100 = sum(debt_95, na.rm = T))
+individual_beh_emms_spread_2020_2100 <- left_join(individual_beh_emms_spread_2020, 
+                                                  individual_beh_emms_spread_2100, 
+                                                  by = c("behavior"))
+
 individual_beh_emms <- left_join(individual_beh_emms, damages_per_1tco2yr_sum,
                                  by = c("years" = "emission_year"),
                                  relationship = "many-to-many")
@@ -882,7 +1126,12 @@ write_rds(total_carb_majors_scp1_ex3, paste0(fig_prepped_dta, run_date,"/carbon_
 #write_rds(total_carb_majors_scp3_ex3, paste0(fig_prepped_dta, run_date,"/carbon_debt_majors_hist_scp3.rds"))
 write_rds(all_celebs_tot, paste0(fig_prepped_dta, run_date,"/carbon_debt_celebs_fut.rds"))
 write_rds(individual_beh_emms2_2100, paste0(fig_prepped_dta, run_date,"/carbon_debt_ind_beh.rds"))
-
+# let us write out the soreads 
+celebsjet_spread <- rbind(celebsjet_spread, 
+                          othercelebsjet_spread)
+write_rds(celebsjet_spread, paste0(fig_prepped_dta, run_date, "/carbon_debt_celebs_spread.rds"))
+write_rds(carb_majors_spread_2020_2100, paste0(fig_prepped_dta, run_date, "/carbon_debt_majors_spread.rds"))
+write_rds(individual_beh_emms_spread_2020_2100, paste0(fig_prepped_dta, run_date, "/carbon_debt_ind_beh_spread.rds"))
 # end of script 
 
 

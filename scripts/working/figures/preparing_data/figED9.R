@@ -24,6 +24,7 @@ run_date <- "loss_damage_r1"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
+
 setwd(dropbox_path)
 #############################################################################
 #############################################################################
@@ -32,12 +33,8 @@ scc_2300_1pct_growth <- readRDS(paste0(output_path,   "/scc_2300_1pct_growth.rds
 scc_2300_2pct_growth <- readRDS(paste0(output_path,   "/scc_2300_2pct_growth.rds"))
 scc_2300_clamped_growth <- readRDS(paste0(output_path,"/scc_2300_clamped_growth.rds"))
 scc_2300_2100_5lag <- readRDS(paste0(output_path,      "/scc_2300_2100_5lag.rds"))
-#scc_2300_2100_5lag <- readRDS("/Volumes/My Passport for Mac/mustafahzahid/desktop/loss_damages/scc_2300_2100_5lag.rds")
 scc_2300_2100_5lag_nog <- readRDS(paste0(output_path,      "/scc_2300_2100_5lag_nog.rds"))
-#scc_2300_2100_5lag_nog <- readRDS("/Volumes/My Passport for Mac/mustafahzahid/desktop/loss_damages/scc_2300_2100_5lag_nog2.rds")
 scc_2100_2100_5lag <- readRDS(paste0(output_path,      "/scc_2100_2100_5lag.rds"))
-#scc_2100_2100_5lag <- readRDS("/Volumes/My Passport for Mac/mustafahzahid/desktop/loss_damages/scc_2100_2100_5lag copy.rds")
-
 scc_2300_nog_post_2100 <- readRDS(paste0(output_path, "/scc_2300_nog_post_2100.rds"))
 scc_2300_2100_growth <- readRDS(paste0(output_path,   "/scc_2300_2100_growth.rds"))
 scc_2100 <- readRDS(paste0(output_path, "/scc_2100.rds"))
@@ -78,7 +75,7 @@ ex$scenario[12] <-"Growth at 2100 rate + adaptation"
 
 ex$dr1[3] <- round(sum(scc_2300_2100_5lag$weighted_damages1_scld, na.rm = T),0)
 ex$dr1[2] <- round(sum(scc_2300_2100_5lag_nog$weighted_damages1_scld, na.rm = T),0)
-ex$dr1[1] <- round(sum(scc_2100_2100_5lag$weighted_damages1_scld, na.rm = T),0)
+ex$dr1[1] <- round(sum(scc_2100_2100_5lag$weighted_damages1_scld/1000000000, na.rm = T),0)
 ex$dr1[4] <- round(sum(scc_2100_2100_5lag_adaptation$weighted_damages1_scld, na.rm = T),0)
 
 ex$dr1[5] <- round(sum(scc_2300_2100_5lag_adaptation$weighted_damages1_scld, na.rm = T),0)
@@ -93,7 +90,7 @@ ex$dr1[12] <- round(sum(scc_2300_adaptation$weighted_damages1_scld, na.rm = T),0
 
 ex$dr2[3] <- round(sum(scc_2300_2100_5lag$weighted_damages2_scld, na.rm = T),0)
 ex$dr2[2] <- round(sum(scc_2300_2100_5lag_nog$weighted_damages2_scld, na.rm = T),0)
-ex$dr2[1] <- round(sum(scc_2100_2100_5lag$weighted_damages2_scld, na.rm = T),0)
+ex$dr2[1] <- round(sum(scc_2100_2100_5lag$weighted_damages2_scld/1000000000, na.rm = T),0)
 ex$dr2[4] <- round(sum(scc_2100_2100_5lag_adaptation$weighted_damages2_scld, na.rm = T),0)
 ex$dr2[5] <- round(sum(scc_2300_2100_5lag_adaptation$weighted_damages2_scld, na.rm = T),0)
 ex$dr2[6] <- round(sum(scc_2300_2100_growth$weighted_damages2_scld, na.rm = T),0)
@@ -107,7 +104,7 @@ ex$dr2[12] <- round(sum(scc_2300_adaptation$weighted_damages2_scld, na.rm = T),0
 
 ex$dr3[3] <- round(sum(scc_2300_2100_5lag$weighted_damages3_scld, na.rm = T),0)
 ex$dr3[2] <- round(sum(scc_2300_2100_5lag_nog$weighted_damages3_scld, na.rm = T),0)
-ex$dr3[1] <- round(sum(scc_2100_2100_5lag$weighted_damages3_scld, na.rm = T),0)
+ex$dr3[1] <- round(sum(scc_2100_2100_5lag$weighted_damages3_scld/1000000000, na.rm = T),0)
 ex$dr3[4] <- round(sum(scc_2100_2100_5lag_adaptation$weighted_damages3_scld, na.rm = T),0)
 ex$dr3[5] <- round(sum(scc_2300_2100_5lag_adaptation$weighted_damages3_scld, na.rm = T),0)
 ex$dr3[6] <- round(sum(scc_2300_2100_growth$weighted_damages3_scld, na.rm = T),0)
@@ -122,7 +119,7 @@ ex$dr3[12] <- round(sum(scc_2300_adaptation$weighted_damages3_scld, na.rm = T),0
 
 ex$dr_ramsey[3] <- round(sum(scc_2300_2100_5lag$weighted_damages_ramsey_scld, na.rm = T),0)
 ex$dr_ramsey[2] <- round(sum(scc_2300_2100_5lag_nog$weighted_damages_ramsey_scld, na.rm = T),0)
-ex$dr_ramsey[1] <- round(sum(scc_2100_2100_5lag$weighted_damages_ramsey_scld, na.rm = T),0)
+ex$dr_ramsey[1] <- round(sum(scc_2100_2100_5lag$weighted_damages_ramsey_scld/1000000000, na.rm = T),0)
 ex$dr_ramsey[4] <- round(sum(scc_2100_2100_5lag_adaptation$weighted_damages_ramsey_scld, na.rm = T),0)
 ex$dr_ramsey[5] <- round(sum(scc_2300_2100_5lag_adaptation$weighted_damages_ramsey_scld, na.rm = T),0)
 

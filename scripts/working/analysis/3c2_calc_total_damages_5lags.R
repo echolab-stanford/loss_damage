@@ -53,7 +53,9 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
   
   # start an empty dataframe 
   mother_df <- data.frame()
-i <- 1990
+  
+  i <- 2020
+
   # now loop over the years and calculate total damages for each of the years
   for (i in list_of_exps){
     tic()
@@ -181,7 +183,7 @@ i <- 1990
         gdp_temp_data1$delta_g_era <- gdp_temp_data1$resp_temp_preturb - gdp_temp_data1$resp_temp_fullemms
       }
     }
-    
+
     # if the adaptation parameter uis turned on, we slowly take dg to 0 
     if (adaptation == T){
       # ok here we need to include adaptation. What we need is to flatten the response function over time

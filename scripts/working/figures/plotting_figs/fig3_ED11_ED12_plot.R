@@ -18,12 +18,16 @@ source("scripts/working/analysis/0_read_libs.R")
 total_carb_majors_jet <- readRDS(paste0(fig_prepped_dta, run_date, "/carbon_debt_majors_hist.rds"))
 total_carb_majors_jet_scp1 <- readRDS(paste0(fig_prepped_dta, run_date, "/carbon_debt_majors_hist_scp1.rds"))
 all_celebs_tot <- readRDS(paste0(fig_prepped_dta, run_date, "/carbon_debt_celebs_fut.rds"))
-
 all_celebs_tot <- subset(all_celebs_tot, rank <= 15)
 total_carb_majors_jet <- subset(total_carb_majors_jet, rank <= 15)
 
 ind_beh_emms <- readRDS(paste0(fig_prepped_dta, run_date, "/carbon_debt_ind_beh.rds"))
-ind_beh_emms 
+
+# read the spread data 
+celebsjet_spread <- readRDS(paste0(fig_prepped_dta, run_date, "/carbon_debt_celebs_spread.rds"))
+carb_majors_spread <- readRDS(paste0(fig_prepped_dta, run_date, "/carbon_debt_majors_spread.rds"))
+individual_beh_emms_spread <- readRDS(paste0(fig_prepped_dta, run_date, "/carbon_debt_ind_beh_spread.rds"))
+
 ################################################################################
 ################################################################################
 # plot data 
@@ -398,14 +402,47 @@ figs5b1 <- figs5b1 +
   )
 figs5b1
 
+unique(total_carb_majors_jet$emitter)
 ################################################################################
 ################################################################################
 # plot data FIGED11
+carb_majors_spread$emitter[carb_majors_spread$emitter == "Kuwait Petroleum Corp"] <- "Kuwait Petroleum Corp ($0.05T, %1220)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "Sonatrach SPA"] <- "Sonatrach SPA ($0.04T, %1860)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "Peabody Energy Corp"] <- "Peabody Energy Corp ($0T, %21007)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "Petroleos de Venezuela SA (PDVSA)"] <- "Petroleos de Venezuela SA (PDVSA) ($0.05T, %1952)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "Chevron Corp"] <- "Chevron Corp ($0.16T, %692)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "China National Petroleum Corp (CNPC)"] <- "China National Petroleum Corp (CNPC) ($0.44T, %253)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "BP PLC"] <- "BP PLC ($0.16T, %737)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "Coal India"] <- "Coal India ($0.07T, %1507)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "Petroleos Mexicanos (Pemex)"] <- "Petroleos Mexicanos (Pemex) ($0.07T, %1884)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "ExxonMobil Corp"] <- "ExxonMobil Corp ($0.29T, %561)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "National Iranian Oil Co"] <- "National Iranian Oil Co ($0.08T, %2027)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "Gazprom OAO"] <- "Gazprom OAO ($0.14T, %2166)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "Royal Dutch Shell PLC"] <- "Royal Dutch Shell PLC ($0.26T, %488)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "Abu Dhabi National Oil Co"] <- "Abu Dhabi National Oil Co ($0.1T, %771)"
+carb_majors_spread$emitter[carb_majors_spread$emitter == "Saudi Arabian Oil Company (Aramco)"] <- "Saudi Arabian Oil Company (Aramco) (Total 2021 Revenue = $0.36T, % of 2021 Revenue = %861)"
+
+total_carb_majors_jet <- left_join(total_carb_majors_jet, 
+                                   carb_majors_spread, 
+                                   by = c("emitter"))
+
 total_carb_majors_jet$emitter <- gsub(r"{\s*\([^\)]+\)}","",as.character(total_carb_majors_jet$emitter))
 total_carb_majors_jet <- total_carb_majors_jet %>%  
   dplyr::select(c("emitter", 
                   "total_debt_cum_2020",
-                  "total_debt_cum_2021_2100"))
+                  "total_debt_cum_2021_2100", 
+                  "debt_05_2020", 
+                  "debt_10_2020", 
+                  "debt_25_2020", 
+                  "debt_75_2020", 
+                  "debt_90_2020", 
+                  "debt_95_2020",
+                  "debt_05_2100", 
+                  "debt_10_2100", 
+                  "debt_25_2100", 
+                  "debt_75_2100", 
+                  "debt_90_2100", 
+                  "debt_95_2100"))
 total_carb_majors_jet$id <- 1:nrow(total_carb_majors_jet)
 total_carb_majors_jet <- total_carb_majors_jet[order(-total_carb_majors_jet$id),]
 all_celebs_tot$emitter <- gsub(r"{\s*\([^\)]+\)}","",as.character(all_celebs_tot$emitter))
@@ -413,7 +450,15 @@ all_celebs_tot <- all_celebs_tot %>%
   dplyr::select(c("emitter", 
                   "total_debt_cum"))
 all_celebs_tot <- all_celebs_tot[order(-all_celebs_tot$total_debt_cum),]
+
+#celebsjet_spread$emitter <- trimws(celebsjet_spread$emitter)
+all_celebs_tot <- left_join(all_celebs_tot, 
+                            celebsjet_spread, 
+                            by = c("emitter"))
 ind_beh_emms$behavior <- as.character(ind_beh_emms$behavior)
+ind_beh_emms <- left_join(ind_beh_emms, 
+                          individual_beh_emms_spread, 
+                          by = c("behavior"))
 ind_beh_emms$behavior[ind_beh_emms$behavior == "A long-haul flight (8000km)"] <- "Additional long-haul (8000km) flight per year"
 ind_beh_emms$behavior[ind_beh_emms$behavior == "Driving 10% more"] <- "Driving 10% more than average American"
 ind_beh_emms$behavior[ind_beh_emms$behavior == "A non-vegetarian diet"] <- "Eating and average American diet instead of vegetarian diet"
@@ -421,22 +466,52 @@ ind_beh_emms$behavior[ind_beh_emms$behavior == "Installing heat pump"] <- "Using
 ind_beh_emms <- ind_beh_emms %>%  
   dplyr::select(c("behavior", 
                   "total_debt_cum_2020",
-                  "total_debt_cum_2021_2100"))
+                  "total_debt_cum_2021_2100", 
+                  "debt_05_2020",
+                  "debt_10_2020",
+                  "debt_25_2020",
+                  "debt_75_2020",
+                  "debt_90_2020",
+                  "debt_95_2020",
+                  "debt_05_2100",
+                  "debt_10_2100",
+                  "debt_25_2100",
+                  "debt_75_2100",
+                  "debt_90_2100",
+                  "debt_95_2100"))
+
 ind_beh_emms <- ind_beh_emms[order(-ind_beh_emms$total_debt_cum_2021_2100),]
 ind_beh_emms$total_debt_cum_2020[ind_beh_emms$total_debt_cum_2020 < 1] <- round(ind_beh_emms$total_debt_cum_2020[ind_beh_emms$total_debt_cum_2020 < 1], 1)
 ind_beh_emms$total_debt_cum_2020[ind_beh_emms$total_debt_cum_2020 > 1] <- round(ind_beh_emms$total_debt_cum_2020[ind_beh_emms$total_debt_cum_2020 > 1], 0)
 ind_beh_emms$total_debt_cum_2021_2100 <- round(ind_beh_emms$total_debt_cum_2021_2100, 0)
-ind_beh_emms$total_debt_cum_2020 <- paste0("$", as.character(ind_beh_emms$total_debt_cum_2020))
-ind_beh_emms$total_debt_cum_2021_2100 <- paste0("$", as.character(ind_beh_emms$total_debt_cum_2021_2100))
+ind_beh_emms$total_debt_cum_2020 <- paste0("$", as.character(ind_beh_emms$total_debt_cum_2020), " ($", round(ind_beh_emms$debt_05_2020, 0), ",$" ,round(ind_beh_emms$debt_95_2020, 0), ")")
+ind_beh_emms$total_debt_cum_2021_2100 <- paste0("$",ind_beh_emms$total_debt_cum_2021_2100, 
+                                                " ($",round(ind_beh_emms$debt_05_2100, 0), ",$",
+                                                round(ind_beh_emms$debt_95_2100, 0), ")")
+                                                
+
 total_carb_majors_jet$total_debt_cum_2020[total_carb_majors_jet$total_debt_cum_2020 < 1] <- round(total_carb_majors_jet$total_debt_cum_2020[total_carb_majors_jet$total_debt_cum_2020 < 1], 2)
 total_carb_majors_jet$total_debt_cum_2020[total_carb_majors_jet$total_debt_cum_2020 > 1] <- round(total_carb_majors_jet$total_debt_cum_2020[total_carb_majors_jet$total_debt_cum_2020 > 1], 2)
 total_carb_majors_jet$total_debt_cum_2021_2100 <- round(total_carb_majors_jet$total_debt_cum_2021_2100, 2)
-total_carb_majors_jet$total_debt_cum_2020 <- paste0("$", as.character(total_carb_majors_jet$total_debt_cum_2020), "T")
-total_carb_majors_jet$total_debt_cum_2021_2100 <- paste0("$", as.character(total_carb_majors_jet$total_debt_cum_2021_2100), "T")
+total_carb_majors_jet$total_debt_cum_2020 <- paste0("$", as.character(total_carb_majors_jet$total_debt_cum_2020), "T", " ($", round(total_carb_majors_jet$debt_05_2020/1000000000000, 2), "T,$", round(total_carb_majors_jet$debt_95_2020/1000000000000, 2), "T)")
+total_carb_majors_jet$total_debt_cum_2021_2100 <- paste0("$", as.character(total_carb_majors_jet$total_debt_cum_2021_2100), "T", " ($", round(total_carb_majors_jet$debt_05_2100/1000000000000, 2), "T,$", round(total_carb_majors_jet$debt_95_2100/1000000000000, 2), "T)")
 all_celebs_tot$total_debt_cum <- all_celebs_tot$total_debt_cum/1000
 all_celebs_tot$total_debt_cum <- round(all_celebs_tot$total_debt_cum, 0)
-all_celebs_tot$total_debt_cum <- paste0("$", as.character(all_celebs_tot$total_debt_cum), "k")
+all_celebs_tot$total_debt_cum <- paste0("$", as.character(all_celebs_tot$total_debt_cum), "K ($", round(all_celebs_tot$debt_05/1000, 0), "K,$", round(all_celebs_tot$debt_95/1000,0), "K)")
 ind_beh_emms <- ind_beh_emms[1:6,]
+
+
+ind_beh_emms <- ind_beh_emms %>% 
+  dplyr::select(c("behavior", 
+                  "total_debt_cum_2020", 
+                  "total_debt_cum_2021_2100"))
+total_carb_majors_jet <- total_carb_majors_jet %>% 
+  dplyr::select(c("emitter", 
+                  "total_debt_cum_2020", 
+                  "total_debt_cum_2021_2100"))
+all_celebs_tot <- all_celebs_tot %>% 
+  dplyr::select(c("emitter", 
+                  "total_debt_cum"))
 
 # plot data 
 ################################################################################ Figure 3a
@@ -452,7 +527,7 @@ ind_beh <- ind_beh_emms %>%
              total_debt_cum_2021_2100 = "Damages 2021-2100") %>% 
   cols_align(align = "center") %>%
   gt_theme_538(table.width = px(650)) %>% 
-  gtsave(paste0(getwd(), "/figures/", run_date, "/figED11_a.pdf"))
+  gtsave(paste0(getwd(), "/figures/", run_date, "/figED11_a_w_spread.pdf"))
 
 
 carb_majors <-  total_carb_majors_jet %>%
@@ -467,7 +542,7 @@ carb_majors <-  total_carb_majors_jet %>%
              total_debt_cum_2021_2100 = "Damages 2021-2100") %>% 
   cols_align(align = "center") %>% 
   gt_theme_538(table.width = px(650)) %>% 
-  gtsave(paste0(getwd(), "/figures/", run_date, "/figED11_c.pdf"))
+  gtsave(paste0(getwd(), "/figures/", run_date, "/figED11_c_W_spread.pdf"))
 
 all_celebs_tot <- all_celebs_tot[1:14,]
 celeb_jets <- all_celebs_tot %>%
@@ -480,7 +555,7 @@ celeb_jets <- all_celebs_tot %>%
   cols_label(total_debt_cum = "Damages through 2100") %>% 
   cols_align(align = "center") %>% 
   gt_theme_538(table.width = px(650)) %>% 
-  gtsave(paste0(getwd(), "/figures/", run_date, "/figED11_b.pdf"))
+  gtsave(paste0(getwd(), "/figures/", run_date, "/figED11_b_w_spread.pdf"))
 
 
 

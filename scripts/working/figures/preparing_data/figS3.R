@@ -16,7 +16,7 @@ setwd("~/GitHub/loss_damage")
 #  run_date <- gsub("-","",Sys.Date())
 #}
 
-run_date <- "20241104"
+run_date <- "loss_damage_r1_mustafa_rep_temp"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -25,7 +25,7 @@ setwd(dropbox_path)
 #############################################################################
 #############################################################################
 # read data 
-scc_2100 <- readRDS(paste0("~/BurkeLab Dropbox/Projects/loss_damage/data/output/20230821/scc_2100.rds"))
+total_damages_1gtco2_0lag <- readRDS(paste0("~/BurkeLab Dropbox/Projects/loss_damage/data/output/20230821/scc_2100.rds"))
 total_damages_1gtco2_5lag <- readRDS(paste0(output_path, "/total_damages_1gtco2_1990_2020.rds"))
 total_damages_1gtco2_1lag <- readRDS(paste0(output_path, "/total_damages_1gtco2_1lag_1990_2020.rds"))
 total_damages_1gtco2_2lag <- readRDS(paste0(output_path, "/total_damages_1gtco2_2lag_1990_2020.rds"))
@@ -68,7 +68,7 @@ rescale_data <- function(dataset){
 }
 
 # ok now let us summarize all the datasets we have 
-total_damages_1gtco2_0lag <- prep_data(scc_2100)
+total_damages_1gtco2_0lag <- prep_data(total_damages_1gtco2_0lag)
 total_damages_1gtco2_0lag$model <- "0-lag"
 total_damages_1gtco2_1lag <- rescale_data(prep_data(total_damages_1gtco2_1lag))
 total_damages_1gtco2_1lag$model <- "1-lag"

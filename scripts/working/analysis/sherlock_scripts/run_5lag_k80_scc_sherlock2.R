@@ -9,9 +9,9 @@
 #install.packages('readr', repos='http://cran.us.r-project.org')
 #install.packages('doParallel', repos='http://cran.us.r-project.org')
 #install.packages('foreach', repos='http://cran.us.r-project.org')
-#install.packages('exactextractr', repos='http://cran.us.r-project.org')
-#install.packages('sf', repos='http://cran.us.r-project.org')
-#install.packages('raster', repos='http://cran.us.r-project.org')
+install.packages('exactextractr', repos='http://cran.us.r-project.org')
+install.packages('sf', repos='http://cran.us.r-project.org')
+install.packages('raster', repos='http://cran.us.r-project.org')
 
 library("dplyr")
 library("readr")
@@ -363,8 +363,9 @@ num_cores = as.integer(Sys.getenv("SLURM_CPUS_PER_TASK")) - 1
 # set up parallel backend
 registerDoParallel(num_cores)
 
+print("read all the data")
 # parallelize the loop using foreach
-foreach(i=1:1000) %dopar% {
+foreach(i=308:1000) %dopar% {
   
   #sample fair run
   num_loop_i <- sample(unique(fair_exps_1tco2_disagg$num_loop), 1)
@@ -391,7 +392,7 @@ foreach(i=1:1000) %dopar% {
   damages_i$sim_id <- i
   damages_i$coef_id <- laggedbs_i$coef_id
   
-  damages_i <- damdamages_iages %>% 
+  damages_i <- damages_i %>% 
     dplyr::select(c("sim_id",
                     "emitter", 
                     "ISO3",
@@ -405,6 +406,7 @@ foreach(i=1:1000) %dopar% {
   write_rds(damages_i, 
             paste0(path, "data_20241119/scc_5lag_k80_2100_", i, ".rds"))
   
+  print(paste0("done with", i))
   return(NULL)
 }
 
