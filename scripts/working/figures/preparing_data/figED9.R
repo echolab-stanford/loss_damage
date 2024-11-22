@@ -1,12 +1,8 @@
 ##############################################################################
-# Mustafa Zahid, June 26th, 2023
-# this script to run the estimates under different scenarios. The Scenarios are 
-# estimating damages up to 2300, and up to 2100. For up to 2300, we are running
-# model where we set post 2100 growth at 2100 levels, the other is to assume 
-# 1 and 2 % growth rates moving beyond 2100., and then one where we clamp growth 
-# to observed levels pre 2021, and another where we run a 5 lag BHM model. 
-# This script prepares data for fig ED7
-##############################################################################
+# Mustafa Zahid, August 7th, 2023
+# This R script reads the data and prepares the necessary data to plots figure
+# ED8.
+#############################################################################
 remove(list=ls())
 gc()
 sf::sf_use_s2(FALSE)
@@ -20,168 +16,222 @@ setwd("~/GitHub/loss_damage")
 #  run_date <- gsub("-","",Sys.Date())
 #}
 
-run_date <- "loss_damage_r1"
+run_date <- "loss_damage_r1_mustafa_rep_temp"
+
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
-
-
 setwd(dropbox_path)
 #############################################################################
 #############################################################################
 # read data 
-scc_2300_1pct_growth <- readRDS(paste0(output_path,   "/scc_2300_1pct_growth.rds"))
-scc_2300_2pct_growth <- readRDS(paste0(output_path,   "/scc_2300_2pct_growth.rds"))
-scc_2300_clamped_growth <- readRDS(paste0(output_path,"/scc_2300_clamped_growth.rds"))
-scc_2300_2100_5lag <- readRDS(paste0(output_path,      "/scc_2300_2100_5lag.rds"))
-scc_2300_2100_5lag_nog <- readRDS(paste0(output_path,      "/scc_2300_2100_5lag_nog.rds"))
-scc_2100_2100_5lag <- readRDS(paste0(output_path,      "/scc_2100_2100_5lag.rds"))
-scc_2300_nog_post_2100 <- readRDS(paste0(output_path, "/scc_2300_nog_post_2100.rds"))
-scc_2300_2100_growth <- readRDS(paste0(output_path,   "/scc_2300_2100_growth.rds"))
-scc_2100 <- readRDS(paste0(output_path, "/scc_2100.rds"))
-scc_2100_adaptation <- readRDS(paste0(output_path, "/scc_2100_adaptation.rds"))
-scc_2300_adaptation <- readRDS(paste0(output_path, "/scc_2300_adaptation.rds"))
-scc_2100_2100_5lag_adaptation <- readRDS(paste0(output_path, "/scc_2100_2100_5lag_adaptation.rds"))
-scc_2300_2100_5lag_adaptation <- readRDS(paste0(output_path, "/scc_2300_2100_5lag_adaptation.rds"))
+## figED8a
+total_damages_1000tco2 <- readRDS(paste0(output_path,"/total_damages_1000tco2_k90_compare.rds"))
+total_damages_1mtco2 <- readRDS(paste0(output_path,"/total_damages_1mtco2_k90_compare.rds"))
+total_damages_1gtco2 <- readRDS(paste0(output_path,"/total_damages_1gtco2_k90_compare.rds"))
+total_damages_10gtco2 <- readRDS(paste0(output_path,"/total_damages_10gtco2_k90_compare.rds"))
+total_damages_100gtco2 <- readRDS(paste0(output_path,"/total_damages_100gtco2_k90_compare.rds"))
+
+## figED8b
+usa_damages_10pct <- readRDS(paste0(output_path, "/usa_damages_10pct.rds"))
+usa_damages_30pct <- readRDS(paste0(output_path, "/usa_damages_30pct.rds"))
+usa_damages_50pct <- readRDS(paste0(output_path, "/usa_damages_50pct.rds"))
+usa_damages_70pct <- readRDS(paste0(output_path, "/usa_damages_70pct.rds"))
+
+#total_damages_1000tco2 <- total_damages_1000tco2_k90
+#total_damages_1mtco2 <- total_damages_1mtco2_k90
+#total_damages_1gtco2 <- total_damages_1gtco2_k90
+#total_damages_10gtco2 <- total_damages_10gtco2_k90
+#total_damages_100gtco2 <- total_damages_100gtco2_k90
+
 
 #############################################################################
 #############################################################################
-# prep data 
+################################fig ED8a#####################################
 
-ex <- data.frame(scenario = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA), 
-                 dr1 = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA), 
-                 dr2 = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA), 
-                 dr3 = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-                 dr_ramsey = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-                 time_horizon = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-                 post_2100_growth = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-                 regression_model = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA))
+datasets <- list(total_damages_1000tco2,
+                 total_damages_1mtco2,
+                 total_damages_1gtco2,
+                 total_damages_10gtco2,
+                 total_damages_100gtco2)
 
-ex$scenario[3] <- "Growth at 2100 + 5lag"
-ex$scenario[2] <- "Growth at 2100 + 5lag + No growth effects > 2100"
-ex$scenario[1] <- "Growth at 2100 + 5lag + No impacts > 2100"
-ex$scenario[4] <- "No impacts > 2100 + 5lag + adaptation"
-ex$scenario[5] <-"Growth at 2100 rate + 5lag + adaptation"
+processed_datasets <- list()
+for (i in 1:length(datasets)){
+  tic()
+  dataset <- datasets[[i]] 
+  dataset <- dataset %>% 
+    dplyr::mutate(year_cat = case_when(year < 2020 ~ "1990-2020",
+                                       year >2020 ~ "2021-2100"))
+  
+  dataset <- subset(dataset, !is.na(year_cat))
+  
+  dataset <- dataset %>% 
+    dplyr::group_by(emitter, year_cat) %>% 
+    dplyr::summarise(total_damages_dr2 = sum(weighted_damages2_scld, na.rm = T),
+                     .groups= "keep")
+  dataset <- dataset %>% dplyr::select(c("year_cat", 
+                                         "emitter",
+                                         "total_damages_dr2"))
+  dataset$pulse <- i 
 
-ex$scenario[6] <- "Growth at 2100 rate"
-ex$scenario[7] <- "Growth at 1%"
-ex$scenario[8] <- "Growth at 2%"
-#ex$scenario[4] <- "Growth at 2100 + clamping"
-ex$scenario[9] <- "No growth effects > 2100"
-ex$scenario[10] <- "No impacts > 2100"
-ex$scenario[11] <- "No impacts > 2100 + adaptation"
-ex$scenario[12] <-"Growth at 2100 rate + adaptation"
-
-
-
-ex$dr1[3] <- round(sum(scc_2300_2100_5lag$weighted_damages1_scld, na.rm = T),0)
-ex$dr1[2] <- round(sum(scc_2300_2100_5lag_nog$weighted_damages1_scld, na.rm = T),0)
-ex$dr1[1] <- round(sum(scc_2100_2100_5lag$weighted_damages1_scld/1000000000, na.rm = T),0)
-ex$dr1[4] <- round(sum(scc_2100_2100_5lag_adaptation$weighted_damages1_scld, na.rm = T),0)
-
-ex$dr1[5] <- round(sum(scc_2300_2100_5lag_adaptation$weighted_damages1_scld, na.rm = T),0)
-ex$dr1[6] <- round(sum(scc_2300_2100_growth$weighted_damages1_scld, na.rm = T),0)
-ex$dr1[7] <- round(sum(scc_2300_1pct_growth$weighted_damages1_scld, na.rm = T),0)
-ex$dr1[8] <- round(sum(scc_2300_2pct_growth$weighted_damages1_scld, na.rm = T),0)
-#ex$dr1[4] <- round(sum(scc_2300_clamped_growth$weighted_damages1_scld, na.rm = T),0)
-ex$dr1[9] <- round(sum(scc_2300_nog_post_2100$weighted_damages1_scld, na.rm = T),0)
-ex$dr1[10] <- round(sum(scc_2100$weighted_damages1_scld, na.rm = T),0)
-ex$dr1[11] <- round(sum(scc_2100_adaptation$weighted_damages1_scld, na.rm = T),0)
-ex$dr1[12] <- round(sum(scc_2300_adaptation$weighted_damages1_scld, na.rm = T),0)
-
-ex$dr2[3] <- round(sum(scc_2300_2100_5lag$weighted_damages2_scld, na.rm = T),0)
-ex$dr2[2] <- round(sum(scc_2300_2100_5lag_nog$weighted_damages2_scld, na.rm = T),0)
-ex$dr2[1] <- round(sum(scc_2100_2100_5lag$weighted_damages2_scld/1000000000, na.rm = T),0)
-ex$dr2[4] <- round(sum(scc_2100_2100_5lag_adaptation$weighted_damages2_scld, na.rm = T),0)
-ex$dr2[5] <- round(sum(scc_2300_2100_5lag_adaptation$weighted_damages2_scld, na.rm = T),0)
-ex$dr2[6] <- round(sum(scc_2300_2100_growth$weighted_damages2_scld, na.rm = T),0)
-ex$dr2[7] <- round(sum(scc_2300_1pct_growth$weighted_damages2_scld, na.rm = T),0)
-ex$dr2[8] <- round(sum(scc_2300_2pct_growth$weighted_damages2_scld, na.rm = T),0)
-#ex$dr2[4] <- round(sum(scc_2300_clamped_growth$weighted_damages2_scld, na.rm = T),0)
-ex$dr2[9] <- round(sum(scc_2300_nog_post_2100$weighted_damages2_scld, na.rm = T),0)
-ex$dr2[10] <- round(sum(scc_2100$weighted_damages2_scld, na.rm = T),0)
-ex$dr2[11] <- round(sum(scc_2100_adaptation$weighted_damages2_scld, na.rm = T),0)
-ex$dr2[12] <- round(sum(scc_2300_adaptation$weighted_damages2_scld, na.rm = T),0)
-
-ex$dr3[3] <- round(sum(scc_2300_2100_5lag$weighted_damages3_scld, na.rm = T),0)
-ex$dr3[2] <- round(sum(scc_2300_2100_5lag_nog$weighted_damages3_scld, na.rm = T),0)
-ex$dr3[1] <- round(sum(scc_2100_2100_5lag$weighted_damages3_scld/1000000000, na.rm = T),0)
-ex$dr3[4] <- round(sum(scc_2100_2100_5lag_adaptation$weighted_damages3_scld, na.rm = T),0)
-ex$dr3[5] <- round(sum(scc_2300_2100_5lag_adaptation$weighted_damages3_scld, na.rm = T),0)
-ex$dr3[6] <- round(sum(scc_2300_2100_growth$weighted_damages3_scld, na.rm = T),0)
-ex$dr3[7] <- round(sum(scc_2300_1pct_growth$weighted_damages3_scld, na.rm = T),0)
-ex$dr3[8] <- round(sum(scc_2300_2pct_growth$weighted_damages3_scld, na.rm = T),0)
-#ex$dr3[4] <- round(sum(scc_2300_clamped_growth$weighted_damages3_scld, na.rm = T),0)
-ex$dr3[9] <- round(sum(scc_2300_nog_post_2100$weighted_damages3_scld, na.rm = T),0)
-ex$dr3[10] <- round(sum(scc_2100$weighted_damages3_scld, na.rm = T),0)
-ex$dr3[11] <- round(sum(scc_2100_adaptation$weighted_damages3_scld, na.rm = T),0)
-ex$dr3[12] <- round(sum(scc_2300_adaptation$weighted_damages3_scld, na.rm = T),0)
+  processed_datasets[[i]] <- dataset
+  toc()
+}
 
 
-ex$dr_ramsey[3] <- round(sum(scc_2300_2100_5lag$weighted_damages_ramsey_scld, na.rm = T),0)
-ex$dr_ramsey[2] <- round(sum(scc_2300_2100_5lag_nog$weighted_damages_ramsey_scld, na.rm = T),0)
-ex$dr_ramsey[1] <- round(sum(scc_2100_2100_5lag$weighted_damages_ramsey_scld/1000000000, na.rm = T),0)
-ex$dr_ramsey[4] <- round(sum(scc_2100_2100_5lag_adaptation$weighted_damages_ramsey_scld, na.rm = T),0)
-ex$dr_ramsey[5] <- round(sum(scc_2300_2100_5lag_adaptation$weighted_damages_ramsey_scld, na.rm = T),0)
+mother_dataset <- do.call(rbind, processed_datasets)
 
-ex$dr_ramsey[6] <- round(sum(scc_2300_2100_growth$weighted_damages_ramsey_scld, na.rm = T),0)
-ex$dr_ramsey[7] <- round(sum(scc_2300_1pct_growth$weighted_damages_ramsey_scld, na.rm = T),0)
-ex$dr_ramsey[8] <- round(sum(scc_2300_2pct_growth$weighted_damages_ramsey_scld, na.rm = T),0)
-#ex$dr_ramsey[4] <- round(sum(scc_2300_clamped_growth$weighted_damages_ramsey_scld, na.rm = T),0)
+mother_dataset <- mother_dataset %>% 
+  dplyr::mutate(pulse_exp = case_when(pulse == 1 ~ "1000tCO2",
+                                      pulse == 2 ~ "1MtCO2",
+                                      pulse == 3 ~ "1GtCO2",
+                                      pulse == 4 ~ "10GtCO2",
+                                      pulse == 5 ~ "100GtCO2"))
 
-ex$dr_ramsey[9] <- round(sum(scc_2300_nog_post_2100$weighted_damages_ramsey_scld, na.rm = T),0)
-ex$dr_ramsey[10] <- round(sum(scc_2100$weighted_damages_ramsey_scld, na.rm = T),0)
-ex$dr_ramsey[11] <- round(sum(scc_2100_adaptation$weighted_damages_ramsey_scld, na.rm = T),0)
-ex$dr_ramsey[12] <- round(sum(scc_2300_adaptation$weighted_damages_ramsey_scld, na.rm = T),0)
+# ok let us reshape
+mother_dataset <- mother_dataset[,-2]
+mother_dataset$id <- paste0(mother_dataset$pulse_exp, "_", mother_dataset$year_cat)
+mother_dataset <- mother_dataset[,-1]
+mother_dataset <- mother_dataset[,-3]
+mother_dataset <- mother_dataset[,-2]
+
+mother_dataset_reshaped <- melt(mother_dataset, id = c("id"))
+
+total_damages_1gtC1 <- subset(total_damages_1gtco2, emitter <=  2020 & emitter >1989)
+
+total_damages_1gtC1 <- total_damages_1gtC1 %>% 
+  dplyr::mutate(year_cat = case_when(year < 2020 ~ "1990-2020",
+                                     year >2020 ~ "2021-2100"))
+
+total_damages_by_pulse <- total_damages_1gtC1 %>% 
+  dplyr::group_by(emitter, year_cat) %>% 
+  dplyr::summarise(total_damages_dr2 = sum(weighted_damages2_scld, na.rm = T),
+                   total_damages_dr3 = sum(weighted_damages3_scld, na.rm = T),
+                   total_damages_dr5 = sum(weighted_damages5_scld, na.rm = T),
+                   total_damages_dr7 = sum(weighted_damages7_scld, na.rm = T),
+                   .groups= "keep")
+
+total_damages_by_pulse <- total_damages_by_pulse %>% dplyr::select(c("year_cat", 
+                                                                     "emitter",
+                                                                     "total_damages_dr2",
+                                                                     "total_damages_dr3",
+                                                                     "total_damages_dr5",
+                                                                     "total_damages_dr7"))
+
+ex <- data.frame(hd_actual = c(NA, NA, NA, NA, NA), 
+                 hd_comp = c(NA, NA, NA, NA, NA),
+                 hd_pct = c(NA, NA, NA, NA, NA),
+                 fd_actual = c(NA, NA, NA, NA, NA),
+                 fd_comp = c(NA, NA, NA, NA, NA),
+                 fd_pct = c(NA, NA, NA, NA, NA))
+
+ex$pulse[1] <- "1000tCO2"
+ex$pulse[2] <- "1MtCO2"
+ex$pulse[3] <- "1GtCO2"
+ex$pulse[4] <- "10GtCO2"
+ex$pulse[5] <- "100GtCO2"
+
+ex$hd_actual[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1000tCO2_1990-2020"], 0)
+ex$hd_actual[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1MtCO2_1990-2020"], 0)
+ex$hd_actual[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)
+ex$hd_actual[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "10GtCO2_1990-2020"], 0)
+ex$hd_actual[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "100GtCO2_1990-2020"], 0)
+
+ex$hd_comp[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"]*(1/1000000), 0)
+ex$hd_comp[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"]*(1/1000),0)
+ex$hd_comp[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)
+ex$hd_comp[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)*10
+ex$hd_comp[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)*100
+
+ex$hd_actual <- as.numeric(ex$hd_actual)
+
+ex$hd_pct <- round((ex$hd_actual/ ex$hd_comp)*100, 0)
 
 
-# now let us add the columns 
-# first we need to add time horizon 
-ex$time_horizon[3] <- "through 2300"
-ex$time_horizon[2] <- "through 2300"
-ex$time_horizon[1] <- "through 2100"
-ex$time_horizon[4] <- "through 2100"
-ex$time_horizon[5] <- "through 2300"
-ex$time_horizon[6] <- "through 2300"
-ex$time_horizon[7] <- "through 2300"
-ex$time_horizon[8] <- "through 2300"
-#ex$time_horizon[4] <- "through 2300"
-ex$time_horizon[9] <- "through 2300"
-ex$time_horizon[10] <- "through 2100"
-ex$time_horizon[11] <- "through 2100"
-ex$time_horizon[12] <- "through 2300"
+ex$fd_actual[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1000tCO2_2021-2100"], 0)
+ex$fd_actual[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1MtCO2_2021-2100"], 0)
+ex$fd_actual[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)
+ex$fd_actual[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "10GtCO2_2021-2100"], 0)
+ex$fd_actual[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "100GtCO2_2021-2100"], 0)
 
-# now we need to do post-2100 growth column 
-ex$post_2100_growth[3] <- "SSP 2100 rates"
-ex$post_2100_growth[2] <- "SSP 2100 rates"
-ex$post_2100_growth[1] <- "SSP 2100 rates"
-ex$post_2100_growth[4] <- ""
-ex$post_2100_growth[5] <- "SSP 2100 growth rate"
-ex$post_2100_growth[6] <- "SSP 2100 growth rate"
-ex$post_2100_growth[7] <- "1% growth rate"
-ex$post_2100_growth[8] <- "2% growth rate"
-#ex$post_2100_growth[4] <- "SSP 2100 clamped rate"
-ex$post_2100_growth[9] <- "SSP 2100 rates"
-ex$post_2100_growth[10] <- ""
-ex$post_2100_growth[11] <- ""
-ex$post_2100_growth[12] <- "SSP 2100 growth rate"
+ex$fd_comp[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"]*(1/1000000), 0)
+ex$fd_comp[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"]*(1/1000),0)
+ex$fd_comp[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)
+ex$fd_comp[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)*10
+ex$fd_comp[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)*100
 
-# now let us do regression model 
-ex$regression_model[3] <- "5-lag model"
-ex$regression_model[2] <- "5-lag model"
-ex$regression_model[1] <- "5-lag model"
-ex$regression_model[4] <- "5-lag model"
-ex$regression_model[5] <- "5-lag model"
-ex$regression_model[6] <- "0-lag model"
-ex$regression_model[7] <- "0-lag model"
-ex$regression_model[8] <- "0-lag model"
-#ex$regression_model[4] <- "0-lag  model"
-ex$regression_model[9] <- "0-lag model"
-ex$regression_model[10] <- "0-lag model"
-ex$regression_model[11] <- "0-lag model"
-ex$regression_model[12] <- "0-lag model"
+ex$fd_actual <- as.numeric(ex$fd_actual)
 
-# ok ready to plot 
+ex$fd_pct <- round((ex$fd_actual/ ex$fd_comp)*100, 0)
+
+ex <- ex %>% 
+  dplyr::select(c("pulse", 
+                  "hd_actual", 
+                  "hd_comp", 
+                  "hd_pct", 
+                  "fd_actual", 
+                  "fd_comp",
+                  "fd_pct"))
+
+ex$hd_pct <- paste0(ex$hd_pct, "%")
+ex$fd_pct <- paste0(ex$fd_pct, "%")
+
+ex$hd_actual[5] <- paste0("$", as.character(round(ex$hd_actual[5]/(1000000000*100),2)))
+ex$hd_comp[5] <- paste0("$", as.character(round(ex$hd_comp[5]/(1000000000*100),2)))
+ex$fd_actual[5] <- paste0("$", as.character(round(ex$fd_actual[5]/(1000000000*100),0)))
+ex$fd_comp[5] <- paste0("$", as.character(round(ex$fd_comp[5]/(1000000000*100),0)))
+
+ex$hd_actual[4] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[4])/(1000000000*10),2)))
+ex$hd_comp[4] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[4])/(1000000000*10),2)))
+ex$fd_actual[4] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[4])/(1000000000*10),0)))
+ex$fd_comp[4] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[4])/(1000000000*10),0)))
+
+ex$hd_actual[3] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[3])/1000000000,2)))
+ex$hd_comp[3] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[3])/1000000000,2)))
+ex$fd_actual[3] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[3])/1000000000,0)))
+ex$fd_comp[3] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[3])/1000000000,0)))
+
+ex$hd_actual[2] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[2])/1000000,2)))
+ex$hd_comp[2] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[2])/1000000,2)))
+ex$fd_actual[2] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[2])/1000000,0)))
+ex$fd_comp[2] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[2])/1000000,0)))
+
+ex$hd_actual[1] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[1])/1000,2)))
+ex$hd_comp[1] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[1])/1000,2)))
+ex$fd_actual[1] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[1])/1000,0)))
+ex$fd_comp[1] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[1])/1000,0)))
+
+#ex$hd_actual[2] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[2]),0)))
+#ex$hd_comp[2] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[2]),0)))
+#ex$fd_actual[2] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[2])/1000,2)), "K")
+#ex$fd_comp[2] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[2])/1000,2)), "K")
+#
+#ex$hd_actual[1] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[1]),2)))
+#ex$hd_comp[1] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[1]),2)))
+#ex$fd_actual[1] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[1]),0)))
+#ex$fd_comp[1] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[1]),0)))
+
+ex <- ex %>% dplyr::select(c("pulse", "hd_actual", "hd_pct", "fd_actual", "fd_pct"))
+#ex <- ex[-1:-2,]
+
+# write out ex 
 run_date <- "loss_damage_r1"
-write_rds(ex, paste0(fig_prepped_dta, run_date, "/scc_under_diff_scenarios.rds"))
+setwd("~/GitHub/loss_damage/")
+write_rds(ex, paste0(getwd(), "/data/figures/",run_date, "/damages_under_diff_marginals.rds"))
+
+################################fig ED8b#####################################
+figed9b <- as.data.frame(data_frame(scenario = c("baseline", "90% of emissions",
+                                                 "70%", "50%" , "30%"), 
+                              value = c(-10.26/-10.26,
+                                        round(((sum(usa_damages_10pct$weighted_damages2[usa_damages_10pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26)),
+                                        ((sum(usa_damages_30pct$weighted_damages2[usa_damages_30pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26),
+                                        ((sum(usa_damages_50pct$weighted_damages2[usa_damages_50pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26),
+                                        ((sum(usa_damages_70pct$weighted_damages2[usa_damages_70pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26))))
+# write out teh table 
+run_date <- "loss_damage_r1"
+setwd("~/GitHub/loss_damage/")
+write_rds(figed8b, paste0(getwd(), "/data/figures/",run_date, "/damages_under_diff_baseline_scenarios.rds"))
+
 
 # end of script 
+
+

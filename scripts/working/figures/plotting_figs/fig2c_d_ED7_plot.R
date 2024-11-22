@@ -153,7 +153,7 @@ c_d <- ggpubr::ggarrange(c,d,
                          legend="bottom")
 
 #save the plot 
-ggsave(paste0("figures/", run_date, "/fig2c_d_pre_illustrator.pdf"), 
+ggsave(paste0("figures/", run_date, "/figED7_pre_illustrator.pdf"), 
        c_d, width = 10, height = 4)
 
 ################################################################################
@@ -205,7 +205,7 @@ c_d_pcap <- ggpubr::ggarrange(c,d,
                          legend="bottom")
 
 #save the plot 
-ggsave(paste0("figures/", run_date, "/fig2c_d_pcap_pre_illustrator.pdf"), 
+ggsave(paste0("figures/", run_date, "/figED7_pcap_pre_illustrator.pdf"), 
        c_d_pcap, width = 10, height = 4)
 
 ################################################################################
