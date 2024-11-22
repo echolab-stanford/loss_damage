@@ -36,7 +36,7 @@ setwd(dropbox_path)
 ################################################################################ read the data 
 total_damages_1gtco2_cd <- readRDS(paste0(output_path,"/total_damages_1gtco2_1990_2020.rds"))
 total_damages_1gtco2 <- readRDS(paste0(output_path, "/total_damages_1gtco2_1990_2020.rds"))
-
+country_prob_dam_1990_5lag <- read_csv(paste0(processed_path, '/country_prob_dam_1990_5lag.csv'))
 
 #############################################################################
 ################################################################################ panels a, b
@@ -240,6 +240,7 @@ world <- subset(world, !is.na(ISO3))
 #############################################################################
 ################################################################################ save the data
 setwd("~/GitHub/loss_damage")
+write_csv(country_prob_dam_1990_5lag, paste0(fig_prepped_dta, run_date, "/country_prob_dam_1990_5lag.csv"))
 write_rds(test_df_for_table, paste0(fig_prepped_dta, run_date, "/test_df_for_table.rds"))
 write_rds(total_damages_by_pulse_2020_all, paste0(fig_prepped_dta, run_date, "/total_damages_by_pulse_2020.rds"))
 write_rds(total_damages_by_pulse_2100_all, paste0(fig_prepped_dta, run_date, "/total_damages_by_pulse_2100.rds"))

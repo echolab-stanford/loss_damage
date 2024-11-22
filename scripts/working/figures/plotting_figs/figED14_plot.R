@@ -20,7 +20,7 @@ us_top_transfers <- readRDS(paste0(getwd(),"/data/figures/", run_date, "/us_top_
 #############################################################################
 #############################################################################
 # now plot the data 
-pdf(file = paste0(getwd(), "/figures/", run_date, "/figED13.pdf"),   # The directory you want to save the file in
+pdf(file = paste0(getwd(), "/figures/", run_date, "/figED14.pdf"),   # The directory you want to save the file in
     width = 8.85, # The width of the plot in inches
     height = 6.85) # The height of the plot in inches
     

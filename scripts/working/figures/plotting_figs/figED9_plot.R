@@ -46,7 +46,7 @@ ex %>%
              columns = c(hd_pct,
                          fd_pct)) %>% 
   gt_theme_538_nocaps(table.width = px(700)) %>%
-  gtsave(paste0("~/GitHub/loss_damage/figures/", run_date, "/figED8.png"))
+  gtsave(paste0("~/GitHub/loss_damage/figures/", run_date, "/figED9.png"))
 #  gtsave(paste0("/Users/mustafazahid/GitHub/loss_damage/figures/", 
 #               run_date,"/fig_compare_est.png"))
 
@@ -55,7 +55,7 @@ ex %>%
 
 egy <- MetBrewer::met.brewer("Egypt")[2]
 figed8b$scenario_id <- 1:5
-pdf(file = paste0("~/GitHub/loss_damage/figures/",run_date,"/figED8b.pdf"),   # The directory you want to save the file in
+pdf(file = paste0("~/GitHub/loss_damage/figures/",run_date,"/figED9b.pdf"),   # The directory you want to save the file in
     width = 7.85, # The width of the plot in inches
     height = 4.85) # The height of the plot in inches
 

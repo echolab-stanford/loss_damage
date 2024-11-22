@@ -1,6 +1,6 @@
 ##############################################################################
 # Mustafa Zahid, January 7th, 2023
-# This R script prepares the data for plotting figure 3a and 3b 
+# This R script prepares the data for plotting figure ED10
 #############################################################################
 remove(list=ls())
 gc()
@@ -45,7 +45,7 @@ scc_est %>%
                    dr_ramsey),
     currency = "USD",
     decimals = F
-  ) %>% gtsave(paste0(getwd(),"/figures/", run_date,"/figED9.pdf"))
+  ) %>% gtsave(paste0(getwd(),"/figures/", run_date,"/figED10.pdf"))
 
 #end of script
 

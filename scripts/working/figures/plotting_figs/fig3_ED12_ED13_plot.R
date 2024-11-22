@@ -1,6 +1,6 @@
 ##############################################################################
 # Mustafa Zahid, January 7th, 2023
-# This R script plots fig S5 from the paper
+# This R script plots figURES 3, ED12, ED13
 #############################################################################
 remove(list=ls())
 gc()
@@ -570,6 +570,6 @@ celeb_jets <- all_celebs_tot %>%
 ggsave(paste0(getwd(), "/figures/", run_date, "/fig3a_new.pdf"), figS5a, width = 16, height = 8)
 ggsave(paste0(getwd(), "/figures/", run_date, "/fig3b_new.pdf"), figs5b1, width = 16, height = 8)
 ggsave(paste0(getwd(), "/figures/", run_date, "/fig3c_new.pdf"), figS5c, width = 16, height = 8)
-ggsave(paste0(getwd(), "/figures/", run_date, "/figED12.pdf"), figS5b, width = 16, height = 8)
+ggsave(paste0(getwd(), "/figures/", run_date, "/figED13.pdf"), figS5b, width = 16, height = 8)
 
 # end of script 

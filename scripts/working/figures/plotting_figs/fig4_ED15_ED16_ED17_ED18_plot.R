@@ -422,13 +422,13 @@ sankey_k60 <- ggplot(damages_and_benefits_k60,
 
 save_plot(paste0('figures/',run_date, '/fig4.pdf'),plot=sankey_k90, 
           base_width=26.5, base_height=28, scale=1.1)
-save_plot(paste0('figures/', run_date, '/figED14.pdf'),plot=sankey_k80, 
+save_plot(paste0('figures/', run_date, '/figED15.pdf'),plot=sankey_k80, 
           base_width=26.5, base_height=28, scale=1.1)
-save_plot(paste0('figures/', run_date, '/figED15.pdf'),plot=sankey_k90_prod, 
+save_plot(paste0('figures/', run_date, '/figED18.pdf'),plot=sankey_k90_prod, 
           base_width=26.5, base_height=28, scale=1.1)
-save_plot(paste0('figures/', run_date, '/figED16.pdf'),plot=sankey_k90_consump, 
+save_plot(paste0('figures/', run_date, '/figED17.pdf'),plot=sankey_k90_consump, 
           base_width=26.5, base_height=28, scale=1.1)
-save_plot(paste0('figures/', run_date, '/fig_sankey_k60.pdf'),plot=sankey_k60, 
+save_plot(paste0('figures/', run_date, '/figED16.pdf'),plot=sankey_k60, 
           base_width=26.5, base_height=28, scale=1.1)
 
 # end of script
