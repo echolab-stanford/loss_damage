@@ -136,6 +136,9 @@ median(totals_fair$total_damages)
 
 # total uncertainty
 totals_all <- totals_all_nog_2dr
+totals_all <- totals_all %>% 
+  ungroup(.) %>% 
+  dplyr::select(-c("emitter"))
 
 # check medians
 median(totals_all$total_damages2)
@@ -145,15 +148,9 @@ median(totals_fair$total_damages)
 
 
 # ok now write the data 
-write_rds(totals_all, paste0(fig_prepped_dta, run_date,"/totals_all1.rds"))
-write_rds(totals_bhm, paste0(fig_prepped_dta, run_date,"/totals_bhm1.rds"))
-write_rds(totals_cgm, paste0(fig_prepped_dta, run_date,"/totals_cgm1.rds"))
-write_rds(totals_fair, paste0(fig_prepped_dta,run_date, "/totals_fair1.rds"))
+write_rds(totals_all, paste0(fig_prepped_dta, run_date,"/totals_all.rds"))
+write_rds(totals_bhm, paste0(fig_prepped_dta, run_date,"/totals_bhm.rds"))
+write_rds(totals_cgm, paste0(fig_prepped_dta, run_date,"/totals_cgm.rds"))
+write_rds(totals_fair, paste0(fig_prepped_dta,run_date, "/totals_fair.rds"))
 
 # end of script
-
-write_rds(totals_all,"~/Desktop/totals_all.rds")
-write_rds(totals_bhm, "~/Desktop/totals_bhm.rds")
-write_rds(totals_cgm, "~/Desktop/totals_cgm.rds")
-write_rds(totals_fair, "~/Desktop/totals_fair.rds")
-
