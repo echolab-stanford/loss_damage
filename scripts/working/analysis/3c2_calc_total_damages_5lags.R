@@ -131,6 +131,29 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
     
     # read the bhm model under 5;ag 
     bhm_model <- run_bhm_model_reg_lag5("pooled")
+    
+    coefs <- coef(bhm_model)
+    
+    # Modify the second coefficient
+    #coefs[2] <- -0.000557275493244924
+    #coefs[4] <- 2.69227302408601e-05
+    #coefs[6] <- 3.56789522432178e-05
+    #coefs[8] <- -8.30903436204567e-05
+    #coefs[10] <- -6.52880195393457e-05
+    #coefs[12] <- 8.50021420711071e-05
+    #
+    #coefs[1] <- 0.0150969453690138
+    #coefs[3] <- -0.00241594559376839
+    #coefs[5] <- -0.00227827660861586
+    #coefs[7] <- -0.00188349200314455
+    #coefs[9] <- 0.0010886811748485
+    #coefs[11] <- -0.00413718337302097
+    
+    coefs <- round(coefs, 12)
+    
+    # Assign the modified coefficients back to the model
+    # If bhm_era_reg_5lag is a linear model (lm), you can directly modify the coefficients like this:
+    bhm_model$coefficients <- coefs
     #bhm_model <- bhm_era_reg_5lag
     
     #assign teh coeffeceints to the country-year dataset

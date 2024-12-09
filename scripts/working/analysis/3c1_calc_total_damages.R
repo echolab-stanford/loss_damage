@@ -138,12 +138,15 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
     }
     
     if (bootstrapped == T){
-      gdp_temp_data1$temp <- gdp_temp_data1$temp #0.01552896 #
-      gdp_temp_data1$temp2 <- gdp_temp_data1$temp2  #
-      #-0.0005601419 
-      #coef(bhm_era_reg)[1]
+      gdp_temp_data1$temp <- gdp_temp_data1$temp #0.01552896 
+      gdp_temp_data1$temp2 <- gdp_temp_data1$temp2  #-0.0005601419 
     }
     if (bootstrapped == F){
+      coefs <- coef(bhm_model)
+      coefs <- round(coefs, 15)
+      # Assign the modified coefficients back to the model
+      bhm_model$coefficients <- coefs
+      
       gdp_temp_data1$temp <- coef(bhm_model)[1]
       gdp_temp_data1$temp2 <- coef(bhm_model)[2]
     }

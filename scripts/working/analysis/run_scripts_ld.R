@@ -793,7 +793,7 @@ total_damages_k90 <- calculate_bidamages_bilateral(median_raster,
 fair_exps_isos_k90_consump <- subset(fair_exps_isos_k90_consump, !is.na(median_deltat))
 total_damages_k90_consump <- calculate_bidamages_bilateral(median_raster, 
                                                    fair_exps_isos_k90_consump, 
-                                                   "USA",#unique(fair_exps_isos_k90_consump$experiment_iso),
+                                                   unique(fair_exps_isos_k90_consump$experiment_iso),
                                                    1990, 
                                                    future_forecast_ssp370,
                                                    gdp_temp_data_k90_2020,
@@ -806,7 +806,7 @@ total_damages_k90_consump <- calculate_bidamages_bilateral(median_raster,
 fair_exps_isos_k90_prod <- subset(fair_exps_isos_k90_prod, !is.na(median_deltat))
 total_damages_k90_prod <- calculate_bidamages_bilateral(median_raster, 
                                                         fair_exps_isos_k90_prod, 
-                                                        "USA",#unique(fair_exps_isos_k90_prod$experiment_iso),
+                                                        unique(fair_exps_isos_k90_prod$experiment_iso),
                                                         1990, 
                                                         future_forecast_ssp370,
                                                         gdp_temp_data_k90_2020,
@@ -856,13 +856,13 @@ gdp_temp_data_k60_2020 <- gdp_temp_data_k60_2020 %>%
 gdp_temp_data_k60_2020 <- subset(gdp_temp_data_k60_2020, year > 1959 & year < 2021)
 total_damages_k60 <- calculate_bidamages_bilateral(median_raster, 
                                                    fair_exps_isos_k60, 
-                                                   "USA",#unique(fair_exps_isos_k60$experiment_iso),
+                                                   unique(fair_exps_isos_k60$experiment_iso),
                                                    1960, 
                                                    future_forecast_ssp370,
                                                    gdp_temp_data_k60_2020,
                                                    bhm_era_reg_5lag,
                                                    2020)
-#write_rds(total_damages_k60, paste0(output_path, "/total_damages_k60_v2022.rds"))
+write_rds(total_damages_k60, paste0(output_path, "/total_damages_k60_v2022.rds"))
 
 
 ############# 30%,50%,70%,90% emissions baseline experiment #################### figED9
