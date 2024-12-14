@@ -170,7 +170,11 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
 #  }
   
   # now we can calculate difference (deltaT)
+  #fair_exps$Test.y <- round(fair_exps$Test.y, 12)
+  #fair_exps$Test.x <- round(fair_exps$Test.x, 12)
   fair_exps$deltaT <- fair_exps$Test.y - fair_exps$Test.x
+  #fair_exps$deltaT <- round(fair_exps$deltaT, 12)
+  
   
   #fair_exps$deltaT <- fair_exps$Test.x
   
@@ -194,6 +198,8 @@ process_exp_data_hist_fut <- function(date, experiment, year_k, aggregating){
                          median_deltat_fullemms = median(Test.y, na.rm = T),
                          median_deltat = median(deltaT, na.rm = T),
                          .groups = "keep")
+    #fair_exps$median_deltat <- round(fair_exps$median_deltat, 12)
+    
     }
     
   #plot(fair_exps$year, fair_exps$median_deltat_preturb)

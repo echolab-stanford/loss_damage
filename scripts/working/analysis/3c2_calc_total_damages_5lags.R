@@ -149,7 +149,7 @@ calculate_damages_pulse_5lag <- function(ratio_raster, experiment_df, list_of_ex
     #coefs[9] <- 0.0010886811748485
     #coefs[11] <- -0.00413718337302097
     
-    coefs <- round(coefs, 12)
+    #coefs <- round(coefs, 12)
     
     # Assign the modified coefficients back to the model
     # If bhm_era_reg_5lag is a linear model (lm), you can directly modify the coefficients like this:

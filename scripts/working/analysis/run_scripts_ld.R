@@ -1056,7 +1056,6 @@ scc_2100_2100_5lag <-  calculate_damages_pulse_5lag(median_raster,
                                                    F,
                                                    F,
                                                    F)
-
 write_rds(scc_2100_2100_5lag, paste0(output_path, "/scc_2100_2100_5lag.rds"))
 
 # now 5 lag through 2300
@@ -1071,9 +1070,9 @@ scc_2300_2100_5lag <- calculate_damages_pulse_5lag(median_raster,
                                                    1, # 1 to keep growth at >0 post 2100 and 0 otherwise
                                                    F,
                                                    F)
-
 write_rds(scc_2300_2100_5lag, paste0(output_path, "/scc_2300_2100_5lag.rds"))
 
+# now 0 lag no growth post 2100 and through 2300
 scc_2300_nog_post_2100 <- calculate_damages_pulse(median_raster,
                                                   fair_exps_1tco2_2300_k90,
                                                   2020,
@@ -1089,6 +1088,7 @@ scc_2300_nog_post_2100 <- calculate_damages_pulse(median_raster,
                                                   F)
 write_rds(scc_2300_nog_post_2100, paste0(output_path, "/scc_2300_nog_post_2100.rds"))
 
+# now 5 lag no growth post 2100 and through 2300
 scc_2300_nogrowth <- calculate_damages_pulse_5lag(median_raster,
                                                   fair_exps_1tco2_2300_k90,
                                                   2020,
@@ -1100,10 +1100,9 @@ scc_2300_nogrowth <- calculate_damages_pulse_5lag(median_raster,
                                                   0,
                                                   F, 
                                                   F)
-sum(scc_2300_nogrowth$weighted_damages2_scld, na.rm = T)
 write_rds(scc_2300_nogrowth, paste0(output_path, "/scc_2300_2100_5lag_nog.rds"))
 
-
+# now 5 lag w/adaptation
 scc_2100_2100_5lag_adaptation <- calculate_damages_pulse_5lag(median_raster,
                                                               fair_exps_1tco2_2300_k90,
                                                               2020,
@@ -1118,6 +1117,7 @@ scc_2100_2100_5lag_adaptation <- calculate_damages_pulse_5lag(median_raster,
 
 write_rds(scc_2100_2100_5lag_adaptation, paste0(output_path, "/scc_2100_2100_5lag_adaptation.rds"))
 
+# now 5 lag w/adaptation and through 2300
 scc_2300_2100_5lag_adaptation <- calculate_damages_pulse_5lag(median_raster,
                                                               fair_exps_1tco2_2300_k90,
                                                               2020,
@@ -1147,6 +1147,7 @@ scc_2100 <- calculate_damages_pulse(median_raster,
                                     F)
 write_rds(scc_2100, paste0(output_path, "/scc_2100.rds"))
 
+# now no effects post 2100 w/adaptation
 scc_2100_adaptation <- calculate_damages_pulse(median_raster,
                                                fair_exps_1tco2_2100_k90,
                                                2020,

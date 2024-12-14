@@ -5,6 +5,7 @@
 # Edited: June 2023
 #############################################################################
 
+
 calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps, 
                                     year_k, future_forecast, gdp_temp_dataset, 
                                     temp_dataset, bhm_model, bootstrapped, 
@@ -65,14 +66,20 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
     
     # keep non missing ISOs exoeriments
     deltaT_df1 <- subset(deltaT_df1, !is.na(ISO3))
+    
+    #deltaT_df1$deltat_fullemms_scld <- round(deltaT_df1$deltat_fullemms_scld, 14)
+    #deltaT_df1$deltat_preturb_scld <-  round(deltaT_df1$deltat_preturb_scld, 14)
+    #deltaT_df1$deltat_scld <- round(deltaT_df1$deltat_scld, 14)
+    #  
     toc()
-   
+    
     tic()
     deltaT_df1 <- deltaT_df1 %>% dplyr::group_by(ISO3, year) %>% 
       dplyr::summarise(deltat_fullemms = mean(deltat_fullemms_scld, na.rm = T),
                        deltat_preturb = mean(deltat_preturb_scld, na.rm = T),
                        deltat = mean(deltat_scld, na.rm = T),
                        .groups = "keep")
+    
     toc()
     
     tic()
@@ -120,6 +127,7 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
         dplyr::mutate(
           era_mwtemp_preturb= case_when(!is.na(era_mwtemp) ~ era_mwtemp_preturb_pre2020, 
                                         is.na(era_mwtemp) & year >2020 ~ avg_temp_2010_2020_preturb + deltat_preturb))
+      
     }
     toc()
     if (temp_dataset == "CRU"){
@@ -138,19 +146,20 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
     }
     
     if (bootstrapped == T){
-      gdp_temp_data1$temp <- gdp_temp_data1$temp #0.01552896 
-      gdp_temp_data1$temp2 <- gdp_temp_data1$temp2  #-0.0005601419 
+      gdp_temp_data1$temp <- gdp_temp_data1$temp
+      gdp_temp_data1$temp2 <- gdp_temp_data1$temp2
     }
     if (bootstrapped == F){
-      coefs <- coef(bhm_model)
-      coefs <- round(coefs, 15)
+      #coefs <- coef(bhm_model)
+      #coefs <- round(coefs, 15)
       # Assign the modified coefficients back to the model
-      bhm_model$coefficients <- coefs
+      #bhm_model$coefficients <- coefs
       
       gdp_temp_data1$temp <- coef(bhm_model)[1]
       gdp_temp_data1$temp2 <- coef(bhm_model)[2]
     }
     
+
     gdp_temp_data1$era_mwtemp_fullemms[gdp_temp_data1$era_mwtemp_fullemms > 30 & !is.na(gdp_temp_data1$era_mwtemp_fullemms)] <- 30
     gdp_temp_data1$era_mwtemp_preturb[gdp_temp_data1$era_mwtemp_preturb > 30 & !is.na(gdp_temp_data1$era_mwtemp_preturb)] <- 30
     
@@ -162,7 +171,7 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
         ((gdp_temp_data1$era_mwtemp_preturb^2) * gdp_temp_data1$temp2)
       
       gdp_temp_data1$delta_g_era <- gdp_temp_data1$resp_temp_preturb - gdp_temp_data1$resp_temp_fullemms
-      
+     
     }
     # if the adaptation parameter uis turned on, we slowly take dg to 0 
     if (adaptation == T){
@@ -170,6 +179,7 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
       gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2101] <- gdp_temp_data1$delta_g_era[gdp_temp_data1$year < 2101]*((2100-gdp_temp_data1$year[gdp_temp_data1$year < 2101])/(2100-i))
       gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2100] <- 0 
     }
+    
     
     if (growth_past_2100 == 0){
       gdp_temp_data1$delta_g_era[gdp_temp_data1$year > 2100] <- 0
@@ -231,6 +241,7 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
       gdp_temp_data1$adj_growth <- (gdp_temp_data1$delta_g_era + gdp_temp_data1$diff_lgdp_for_damages)
       
     }
+    
     if (temp_dataset == "CRU"){
       gdp_temp_data1$delta_g_cru <- unlist(gdp_temp_data1$delta_g_cru)
       # now let us calculate adjusted growht rate by adding deltaG to observed growth
@@ -257,11 +268,19 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
       dplyr::mutate(cum_adj_growthz = cumprod(adj_growth),
                     cum_growth_real = cumprod(diff_lgdp_for_damages))
     
+    damages_i_t4_usa <- subset(damages_i_t4, ISO3 == "USA")
+
+    
+    
     # finally compute edamages...
+    #damages_i_t4$cum_adj_growthz <- round(damages_i_t4$cum_adj_growthz, 13)
+    #damages_i_t4$cum_growth_real <- round(damages_i_t4$cum_growth_real, 13)
+    
     damages_i_t4 <- damages_i_t4 %>% 
       dplyr::mutate(gdp_noemms = (gdp_year * cum_adj_growthz),
                     gdp_ssp370 = (gdp_year * cum_growth_real),
                     damages = gdp_noemms - gdp_ssp370)
+    
     
     damages_i_t4 <- ungroup(damages_i_t4)
     
@@ -312,6 +331,7 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
                     gdp_noemms_scld = gdp_noemms *SP.POP.TOTL,
                     gdp_ssp370_scld = gdp_ssp370 *SP.POP.TOTL)
     
+    sum(damages_i_t4$weighted_damages1_scld, na.rm = T)
     damages_i_t4$emitter <- i
     
     toc()
@@ -324,3 +344,6 @@ calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps,
 }
 
 # end of script
+
+
+
