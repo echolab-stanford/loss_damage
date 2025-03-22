@@ -36,7 +36,7 @@ setwd("~/GitHub/loss_damage")
 #}
 
 # set up run_date
-run_date <- "loss_damage_r1"
+run_date <- "loss_damage_r1_replication_v2"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 # for numbers display... 
@@ -80,7 +80,7 @@ damages_per_1tco2yr <- readRDS(paste0(output_path, "/total_damages_1tco2_k80.rds
 
 # NOTE: 11/2024 addition: add the run with total uncertainty to exctract the 
 # spread statistics 
-damages_uncert_list <- list.files(path = paste0(dirname(output_path), "/20241119/"), 
+damages_uncert_list <- list.files(path = paste0(output_path, "/20241119/"), 
                                   pattern = "scc", 
                                   full.names = T)
 listofdfs_2dr <- list()
@@ -1120,7 +1120,7 @@ individual_beh_emms2_2100$total_debt_cum_2021_2100 <- individual_beh_emms2_2100$
 #individual_beh_emms2_2100$total_debt_cum_2020 <- individual_beh_emms2_2100$total_debt_cum_2020 / 1000000000 
 
 # alright data is ready for plotting 
-run_date <- "loss_damage_r1"
+run_date <- "loss_damage_r1_replication_v2"
 write_rds(total_carb_majors_ex3, paste0(fig_prepped_dta, run_date,"/carbon_debt_majors_hist.rds"))
 write_rds(total_carb_majors_scp1_ex3, paste0(fig_prepped_dta, run_date,"/carbon_debt_majors_hist_scp1.rds"))
 #write_rds(total_carb_majors_scp3_ex3, paste0(fig_prepped_dta, run_date,"/carbon_debt_majors_hist_scp3.rds"))

@@ -13,7 +13,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "loss_damage_r1/20240311"
+run_date <- "loss_damage_r1_replication_v2/20240311"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -172,7 +172,7 @@ listofdfs <- list(totals_2100g_2dr,
                   totals_noi_2dr,
                   totals_noi_ramsey)
 
-run_date <- "loss_damage_r1"
+run_date <- "loss_damage_r1_replication_v2"
 # write that list into directory 
 save(listofdfs, file = paste0(fig_prepped_dta, run_date, "/listof_scc_est_dfs_fig2e.RData"))
 

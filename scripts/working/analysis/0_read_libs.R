@@ -6,11 +6,19 @@
 #remove(list=ls())
 
 #Let us list the packages we are going to need throughout
+# packs_including_retired <- c("chron","countrycode","cowplot","data.table","doParallel","dplyr",
+#            "foreach","ggalluvial","ggthemes","gt","gtable","hrbrthemes","lubridate",  
+#            "maptools","maptools", "maptools","MetBrewer","MetBrewer","ncdf4",
+#            "parallel","plyr","raster","RColorBrewer","readxl","reshape","rgdal", 
+#            "rgeos","scales","scales","scales","sf","shadowtext","sp","spData",  
+#            "statar","terra","tictoc","tidyr","tidyverse","tmap","wbstats","WDI",
+#            "zoo")
+
 packs <- c("chron","countrycode","cowplot","data.table","doParallel","dplyr",
-           "foreach","ggalluvial","ggthemes","gt","gtable","hrbrthemes","lubridate",  
-           "maptools","maptools", "maptools","MetBrewer","MetBrewer","ncdf4",
-           "parallel","plyr","raster","RColorBrewer","readxl","reshape","rgdal", 
-           "rgeos","scales","scales","scales","sf","shadowtext","sp","spData",  
+           "foreach","ggalluvial","ggthemes","gt","gtable","hrbrthemes","lubridate",
+           "MetBrewer","MetBrewer","ncdf4",
+           "parallel","plyr","raster","RColorBrewer","readxl","reshape"
+           ,"scales","scales","scales","sf","shadowtext","sp","spData",  
            "statar","terra","tictoc","tidyr","tidyverse","tmap","wbstats","WDI",
            "zoo")
 

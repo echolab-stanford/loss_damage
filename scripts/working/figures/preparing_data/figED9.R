@@ -16,7 +16,7 @@ setwd("~/GitHub/loss_damage")
 #  run_date <- gsub("-","",Sys.Date())
 #}
 
-run_date <- "loss_damage_r1_mustafa_rep_temp"
+run_date <- "loss_damage_r1_replication_v2"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -214,7 +214,7 @@ ex <- ex %>% dplyr::select(c("pulse", "hd_actual", "hd_pct", "fd_actual", "fd_pc
 #ex <- ex[-1:-2,]
 
 # write out ex 
-run_date <- "loss_damage_r1"
+run_date <- "loss_damage_r1_replication_v2"
 setwd("~/GitHub/loss_damage/")
 write_rds(ex, paste0(getwd(), "/data/figures/",run_date, "/damages_under_diff_marginals.rds"))
 
@@ -227,7 +227,7 @@ figed9b <- as.data.frame(data_frame(scenario = c("baseline", "90% of emissions",
                                         ((sum(usa_damages_50pct$weighted_damages2[usa_damages_50pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26),
                                         ((sum(usa_damages_70pct$weighted_damages2[usa_damages_70pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26))))
 # write out teh table 
-run_date <- "loss_damage_r1"
+run_date <- "loss_damage_r1_replication_v2"
 setwd("~/GitHub/loss_damage/")
 write_rds(figed8b, paste0(getwd(), "/data/figures/",run_date, "/damages_under_diff_baseline_scenarios.rds"))
 

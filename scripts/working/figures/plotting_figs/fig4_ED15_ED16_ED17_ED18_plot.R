@@ -7,13 +7,14 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "loss_damage_r1"
+run_date <- "loss_damage_r1_replication_v2"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
 # establish a function
 `%not_in%` <- purrr::negate(`%in%`)
 
+test
 #run_date <- "20240314"
 ################################################################################
 ################################################################################
@@ -84,21 +85,11 @@ sankey_k90 <- ggplot(damages_and_benefits_k90,
   labs(y="Benefits from warming ($USD)                                  Damages from warming ($USD)", x="") +
   scale_x_discrete(limits = c("owing_real", "owed_to_real"),
                    labels=c("owing_real"="Emitter", "owed_to_real"="Recipient")) + 
-  geom_text(stat="stratum", aes(label=as.character(stratum)), size=9)
+  geom_text(stat="stratum", aes(label=as.character(stratum)), size=9) + 
 
   geom_text(stat="stratum", aes(label=ifelse(after_stat(deposit)%not_in%label_out_rect_k90 &after_stat(deposit)%in%label_out_rect_right_k90,
                                              as.character(after_stat(stratum)),"")),
-            size=9) +  ggrepel::geom_text_repel(
-              stat="stratum", 
-              aes(label=ifelse(after_stat(deposit)%in%label_out_rect_k90,
-                               as.character(after_stat(stratum)),"")),
-              nudge_x = -0.5,
-              direction="y",
-              hjust=-0.06,
-              segment.curvature = 1e-20,
-              segment.color = "gray80",
-              size=9
-            ) +
+            size=9) +  
   ggrepel::geom_text_repel(
     stat="stratum", 
     aes(label=ifelse(after_stat(deposit)%not_in%label_out_rect_right_k90,

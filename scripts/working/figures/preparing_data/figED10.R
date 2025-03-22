@@ -20,7 +20,8 @@ setwd("~/GitHub/loss_damage")
 #  run_date <- gsub("-","",Sys.Date())
 #}
 
-run_date <- "loss_damage_r1_mustafa_rep_temp"
+run_date <- "loss_damage_r1_replication_v2"
+
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -42,6 +43,44 @@ scc_2100_adaptation <- readRDS(paste0(output_path, "/scc_2100_adaptation.rds"))
 scc_2300_adaptation <- readRDS(paste0(output_path, "/scc_2300_adaptation.rds"))
 scc_2100_2100_5lag_adaptation <- readRDS(paste0(output_path, "/scc_2100_2100_5lag_adaptation.rds"))
 scc_2300_2100_5lag_adaptation <- readRDS(paste0(output_path, "/scc_2300_2100_5lag_adaptation.rds"))
+
+#############################################################################
+#############################################################################
+# read data 
+
+
+
+# 
+# setwd("~/GitHub/loss_damage")
+# 
+# 
+# run_date <- "loss_damage_r1"
+# # read in the needed libraries 
+# source("scripts/working/analysis/0_read_libs.R")
+# setwd(dropbox_path)
+# 
+# scc_2300_1pct_growth1 <- readRDS(paste0(output_path,   "/scc_2300_1pct_growth.rds"))
+# scc_2300_2pct_growth1 <- readRDS(paste0(output_path,   "/scc_2300_2pct_growth.rds"))
+# scc_2300_clamped_growth1 <- readRDS(paste0(output_path,"/scc_2300_clamped_growth.rds"))
+# scc_2300_2100_5lag1 <- readRDS(paste0(output_path,      "/scc_2300_2100_5lag.rds"))
+# scc_2300_2100_5lag_nog1 <- readRDS(paste0(output_path,      "/scc_2300_2100_5lag_nog.rds"))
+# scc_2100_2100_5lag1 <- readRDS(paste0(output_path,      "/scc_2100_2100_5lag.rds"))
+# scc_2300_nog_post_21001 <- readRDS(paste0(output_path, "/scc_2300_nog_post_2100.rds"))
+# scc_2300_2100_growth1 <- readRDS(paste0(output_path,   "/scc_2300_2100_growth.rds"))
+# scc_21001 <- readRDS(paste0(output_path, "/scc_2100.rds"))
+# scc_2100_adaptation1 <- readRDS(paste0(output_path, "/scc_2100_adaptation.rds"))
+# scc_2300_adaptation1 <- readRDS(paste0(output_path, "/scc_2300_adaptation.rds"))
+# scc_2100_2100_5lag_adaptation1 <- readRDS(paste0(output_path, "/scc_2100_2100_5lag_adaptation.rds"))
+# scc_2300_2100_5lag_adaptation1 <- readRDS(paste0(output_path, "/scc_2300_2100_5lag_adaptation.rds"))
+# 
+# all.equal(scc_2300_1pct_growth1, scc_2300_1pct_growth)
+# 
+# 
+
+
+
+
+
 
 #############################################################################
 #############################################################################
@@ -181,7 +220,7 @@ ex$regression_model[11] <- "0-lag model"
 ex$regression_model[12] <- "0-lag model"
 
 # ok ready to plot 
-run_date <- "loss_damage_r1"
+run_date <- "loss_damage_r1_replication_v2"
 write_rds(ex, paste0(fig_prepped_dta, run_date, "/scc_under_diff_scenarios.rds"))
 
 # end of script 

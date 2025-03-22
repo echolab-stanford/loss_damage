@@ -7,7 +7,7 @@ remove(list=ls())
 gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
-run_date <- "loss_damage_r1"
+run_date <- "loss_damage_r1_replication_v2"
 
 #replicate <- F# change T to F if you want to create your own data  
 #if (replicate == T){
@@ -19,7 +19,7 @@ run_date <- "loss_damage_r1"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
-run_date <- "loss_damage_r1"
+run_date <- "loss_damage_r1_replication_v2"
 
 setwd("~/BurkeLab Dropbox/projects/loss_damage")
 
@@ -27,7 +27,7 @@ getwd()
 #############################################################################
 #############################################################################
 # read data in chuncks to not overwhelm R
-list_files <- list.files(path = paste0(getwd(),"/data/output/loss_damage_r1/20240311_6"),
+list_files <- list.files(path = paste0(getwd(),"/data/output/loss_damage_r1_replication_v2/20240311_6"),
                          pattern = "scc_", 
                          full.names = T)
 # 1st chunk

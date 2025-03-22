@@ -23,7 +23,7 @@ setwd("~/GitHub/loss_damage")
 #  run_date <- gsub("-","",Sys.Date())
 #}
 
-run_date <- "loss_damage_r1"
+run_date <- "loss_damage_r1_replication_v2"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -37,6 +37,7 @@ total_damages_k80 <- readRDS(paste0(output_path, "/total_damages_k80_v2022.rds")
 total_damages_k90_prod <- readRDS(paste0(output_path, "/total_damages_k90_prod_v2022.rds"))
 total_damages_k90_consump <- readRDS(paste0(output_path, "/total_damages_k90_consump_v2022.rds"))
 total_damages_k60 <- readRDS(paste0(output_path, "/total_damages_k60_v2022.rds"))
+
 
 #############################################################################
 #############################################################################
@@ -279,7 +280,7 @@ prep_data_for_sankey <- function(dataset){
   
   if (min(dataset$year) == 1980){
     damages_and_benefits_transfers2a <- damages_and_benefits_transfers2a %>% 
-      dplyr::mutate(stratum = ordered(stratum, levels=c(damages_transfers2_owing$owing_real,
+      dplyr::mutate(stratum = ordered(stratum, levels= c(damages_transfers2_owing$owing_real,
                                                         as.character(unique(damages_and_benefits_transfers2a$stratum)[40]),
                                                         as.character(unique(damages_and_benefits_transfers2a$stratum)[1]),
                                                         as.character(unique(damages_and_benefits_transfers2a$stratum)[17]),
@@ -292,7 +293,7 @@ prep_data_for_sankey <- function(dataset){
   }
   if (min(dataset$year) == 1990 | min(dataset$year) == 1960){
     damages_and_benefits_transfers2a <- damages_and_benefits_transfers2a %>% 
-      dplyr::mutate(stratum = ordered(stratum, levels=c(damages_transfers2_owing$owing_real,
+      dplyr::mutate(stratum = ordered(stratum, levels= c(damages_transfers2_owing$owing_real,
                                                         as.character(unique(damages_and_benefits_transfers2a$stratum)[40]),
                                                         as.character(unique(damages_and_benefits_transfers2a$stratum)[1]),
                                                         as.character(unique(damages_and_benefits_transfers2a$stratum)[17]),

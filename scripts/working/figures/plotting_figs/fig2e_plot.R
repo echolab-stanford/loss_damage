@@ -12,7 +12,7 @@ sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
 # set up the run_date
-run_date <- "loss_damage_r1"
+run_date <- "loss_damage_r1_replication_v2"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")

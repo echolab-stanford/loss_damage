@@ -5,12 +5,31 @@
 # Edited: June 2023
 #############################################################################
 
+
+# scc_2100_2300_adaptation <- calculate_damages_pulse(median_raster,
+#                                                     fair_exps_1tco2_2300_k90,
+#                                                     2020,
+#                                                     1990,
+#                                                     future_forecast_ssp370_2300,
+#                                                     gdp_temp_data_k90_2300,
+#                                                     "ERA", 
+#                                                     bhm_era_reg,
+#                                                     F, 
+#                                                     "no",
+#                                                     "no",
+#                                                     2020, 
+#                                                     T)
+# 
+# experiment_df <- fair_exps_1tco2_2300_k90
+
 calculate_damages_pulse <- function(ratio_raster, experiment_df, list_of_exps, 
                                     year_k, future_forecast, gdp_temp_dataset, 
                                     temp_dataset, bhm_model, bootstrapped, 
                                     clamping, growth_past_2100, settlement_year, 
                                     adaptation){
   tic()
+  
+  
   #read raster data for warming ratio 
   deltat_df <- exactextractr::exact_extract(ratio_raster, 
                                             st_as_sf(world),

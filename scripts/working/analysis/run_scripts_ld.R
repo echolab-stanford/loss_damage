@@ -25,7 +25,7 @@ sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
 #ADJUST THE RUN_DATE BEFORE RUNNING THE SCRIPT 
-run_date <- "loss_damage_r1_mustafa_rep_temp"
+run_date <- "loss_damage_r1_replication_v2"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
@@ -770,7 +770,7 @@ total_damages_k80 <- calculate_bidamages_bilateral(median_raster,
 
 
 # write teh dataframe in to the output arm of teh directory 
-#write_rds(total_damages_k80, paste0(output_path, "/total_damages_k80_v2022.rds"))
+write_rds(total_damages_k80, paste0(output_path, "/total_damages_k80_v2022.rds"))
 
 ################################################################################ fig4
 # now let us do k = 1990 
@@ -785,7 +785,7 @@ total_damages_k90 <- calculate_bidamages_bilateral(median_raster,
                                                    2020)
 
 # write the dataframe
-#write_rds(total_damages_k90, paste0(output_path, "/total_damages_k90_v2022.rds"))
+write_rds(total_damages_k90, paste0(output_path, "/total_damages_k90_v2022.rds"))
 
 ################################################################################ figED17
 # now let us just do consumption emissions 
@@ -799,7 +799,7 @@ total_damages_k90_consump <- calculate_bidamages_bilateral(median_raster,
                                                    gdp_temp_data_k90_2020,
                                                    bhm_era_reg_5lag,
                                                    2020)
-#write_rds(total_damages_k90_consump, paste0(output_path, "/total_damages_k90_consump_v2022.rds"))
+write_rds(total_damages_k90_consump, paste0(output_path, "/total_damages_k90_consump_v2022.rds"))
 
 ################################################################################ figED18
 # now let us just do production emissions 
