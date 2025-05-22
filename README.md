@@ -16,6 +16,15 @@ You can use your PC to generate temperature changes from the FaIR model. In orde
 # Workflow
 
 ## 1. Generating changes in temperature from FaIR
+In this step we generate the temperature changes under the full emissions scenario (historical emissions) and the preturbed emissions scenario using the FaIR v2.0 model (Finite Amplitude Impulse Response simple climate model). Below are the detailed steps for installing FaIR and generating the temperature changes due to preturbed scenarios.
+### a. Installing FaIR 
+### b. Generating full vs preturbed scenarios
+#### I. 
+#### II.
+#### III. 
+#### IV. 
+#### V. 
+
 ## 2. Generating the global warming ratio 
 ## 3. Generating country-year level dataset
 ## 4. Generating BHM model coeffecients under different models
