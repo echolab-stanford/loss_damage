@@ -23,7 +23,7 @@ To install fair, navigate to [~/FaIR/install_fair.ipynb](https://github.com/echo
 
 #### b. Generating full vs preturbed scenarios
 Now that you have installed FaIR, you can import it in other scripts and call the functions for the various scenarios
-###### I. 1 GtCO<sub>2<sub>/tCO<sub>2<sub> experiment ([2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb))
+###### I. 1 GtCO<sub>2</sub>/tCO<sub>2</sub> experiment ([2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb))
 ###### II. country-level historical emissions preturbation (1990, 1980, and 1960 start years)
 ###### III. carbon capture experiment
 ###### IV. marginal emissions preturbation experiment
