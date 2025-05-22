@@ -3,7 +3,8 @@ A Repo supporting project on estimating global loss and damage from emissions. T
 
 # Description
 
-The code workflow for the paper is divided into 5 main steps.
+In a borad sense, the workflow incorporates the simulation and estimation of three general processes. 1) temperature changed due to preturbed emissions, 2) local warming ratio globally, 3) temperature-growth response function, and 4) generating country-year level dataset of temperature changes and growth impacts. The aformentioned steps allow us then to calculate hoistorical and/or future damages due to historical emissions. The code workflow for the paper is divided into 5 main steps.
+
 1. Generating changes in temperature due to full emissions scenario (current historical emissions) and preturbed emissions using the FaIR model.
 2. generating the global warming ratio (at the pixel level) using the CGM models.
 3. generating country-year level datasets with temperature under full emissions and under preturbed emissions. 
