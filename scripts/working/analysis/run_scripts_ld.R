@@ -13,7 +13,7 @@
 # output(s): country-year panel with total damages from different emissions 
 # perturbations (past and future), emitter-harmed-year panel for bilateral 
 # damages, 
-# Last edited: November 2024
+# Last edited: May 2025
 ##############################################################################
 
 ################################################################################
@@ -46,6 +46,7 @@ source("scripts/working/analysis/3c0_calc_total_damages_bilateral.R")
 source("scripts/working/analysis/3c1_calc_total_damages.R")
 source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
 source("scripts/working/analysis/3c2i_calc_total_damages_lags.R")
+source("scripts/working/analysis/3c2ii_calc_total_damages_5lags_w_rebound.R")
 
 # let us set the path so we can read in the input data 
 setwd(dropbox_path)
@@ -190,7 +191,7 @@ fair_exps_1gtco2_disagg_k80_2100 <- process_disagg_exp_data("20230821","1tCO2_hi
 # years after emitting it
 fair_exps_cc <- process_exp_data_hist_fut("20230822", "cc_hist", 2020, aggregating = T) # figED19cd
 # we will need this data saved for plotting figED19
-write_rds(fair_exps_cc, paste0(output_path, "/fair_exps_cc.rds"))
+#write_rds(fair_exps_cc, paste0(output_path, "/fair_exps_cc.rds"))
 
 ################ Experiment (Country-level emissions): #################
 # this experiment is to estimate the country level damages attributed to each 
@@ -1195,5 +1196,35 @@ total_damages_cc <- calculate_damages_pulse(median_raster,
 
 # write the dataframe into the output arm of the directory
 write_rds(total_damages_cc, paste0(output_path, "/total_damages_cc.rds"))
+
+#################### 1GtCO2/tCO2yr experiment with rebound ##################### figED10
+
+scc_w_10_year_rebound <- calculate_damages_pulse_5lag_w_rebound(median_raster, 
+                                                                fair_exps_1gtco2_2100_k90,
+                                                                2020,
+                                                                1990,
+                                                                future_forecast_ssp370,
+                                                                gdp_temp_data_5lags_2100,
+                                                                "ERA",2020,F,
+                                                                F,F,10)
+#write_rds(scc_w_10_year_rebound, paste0(output_path, "/scc_w_10_year_rebound.rds"))
+scc_w_5_year_rebound <- calculate_damages_pulse_5lag_w_rebound(median_raster, 
+                                                               fair_exps_1gtco2_2100_k90,
+                                                               2020,
+                                                               1990,
+                                                               future_forecast_ssp370,
+                                                               gdp_temp_data_5lags_2100,
+                                                               "ERA",2020,F,
+                                                               F,F,5)
+#write_rds(scc_w_5_year_rebound, paste0(output_path, "/scc_w_5_year_rebound.rds"))
+scc_w_20_year_rebound <- calculate_damages_pulse_5lag_w_rebound(median_raster, 
+                                                                fair_exps_1gtco2_2100_k90,
+                                                                2020,
+                                                                1990,
+                                                                future_forecast_ssp370,
+                                                                gdp_temp_data_5lags_2100,
+                                                                "ERA",2020,F,
+                                                                F,F,20)
+#write_rds(scc_w_20_year_rebound, paste0(output_path, "/scc_w_20_year_rebound.rds"))
 
 # end of script 

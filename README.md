@@ -3,7 +3,15 @@ A Repo supporting project on estimating global loss and damage from emissions. T
 
 # Description
 
+The code workflow for the paper is divided into 5 main steps.
+1. Generating changes in temperature due to full emissions scenario (current historical emissions) and preturbed emissions using the FaIR model.
+2. generating the global warming ratio (at the pixel level) using the CGM models.
+3. generating country-year level datasets with tempoerature under full emissions and under preturbed emissions. 
+4. generating BHM model coeffecients under different models (0-lag, 5-lag, etc.).
+5. computing discounted damages under preturbed scenario. 
+
 ## User suitability 
+You can use your PC to generate temperature changes from the FaIR model. In order to generate the numbers reported in figures (), we suggest using a remote server with the required number of CPUs. 
 
 ## Folders 
 
