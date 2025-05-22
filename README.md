@@ -3,7 +3,7 @@ A Repo supporting project on estimating global loss and damage from emissions. T
 
 # Description
 
-In a borad sense, the workflow incorporates the simulation and estimation of three general processes. 1) temperature changed due to preturbed emissions, 2) local warming ratio globally, 3) temperature-growth response function, and 4) generating country-year level dataset of temperature changes and growth impacts. The aformentioned steps allow us then to calculate hoistorical and/or future damages due to historical emissions. The code workflow for the paper is divided into 5 main steps.
+In a borad sense, the workflow incorporates the simulation and estimation of three general processes. **1) temperature changed due to preturbed emissions**, **2) local warming ratio globally**, **3) temperature-growth response function**, and **4) generating country-year level dataset of temperature changes and growth impacts**. The aformentioned steps allow us then to calculate hoistorical and/or future damages due to historical emissions. The code workflow for the paper is divided into 5 main steps.
 
 1. Generating changes in temperature due to full emissions scenario (current historical emissions) and preturbed emissions using the FaIR model.
 2. generating the global warming ratio (at the pixel level) using the CGM models.
@@ -18,13 +18,16 @@ You can use your PC to generate temperature changes from the FaIR model. In orde
 
 ## 1. Generating changes in temperature from FaIR
 In this step we generate the temperature changes under the full emissions scenario (historical emissions) and the preturbed emissions scenario using the FaIR v2.0 model (Finite Amplitude Impulse Response simple climate model). Below are the detailed steps for installing FaIR and generating the temperature changes due to preturbed scenarios.
-### a. Installing FaIR 
-### b. Generating full vs preturbed scenarios
-#### I. 
-#### II.
-#### III. 
-#### IV. 
-#### V. 
+#### a. Installing FaIR 
+To install fair, navigate to [~/FaIR/install_fair.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/Install_fair%20.ipynb). Make sure [~/FaIR/REQUIREMENTS.txt](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/REQUIREMENTS.txt) is in your repository before running the install_fair.ipynb script. 
+
+#### b. Generating full vs preturbed scenarios
+Now that you have installed FaIR, you can import it in other scripts and call the functions for the various scenarios
+###### I. 
+###### II.
+###### III. 
+###### IV. 
+###### V. 
 
 ## 2. Generating the global warming ratio 
 ## 3. Generating country-year level dataset
