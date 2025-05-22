@@ -11,11 +11,9 @@ The code workflow for the paper is divided into 5 main steps.
 5. computing discounted damages under preturbed scenario. 
 
 ## User suitability 
-You can use your PC to generate temperature changes from the FaIR model. In order to generate the numbers reported in figures (), we suggest using a remote server with the required number of CPUs. 
+You can use your PC to generate temperature changes from the FaIR model. In order to generate the numbers reported in figures (), we suggest using a remote server with the required number of CPUs. The software needed to process and analyze the data are R and Python. Rstudio Version 2024.12.1+563 (2024.12.1+563) was used for teh R scripts, and Jupyter Notebook (via Anacondda base environment) was used for the Python part of the scripts.
 
-# Set up 
-
-## Python and R
+# Workflow
 
 ## 1. Generating changes in temperature from FaIR
 ## 2. Generating the global warming ratio 
