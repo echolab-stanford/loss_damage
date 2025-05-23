@@ -16,20 +16,33 @@ You can use your PC to generate temperature changes from the FaIR model. In orde
 
 # Workflow
 
-## 1. Generating changes in temperature from FaIR
+## 0. Preamble
+
+To install and call the needed libraries to call user-created functions, and to set up the directories for processed data and outputted data ([0_read_libs.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/0_read_libs.R)).
+
+
+## 1. Generating the global warming ratio 
+In this step, we generate a global spatially continuous dataset of warming ratio under a list of 30 GCMs. The warming ratio is calculated by dividing the change in temperature in a given pixel by the global change in temperature per the GCM. Finally, we take the median value across all GCMs. This pixel level ratio then is agrgegated to the country level by taking the population weighted average. You can navigate to teh script ([1_r_cgm.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/1_r_cgm.R)).
+
+## 2. Generating changes in temperature from FaIR
 In this step we generate the temperature changes under the full emissions scenario (historical emissions) and the preturbed emissions scenario using the FaIR v2.0 model (Finite Amplitude Impulse Response simple climate model). Below are the detailed steps for installing FaIR and generating the temperature changes due to preturbed scenarios.
+
+**NOTE**: To generate the below temperature change responses to emissions preturbation, we generate 1000 runs with random combinations of parameter values sampled from established distribution in the literature (see: Ashwin et al, 2019). We have sampled from teh distribution and saved the sampled paramteres to be used across teh different scripts. The specific file can be accessed here ()
+
 #### a. Installing FaIR 
-To install fair, navigate to [~/FaIR/install_fair.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/Install_fair%20.ipynb). Make sure [~/FaIR/REQUIREMENTS.txt](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/REQUIREMENTS.txt) is in your repository before running the install_fair.ipynb script. 
+To install fair, navigate to [install_fair.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/Install_fair%20.ipynb). Make sure [REQUIREMENTS.txt](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/REQUIREMENTS.txt) is in your repository before running the install_fair.ipynb script. 
 
 #### b. Generating full vs preturbed scenarios
 Now that you have installed FaIR, you can import it in other scripts and call the functions for the various scenarios
 ###### I. 1 GtCO<sub>2</sub>/tCO<sub>2</sub> experiment ([2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb))
-###### II. country-level historical emissions preturbation (1990, 1980, and 1960 start years)
-###### III. carbon capture experiment
-###### IV. marginal emissions preturbation experiment
+- related figures ()
+###### II. country-level historical emissions preturbation (1990, 1980, and 1960 start years) ([2_calc_FaIR_deltat_bilateral.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_bilateral.ipynb))
+- related figures ([fig4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig4.pdf), [figED15](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig4.pdf), figED16, figED17, figED18)
+###### III. carbon capture experiment ([2_calc_FaIR_deltat_cc.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_cc.ipynb)) 
+- related figures ()
+###### IV. marginal emissions preturbation experiment ([2_calc_pulse_marginals.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_pulse_marginals.ipynb))
+- related figures ()
 
-
-## 2. Generating the global warming ratio 
 ## 3. Generating country-year level dataset
 ## 4. Generating BHM model coeffecients under different models
 ## 5. Computing discounted damages 
