@@ -3,16 +3,16 @@ A Repo supporting project on estimating global loss and damage from emissions. T
 
 # Description
 
-In a borad sense, the workflow incorporates the simulation and estimation of three general processes. **1) temperature changed due to preturbed emissions**, **2) local warming ratio globally**, **3) temperature-growth response function**, and **4) generating country-year level dataset of temperature changes and growth impacts**. The aformentioned steps allow us then to calculate hoistorical and/or future damages due to historical emissions. The code workflow for the paper is divided into 5 main steps.
+Broadly, the workflow incorporates the simulation and estimation of three general processes. **1) temperature changed due to preturbed emissions**, **2) local warming ratio globally**, **3) temperature-growth response function**, and **4) generating country-year level dataset of temperature changes and growth impacts**. The aformentioned steps allow us then to calculate hoistorical and/or future damages due to historical emissions. The code workflow for the paper is divided into 5 main steps.
 
-1. Generating changes in temperature due to full emissions scenario (current historical emissions) and preturbed emissions using the FaIR model.
-2. generating the global warming ratio (at the pixel level) using the CGM models.
+1. generating the global warming ratio (at the pixel level) using the CGM models.
+2. Generating changes in temperature due to full emissions scenario (current historical emissions) and preturbed emissions using the FaIR model.
 3. generating country-year level datasets with temperature under full emissions and under preturbed emissions. 
-4. generating BHM model coeffecients under different models (0-lag, 5-lag, etc.).
+4. generating BHM model coeffecients under different models (5-lag, levels model with rebound).
 5. computing discounted damages under preturbed scenario. 
 
 ## User suitability 
-You can use your PC to generate temperature changes from the FaIR model. In order to generate the numbers reported in figures (), we suggest using a remote server with the required number of CPUs. The software needed to process and analyze the data are R and Python. Rstudio Version 2024.12.1+563 (2024.12.1+563) was used for teh R scripts, and Jupyter Notebook (via Anacondda base environment) was used for the Python part of the scripts.
+You can use your PC to generate temperature changes from the FaIR model. In order to generate the numbers reported in figures (), we suggest using a remote server with the required number of CPUs. The software needed to process and analyze the data are R and Python. Multuple Rstudio Versions were used (the latest being 2024.12.1+563 (2024.12.1+563)) for the R scripts, and Jupyter Notebook (via Anacondda base environment) was used for the Python part of the scripts.
 
 # Workflow
 
@@ -27,23 +27,45 @@ In this step, we generate a global spatially continuous dataset of warming ratio
 ## 2. Generating changes in temperature from FaIR
 In this step we generate the temperature changes under the full emissions scenario (historical emissions) and the preturbed emissions scenario using the FaIR v2.0 model (Finite Amplitude Impulse Response simple climate model). Below are the detailed steps for installing FaIR and generating the temperature changes due to preturbed scenarios.
 
-**NOTE**: To generate the below temperature change responses to emissions preturbation, we generate 1000 runs with random combinations of parameter values sampled from established distribution in the literature (see: Ashwin et al, 2019). We have sampled from teh distribution and saved the sampled paramteres to be used across teh different scripts. The specific file can be accessed here ()
+**NOTE**: To generate the below temperature change responses to emissions preturbation, we generate 1000 runs with random combinations of parameter values sampled from established distribution in the literature (see: Ashwin et al, 2019). We have sampled from teh distribution and saved the sampled paramteres to be used across teh different scripts. The specific file can be accessed here (dropbox link)
 
 #### a. Installing FaIR 
 To install fair, navigate to [install_fair.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/Install_fair%20.ipynb). Make sure [REQUIREMENTS.txt](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/REQUIREMENTS.txt) is in your repository before running the install_fair.ipynb script. 
 
 #### b. Generating full vs preturbed scenarios
 Now that you have installed FaIR, you can import it in other scripts and call the functions for the various scenarios
-###### I. 1 GtCO<sub>2</sub>/tCO<sub>2</sub> experiment ([2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb))
+###### I.  ([2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb))
+1 GtCO<sub>2</sub>/tCO<sub>2</sub> experiment. This experiment is used to generate temperature changed due to GtCO<sub>2</sub> or tCO<sub>2</sub> preturbation to historical emissions. The preturbation is taken from each year between 1990 and 2020. The temperature changes generated from preturbing 2020 emissions is used to calculate the SCC (Social Cost of Carbon).
+
 - related figures ()
-###### II. country-level historical emissions preturbation (1990, 1980, and 1960 start years) ([2_calc_FaIR_deltat_bilateral.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_bilateral.ipynb))
+###### II.([2_calc_FaIR_deltat_bilateral.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_bilateral.ipynb))
+country-level historical emissions preturbation (1990, 1980, and 1960 start years) 
 - related figures ([fig4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig4.pdf), [figED15](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig4.pdf), figED16, figED17, figED18)
-###### III. carbon capture experiment ([2_calc_FaIR_deltat_cc.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_cc.ipynb)) 
+###### III. ([2_calc_FaIR_deltat_cc.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_cc.ipynb))
+carbon capture experiment  
 - related figures ()
-###### IV. marginal emissions preturbation experiment ([2_calc_pulse_marginals.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_pulse_marginals.ipynb))
+###### IV. ([2_calc_pulse_marginals.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_pulse_marginals.ipynb))
+marginal emissions preturbation experiment 
 - related figures ()
 
+#### c. Calculating the change in temperature between both scenarios
+Now that we have generated the annual change in temperature in our historical full emissions scenario and our preturbed scenario, we can take the median change in temperature between 
+
+###### I. ([2a_FaIR_deltaT_hist.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/2a_FaIR_deltaT_hist.R)) 
+###### II. ([2b_FaIR_deltaT_hist_fut.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/2b_FaIR_deltaT_hist_fut.R))
+###### III. ([2c_FaIR_deltaT_hist_fut_disagg.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/2c_FaIR_deltaT_hist_fut_disagg.R)) 
+
 ## 3. Generating country-year level dataset
+#### a.  
+###### I.
+###### II.
+#### b.  
+###### I.
+###### II.
+#### c.  
+###### I.
+###### II.
+
 ## 4. Generating BHM model coeffecients under different models
 ## 5. Computing discounted damages 
 

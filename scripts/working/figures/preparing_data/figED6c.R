@@ -1,7 +1,7 @@
 ##############################################################################
 # Mustafa Zahid, January 7th, 2023
 # This R script reads the data and prepares the necessary data to plots figure
-# ED11. Figure ED11 shwcases sources of uncertainty
+# ED6c. Figure ED6c shwcases sources of uncertainty
 #############################################################################
 remove(list=ls())
 gc()

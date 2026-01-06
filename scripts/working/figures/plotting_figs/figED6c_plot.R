@@ -1,6 +1,6 @@
 ##############################################################################
 # Mustafa Zahid, January 7th, 2023
-# This R script plots the figure ED11
+# This R script plots the figure ED6C
 #############################################################################
 remove(list=ls())
 gc()
@@ -68,7 +68,7 @@ fair_median <- median(totals_fair$total_damages)
 cgm_median <- median(totals_cgm$total_damages)
 bhm_median <- median(totals_bhm$total_damages2)
 
-pdf(paste0(getwd(),"/figures/", run_date,"/figED11.pdf"), width=12, height=6)
+pdf(paste0(getwd(),"/figures/", run_date,"/figED6C.pdf"), width=12, height=6)
 
 par(mfrow = c(1,1))
 par(mar= c(8,6,2,2))

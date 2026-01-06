@@ -1,6 +1,6 @@
 ##############################################################################
 # Mustafa Zahid, January 7th, 2023
-# This R script plots figURES 3, ED12, ED13
+# This R script plots figURES 3, S2, S3
 #############################################################################
 remove(list=ls())
 gc()
@@ -405,7 +405,7 @@ figs5b1
 unique(total_carb_majors_jet$emitter)
 ################################################################################
 ################################################################################
-# plot data FIGED11
+# plot data FIGES2
 carb_majors_spread$emitter[carb_majors_spread$emitter == "Kuwait Petroleum Corp"] <- "Kuwait Petroleum Corp ($0.05T, %1220)"
 carb_majors_spread$emitter[carb_majors_spread$emitter == "Sonatrach SPA"] <- "Sonatrach SPA ($0.04T, %1860)"
 carb_majors_spread$emitter[carb_majors_spread$emitter == "Peabody Energy Corp"] <- "Peabody Energy Corp ($0T, %21007)"
@@ -527,7 +527,7 @@ ind_beh <- ind_beh_emms %>%
              total_debt_cum_2021_2100 = "Damages 2021-2100") %>% 
   cols_align(align = "center") %>%
   gt_theme_538(table.width = px(650)) %>% 
-  gtsave(paste0(getwd(), "/figures/", run_date, "/figED11_a_w_spread.pdf"))
+  gtsave(paste0(getwd(), "/figures/", run_date, "/figS2_a_w_spread.pdf"))
 
 
 carb_majors <-  total_carb_majors_jet %>%
@@ -542,7 +542,7 @@ carb_majors <-  total_carb_majors_jet %>%
              total_debt_cum_2021_2100 = "Damages 2021-2100") %>% 
   cols_align(align = "center") %>% 
   gt_theme_538(table.width = px(650)) %>% 
-  gtsave(paste0(getwd(), "/figures/", run_date, "/figED11_c_W_spread.pdf"))
+  gtsave(paste0(getwd(), "/figures/", run_date, "/figS2_c_w_spread.pdf"))
 
 all_celebs_tot <- all_celebs_tot[1:14,]
 celeb_jets <- all_celebs_tot %>%
@@ -555,7 +555,7 @@ celeb_jets <- all_celebs_tot %>%
   cols_label(total_debt_cum = "Damages through 2100") %>% 
   cols_align(align = "center") %>% 
   gt_theme_538(table.width = px(650)) %>% 
-  gtsave(paste0(getwd(), "/figures/", run_date, "/figED11_b_w_spread.pdf"))
+  gtsave(paste0(getwd(), "/figures/", run_date, "/figS2_b_w_spread.pdf"))
 
 
 
@@ -567,9 +567,9 @@ celeb_jets <- all_celebs_tot %>%
 #                          nrow = 3)
 
 # save the figure 
-ggsave(paste0(getwd(), "/figures/", run_date, "/fig3a_new.pdf"), figS5a, width = 16, height = 8)
-ggsave(paste0(getwd(), "/figures/", run_date, "/fig3b_new.pdf"), figs5b1, width = 16, height = 8)
-ggsave(paste0(getwd(), "/figures/", run_date, "/fig3c_new.pdf"), figS5c, width = 16, height = 8)
-ggsave(paste0(getwd(), "/figures/", run_date, "/figED13.pdf"), figS5b, width = 16, height = 8)
+ggsave(paste0(getwd(), "/figures/", run_date, "/fig3a.pdf"), figS5a, width = 16, height = 8)
+ggsave(paste0(getwd(), "/figures/", run_date, "/fig3b.pdf"), figs5b1, width = 16, height = 8)
+ggsave(paste0(getwd(), "/figures/", run_date, "/fig3c.pdf"), figS5c, width = 16, height = 8)
+ggsave(paste0(getwd(), "/figures/", run_date, "/figS3.pdf"), figS5b, width = 16, height = 8)
 
 # end of script 

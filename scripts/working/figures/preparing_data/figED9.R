@@ -1,13 +1,13 @@
 ##############################################################################
-# Mustafa Zahid, August 7th, 2023
+# Mustafa Zahid, March 14, 2024
 # This R script reads the data and prepares the necessary data to plots figure
-# ED8.
+# ED9. 
 #############################################################################
 remove(list=ls())
 gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
-
+run_date <- "loss_damage_r1"
 #replicate <- F# change T to F if you want to create your own data  
 #if (replicate == T){
 #  run_date <- "20230523"
@@ -15,223 +15,147 @@ setwd("~/GitHub/loss_damage")
 #if (replicate == F){
 #  run_date <- gsub("-","",Sys.Date())
 #}
-
-run_date <- "loss_damage_r1_mustafa_rep_temp"
-
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
-setwd(dropbox_path)
-#############################################################################
-#############################################################################
-# read data 
-## figED8a
-total_damages_1000tco2 <- readRDS(paste0(output_path,"/total_damages_1000tco2_k90_compare.rds"))
-total_damages_1mtco2 <- readRDS(paste0(output_path,"/total_damages_1mtco2_k90_compare.rds"))
-total_damages_1gtco2 <- readRDS(paste0(output_path,"/total_damages_1gtco2_k90_compare.rds"))
-total_damages_10gtco2 <- readRDS(paste0(output_path,"/total_damages_10gtco2_k90_compare.rds"))
-total_damages_100gtco2 <- readRDS(paste0(output_path,"/total_damages_100gtco2_k90_compare.rds"))
 
-## figED8b
-usa_damages_10pct <- readRDS(paste0(output_path, "/usa_damages_10pct.rds"))
-usa_damages_30pct <- readRDS(paste0(output_path, "/usa_damages_30pct.rds"))
-usa_damages_50pct <- readRDS(paste0(output_path, "/usa_damages_50pct.rds"))
-usa_damages_70pct <- readRDS(paste0(output_path, "/usa_damages_70pct.rds"))
-
-#total_damages_1000tco2 <- total_damages_1000tco2_k90
-#total_damages_1mtco2 <- total_damages_1mtco2_k90
-#total_damages_1gtco2 <- total_damages_1gtco2_k90
-#total_damages_10gtco2 <- total_damages_10gtco2_k90
-#total_damages_100gtco2 <- total_damages_100gtco2_k90
-
+run_date <- "loss_damage_r1"
+setwd("~/BurkeLab Dropbox/projects/loss_damage")
 
 #############################################################################
 #############################################################################
-################################fig ED8a#####################################
+########## read the data 
+# ok get the path to the files
+files <- list.files(paste0(getwd(), "/data/output/", run_date, "/20240228/"),
+                    pattern = "bi",
+                    full.names = T)
 
-datasets <- list(total_damages_1000tco2,
-                 total_damages_1mtco2,
-                 total_damages_1gtco2,
-                 total_damages_10gtco2,
-                 total_damages_100gtco2)
+########## we are gonna read the data in 2 chuncks
+list_files <- mclapply(files[1:500], readRDS)
+list_files2 <- mclapply(files[501:1000], readRDS)
 
-processed_datasets <- list()
-for (i in 1:length(datasets)){
-  tic()
-  dataset <- datasets[[i]] 
-  dataset <- dataset %>% 
-    dplyr::mutate(year_cat = case_when(year < 2020 ~ "1990-2020",
-                                       year >2020 ~ "2021-2100"))
-  
-  dataset <- subset(dataset, !is.na(year_cat))
-  
-  dataset <- dataset %>% 
-    dplyr::group_by(emitter, year_cat) %>% 
-    dplyr::summarise(total_damages_dr2 = sum(weighted_damages2_scld, na.rm = T),
-                     .groups= "keep")
-  dataset <- dataset %>% dplyr::select(c("year_cat", 
-                                         "emitter",
-                                         "total_damages_dr2"))
-  dataset$pulse <- i 
+# now let us rbind all of them to calculate total damages for each of the emitter - reciever pair
+master_df <- do.call(rbind, list_files)
+master_df2 <- do.call(rbind, list_files2)
 
-  processed_datasets[[i]] <- dataset
-  toc()
-}
+# ok now let us collect them into one dataframe
+gran_master_df <- rbind(master_df,
+                        master_df2)
 
-
-mother_dataset <- do.call(rbind, processed_datasets)
-
-mother_dataset <- mother_dataset %>% 
-  dplyr::mutate(pulse_exp = case_when(pulse == 1 ~ "1000tCO2",
-                                      pulse == 2 ~ "1MtCO2",
-                                      pulse == 3 ~ "1GtCO2",
-                                      pulse == 4 ~ "10GtCO2",
-                                      pulse == 5 ~ "100GtCO2"))
-
-# ok let us reshape
-mother_dataset <- mother_dataset[,-2]
-mother_dataset$id <- paste0(mother_dataset$pulse_exp, "_", mother_dataset$year_cat)
-mother_dataset <- mother_dataset[,-1]
-mother_dataset <- mother_dataset[,-3]
-mother_dataset <- mother_dataset[,-2]
-
-mother_dataset_reshaped <- melt(mother_dataset, id = c("id"))
-
-total_damages_1gtC1 <- subset(total_damages_1gtco2, emitter <=  2020 & emitter >1989)
-
-total_damages_1gtC1 <- total_damages_1gtC1 %>% 
-  dplyr::mutate(year_cat = case_when(year < 2020 ~ "1990-2020",
-                                     year >2020 ~ "2021-2100"))
-
-total_damages_by_pulse <- total_damages_1gtC1 %>% 
-  dplyr::group_by(emitter, year_cat) %>% 
-  dplyr::summarise(total_damages_dr2 = sum(weighted_damages2_scld, na.rm = T),
-                   total_damages_dr3 = sum(weighted_damages3_scld, na.rm = T),
-                   total_damages_dr5 = sum(weighted_damages5_scld, na.rm = T),
-                   total_damages_dr7 = sum(weighted_damages7_scld, na.rm = T),
-                   .groups= "keep")
-
-total_damages_by_pulse <- total_damages_by_pulse %>% dplyr::select(c("year_cat", 
-                                                                     "emitter",
-                                                                     "total_damages_dr2",
-                                                                     "total_damages_dr3",
-                                                                     "total_damages_dr5",
-                                                                     "total_damages_dr7"))
-
-ex <- data.frame(hd_actual = c(NA, NA, NA, NA, NA), 
-                 hd_comp = c(NA, NA, NA, NA, NA),
-                 hd_pct = c(NA, NA, NA, NA, NA),
-                 fd_actual = c(NA, NA, NA, NA, NA),
-                 fd_comp = c(NA, NA, NA, NA, NA),
-                 fd_pct = c(NA, NA, NA, NA, NA))
-
-ex$pulse[1] <- "1000tCO2"
-ex$pulse[2] <- "1MtCO2"
-ex$pulse[3] <- "1GtCO2"
-ex$pulse[4] <- "10GtCO2"
-ex$pulse[5] <- "100GtCO2"
-
-ex$hd_actual[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1000tCO2_1990-2020"], 0)
-ex$hd_actual[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1MtCO2_1990-2020"], 0)
-ex$hd_actual[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)
-ex$hd_actual[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "10GtCO2_1990-2020"], 0)
-ex$hd_actual[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "100GtCO2_1990-2020"], 0)
-
-ex$hd_comp[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"]*(1/1000000), 0)
-ex$hd_comp[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"]*(1/1000),0)
-ex$hd_comp[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)
-ex$hd_comp[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)*10
-ex$hd_comp[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_1990-2020"], 0)*100
-
-ex$hd_actual <- as.numeric(ex$hd_actual)
-
-ex$hd_pct <- round((ex$hd_actual/ ex$hd_comp)*100, 0)
-
-
-ex$fd_actual[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1000tCO2_2021-2100"], 0)
-ex$fd_actual[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1MtCO2_2021-2100"], 0)
-ex$fd_actual[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)
-ex$fd_actual[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "10GtCO2_2021-2100"], 0)
-ex$fd_actual[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "100GtCO2_2021-2100"], 0)
-
-ex$fd_comp[1] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"]*(1/1000000), 0)
-ex$fd_comp[2] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"]*(1/1000),0)
-ex$fd_comp[3] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)
-ex$fd_comp[4] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)*10
-ex$fd_comp[5] <- round(mother_dataset_reshaped$value[mother_dataset_reshaped$id == "1GtCO2_2021-2100"], 0)*100
-
-ex$fd_actual <- as.numeric(ex$fd_actual)
-
-ex$fd_pct <- round((ex$fd_actual/ ex$fd_comp)*100, 0)
-
-ex <- ex %>% 
-  dplyr::select(c("pulse", 
-                  "hd_actual", 
-                  "hd_comp", 
-                  "hd_pct", 
-                  "fd_actual", 
-                  "fd_comp",
-                  "fd_pct"))
-
-ex$hd_pct <- paste0(ex$hd_pct, "%")
-ex$fd_pct <- paste0(ex$fd_pct, "%")
-
-ex$hd_actual[5] <- paste0("$", as.character(round(ex$hd_actual[5]/(1000000000*100),2)))
-ex$hd_comp[5] <- paste0("$", as.character(round(ex$hd_comp[5]/(1000000000*100),2)))
-ex$fd_actual[5] <- paste0("$", as.character(round(ex$fd_actual[5]/(1000000000*100),0)))
-ex$fd_comp[5] <- paste0("$", as.character(round(ex$fd_comp[5]/(1000000000*100),0)))
-
-ex$hd_actual[4] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[4])/(1000000000*10),2)))
-ex$hd_comp[4] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[4])/(1000000000*10),2)))
-ex$fd_actual[4] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[4])/(1000000000*10),0)))
-ex$fd_comp[4] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[4])/(1000000000*10),0)))
-
-ex$hd_actual[3] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[3])/1000000000,2)))
-ex$hd_comp[3] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[3])/1000000000,2)))
-ex$fd_actual[3] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[3])/1000000000,0)))
-ex$fd_comp[3] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[3])/1000000000,0)))
-
-ex$hd_actual[2] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[2])/1000000,2)))
-ex$hd_comp[2] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[2])/1000000,2)))
-ex$fd_actual[2] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[2])/1000000,0)))
-ex$fd_comp[2] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[2])/1000000,0)))
-
-ex$hd_actual[1] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[1])/1000,2)))
-ex$hd_comp[1] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[1])/1000,2)))
-ex$fd_actual[1] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[1])/1000,0)))
-ex$fd_comp[1] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[1])/1000,0)))
-
-#ex$hd_actual[2] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[2]),0)))
-#ex$hd_comp[2] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[2]),0)))
-#ex$fd_actual[2] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[2])/1000,2)), "K")
-#ex$fd_comp[2] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[2])/1000,2)), "K")
+#############################################################################
+#############################################################################
+########## prep the data 
+# ok now we can aggregate the dataset
+#aggregated_data_pos <- gran_master_df %>% 
+#  dplyr::group_by(sim_id, emitter, ISO3) %>% 
+#  subset(.,weighted_damages2 > 0) %>% 
+#  dplyr::summarise(total_transfer_pos_damages = sum(weighted_damages2, na.rm = T))
+#summary(aggregated_data_pos$total_transfer_pos_damages/1000000000000)
+#aggregated_data_pos <- aggregated_data_pos %>% 
+#  dplyr::group_by(sim_id, emitter) %>% 
+#  dplyr::summarise(total_transfer_pos_damages = sum(total_transfer_pos_damages, na.rm = T))
+## now let us save the 95th percentile and the median 
+#aggregated_data_pos <- aggregated_data_pos %>% 
+#  dplyr::group_by(emitter) %>% 
+#  dplyr::summarise(p_05 = quantile(total_transfer_pos_damages, 0.05), 
+#                   median = median(total_transfer_pos_damages),
+#                   p_95 = quantile(total_transfer_pos_damages, 0.95))
 #
-#ex$hd_actual[1] <- paste0("$", as.character(round(as.numeric(ex$hd_actual[1]),2)))
-#ex$hd_comp[1] <- paste0("$", as.character(round(as.numeric(ex$hd_comp[1]),2)))
-#ex$fd_actual[1] <- paste0("$", as.character(round(as.numeric(ex$fd_actual[1]),0)))
-#ex$fd_comp[1] <- paste0("$", as.character(round(as.numeric(ex$fd_comp[1]),0)))
+# ok now we can aggregate the dataset
+aggregated_data_neg <- gran_master_df %>% 
+  subset(.,weighted_damages2 <0) %>% 
+  dplyr::group_by(sim_id, emitter, ISO3) %>% 
+  dplyr::summarise(total_transfer_neg_damages = sum(weighted_damages2, na.rm = T))
+aggregated_data_neg <- aggregated_data_neg %>% 
+  dplyr::group_by(sim_id, emitter) %>% 
+  dplyr::summarise(total_transfer_neg_damages = sum(total_transfer_neg_damages, na.rm = T))
 
-ex <- ex %>% dplyr::select(c("pulse", "hd_actual", "hd_pct", "fd_actual", "fd_pct"))
-#ex <- ex[-1:-2,]
+summary(aggregated_data_neg$total_transfer_neg_damages[aggregated_data_neg$emitter == "USA"])
 
-# write out ex 
+# now let us save the 95th percentile and the median 
+aggregated_data_neg <- aggregated_data_neg %>% 
+  dplyr::group_by(emitter) %>% 
+  dplyr::summarise(p_05 = quantile(total_transfer_neg_damages, 0.05), 
+                   mean = mean(total_transfer_neg_damages),
+                   p_95 = quantile(total_transfer_neg_damages, 0.95))
+
+# ok now we can aggregate the dataset
+#aggregated_data_net <- gran_master_df %>% 
+#  dplyr::group_by(sim_id, emitter, ISO3) %>% 
+#  dplyr::summarise(total_transfer_net_damages = sum(weighted_damages2, na.rm = T))
+#aggregated_data_net <- aggregated_data_net %>% 
+#  dplyr::group_by(sim_id, emitter) %>% 
+#  dplyr::summarise(total_transfer_net_damages = sum(total_transfer_net_damages, na.rm = T))
+## now let us save the 95th percentile and the median 
+#aggregated_data_net <- aggregated_data_net %>% 
+#  dplyr::group_by(emitter) %>% 
+#  dplyr::summarise(p_05 = quantile(total_transfer_net_damages, 0.05), 
+#                   mean = mean(total_transfer_net_damages),
+#                   p_95 = quantile(total_transfer_net_damages, 0.95))
+#
+#
+################# prep the data 
+# pos
+#aggregated_data_pos$median <- aggregated_data_pos$median/-1000000000000
+#aggregated_data_pos$p_05 <- aggregated_data_pos$p_05/-1000000000000
+#aggregated_data_pos$p_95 <- aggregated_data_pos$p_95/-1000000000000
+#aggregated_data_pos <- aggregated_data_pos[order(aggregated_data_pos$median),]
+#aggregated_data_pos$id <- 1:nrow(aggregated_data_pos)
+
+# neg
+aggregated_data_neg$mean <- aggregated_data_neg$mean/-1000000000000
+aggregated_data_neg$p_05 <- aggregated_data_neg$p_05/-1000000000000
+aggregated_data_neg$p_95 <- aggregated_data_neg$p_95/-1000000000000
+aggregated_data_neg <- aggregated_data_neg[order(-aggregated_data_neg$mean),]
+aggregated_data_neg$id <- 1:nrow(aggregated_data_neg)
+
+# net
+#aggregated_data_net$median <- aggregated_data_net$median/-1000000000000
+#aggregated_data_net$p_05 <- aggregated_data_net$p_05/-1000000000000
+#aggregated_data_net$p_95 <- aggregated_data_net$p_95/-1000000000000
+#aggregated_data_net <- aggregated_data_net[order(-aggregated_data_net$median),]
+#aggregated_data_net$id <- 1:nrow(aggregated_data_net)
+#
+#aggregated_data_pos <- subset(aggregated_data_pos, id <11)
+aggregated_data_neg <- subset(aggregated_data_neg, id <11)
+#aggregated_data_net <- subset(aggregated_data_net, id <11)
+
+##### now let us focus on the US 
+us_transfers <- subset(gran_master_df, emitter == "USA")
+
+#### ok now let us aggregate
+us_transfers <- us_transfers %>% 
+  dplyr::group_by(sim_id, emitter, ISO3) %>% 
+  dplyr::summarise(total_damages = sum(weighted_damages2, na.rm = T))
+
+us_transfers_median <- us_transfers %>% 
+  dplyr::group_by(emitter, ISO3) %>% 
+  dplyr::summarise(median(total_damages))
+
+us_top_transfers <- subset(us_transfers, ISO3 %in% c("USA", "CHN", "JPN", "IND", "BRA", 
+                                                     "ITA", "SAU", "IDN", "FRA", "MEX"))
+
+
+# now let us save the 95th percentile and the median 
+us_top_transfers <- us_top_transfers %>% 
+  dplyr::group_by(emitter, ISO3) %>% 
+  dplyr::summarise(p_05 = quantile(total_damages, 0.05), 
+                   median = median(total_damages),
+                   p_95 = quantile(total_damages, 0.95))
+
+us_top_transfers$median <- us_top_transfers$median/-1000000000000
+us_top_transfers$p_05 <- us_top_transfers$p_05/-1000000000000
+us_top_transfers$p_95 <- us_top_transfers$p_95/-1000000000000
+us_top_transfers <- us_top_transfers[order(-us_top_transfers$median),]
+us_top_transfers$id <- 1:nrow(us_top_transfers)
+
+#############################################################################
+#############################################################################
+########## save the data 
 run_date <- "loss_damage_r1"
-setwd("~/GitHub/loss_damage/")
-write_rds(ex, paste0(getwd(), "/data/figures/",run_date, "/damages_under_diff_marginals.rds"))
+setwd("~/GitHub/loss_damage")
+write_rds(aggregated_data_neg, paste0(getwd(), "/data/figures/", run_date, "/aggregated_transfers_neg.rds"))
+#write_rds(aggregated_data_pos, paste0(getwd(), "/data/figures/", run_date, "/aggregated_transfers_pos.rds"))
+#write_rds(aggregated_data_net, paste0(getwd(), "/data/figures/", run_date, "/aggregated_transfers_net.rds"))
+write_rds(us_top_transfers, paste0(getwd(), "/data/figures/", run_date, "/us_top_transfers.rds"))
 
-################################fig ED8b#####################################
-figed9b <- as.data.frame(data_frame(scenario = c("baseline", "90% of emissions",
-                                                 "70%", "50%" , "30%"), 
-                              value = c(-10.26/-10.26,
-                                        round(((sum(usa_damages_10pct$weighted_damages2[usa_damages_10pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26)),
-                                        ((sum(usa_damages_30pct$weighted_damages2[usa_damages_30pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26),
-                                        ((sum(usa_damages_50pct$weighted_damages2[usa_damages_50pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26),
-                                        ((sum(usa_damages_70pct$weighted_damages2[usa_damages_70pct$weighted_damages2 < 0], na.rm = T)/1000000000000)*(1)/-10.26))))
-# write out teh table 
-run_date <- "loss_damage_r1"
-setwd("~/GitHub/loss_damage/")
-write_rds(figed8b, paste0(getwd(), "/data/figures/",run_date, "/damages_under_diff_baseline_scenarios.rds"))
-
-
-# end of script 
-
-
+# end of script

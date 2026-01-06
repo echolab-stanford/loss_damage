@@ -52,7 +52,7 @@ for (i in 1:length(listofdfs)) {
 ################################################################################
 ################################################################################ plot the data
 # set up the parameters for the figure
-pdf(paste0(getwd(), "/figures/", run_date, "/fig2e_5lag_v3.pdf"), 
+pdf(paste0(getwd(), "/figures/", run_date, "/fig2e.pdf"), 
     width=14, height=5.75)
 par(mfrow = c(1,1))
 par(mar= c(8,6,2,2))

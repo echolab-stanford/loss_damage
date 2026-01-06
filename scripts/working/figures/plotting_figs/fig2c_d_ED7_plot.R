@@ -9,9 +9,9 @@
 # - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/world_gdp_pop/temp_gdp_world_panel.rds"
 # - "~/Github/loss_damage/data/figures/{run_date}/country_prob_dam_1990_5lag.csv"
 # output(s):  
-# - "~/Github/loss_damage/figures/{run_date}/fig2c_d_pre_illustrator.pdf"
-# - "~/Github/loss_damage/figures/{run_date}/fig2c_d_pcap_pre_illustrator.pdf"
-# - "~/Github/loss_damage/figures/{run_date}/fig2c_d_pct_2020_pre_illustrator.pdf"
+# - "~/Github/loss_damage/figures/{run_date}/fig2c_d.pdf"
+# - "~/Github/loss_damage/figures/{run_date}/figED7c_d.pdf"
+# - "~/Github/loss_damage/figures/{run_date}/figED7a_b.pdf"
 
 ############################################################################# set up env
 remove(list=ls())
@@ -153,7 +153,7 @@ c_d <- ggpubr::ggarrange(c,d,
                          legend="bottom")
 
 #save the plot 
-ggsave(paste0("figures/", run_date, "/figED7_pre_illustrator.pdf"), 
+ggsave(paste0("figures/", run_date, "/figED7a_b.pdf"), 
        c_d, width = 10, height = 4)
 
 ################################################################################
@@ -205,7 +205,7 @@ c_d_pcap <- ggpubr::ggarrange(c,d,
                          legend="bottom")
 
 #save the plot 
-ggsave(paste0("figures/", run_date, "/figED7_pcap_pre_illustrator.pdf"), 
+ggsave(paste0("figures/", run_date, "/figED7c_d.pdf"), 
        c_d_pcap, width = 10, height = 4)
 
 ################################################################################
@@ -257,53 +257,7 @@ c_d_pct_2020 <- ggpubr::ggarrange(c,d,
                               legend="bottom")
 
 #save the plot 
-ggsave(paste0("figures/", run_date, "/fig2c_d_pct_2020_pre_illustrator.pdf"), 
+ggsave(paste0("figures/", run_date, "/fig2c_d.pdf"), 
        c_d_pct_2020, width = 10, height = 4)
 
 #end of script
-
-
-################################################################################
-################################################################################
-# original w/out prob_dam
-# plot data 
-#c<- ggplot(world_1990_2020) + 
-#  geom_sf(aes(fill = damages)) + 
-#  scale_fill_gradient2(low="red", mid="white", high="lightblue",
-#                       trans = modulus_trans(0.5), 
-#                       limits = c(min(world_2021_2100$damages, na.rm = T),
-#                                  max(world_1990_2020$damages, na.rm = T)),
-#                       breaks = c(-4e+11, -2e+11, -1e+11, -5e+10,-2.5e+10,-5e+9,0,5e+9,1.5e+10),
-#                       labels = c("-$400B","-$200B","-$100B","-$50B","-$25B","-$5B","0","$5B","$15B"),
-#                       name = "Impact of CO2 \nemitted in 1990") + 
-#  theme_minimal() +  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-#                           panel.background = element_blank(),
-#                           axis.line = element_blank(), axis.text = element_blank(),
-#                           legend.key.width = unit(1.75, "cm")) + 
-#  ggtitle("c) Impacts through 2020")
-#summary(world_2021_2100$damages)
-#d <- ggplot(world_2021_2100) + 
-#  geom_sf(aes(fill = damages)) + 
-#  scale_fill_gradient2(low="red", mid="white", high="lightblue",
-#                       trans = modulus_trans(0.5), 
-#                       limits = c(min(world_2021_2100$damages, na.rm = T),
-#                                  max(world_1990_2020$damages, na.rm = T)),
-#                       breaks = c(-4e+11, -2e+11, -1e+11, -5e+10,-2.5e+10,-5e+9,0,5e+9,1.5e+10),
-#                       labels = c("-$400B","-$200B","-$100B","-$50B","-$25B","-$5B","0","$5B","$15B"),
-#                       name = "Impact of CO2 \nemitted in 1990") +
-#  theme_minimal() +  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-#                           panel.background = element_blank(), axis.line = element_blank(), axis.text = element_blank(),
-#                           legend.key.width = unit(1.75, "cm")) + 
-#  ggtitle("d) Impacts 2021-2100")
-#
-## bring plots together in one plot
-#c_d <- ggpubr::ggarrange(c,d,
-#                         ncol = 2,nrow = 1,
-#                         common.legend = TRUE, 
-#                         legend="bottom")
-
-#save the plot 
-#ggsave(paste0("figures/", run_date, "/fig2c_d_nodamprob.pdf"), 
-#       c_d, width = 10, height = 4)
-
-

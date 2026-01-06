@@ -26,7 +26,7 @@ setwd("~/GitHub/loss_damage")
 #  run_date <- gsub("-","",Sys.Date())
 #}
 
-run_date <- "loss_damage_r1_mustafa_rep_temp"
+#run_date <- "loss_damage_r1"
 
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")

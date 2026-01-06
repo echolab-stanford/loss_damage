@@ -14,7 +14,7 @@ gc()
 sf::sf_use_s2(FALSE)
 setwd("~/GitHub/loss_damage")
 
-run_date <- "loss_damage_r1_mustafa_rep_temp"
+run_date <- "loss_damage_r1"
 # read in the needed libraries 
 source("scripts/working/analysis/0_read_libs.R")
 
@@ -69,7 +69,7 @@ plot(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all
      # log = "y",
      #yaxt = "n",
      ylim = range(c(0,350)),
-     col = "#023b70",
+     col = "#150175",
      pch = 3, xlim = range(c(1990, 2020)),
      xlab = "Year of CO2 Pulse",  ylab = "Per tonne damages in 2020 $USD\n",
      las = 1, lwd = 2, cex.axis = 1.25, cex.lab = 1.5, 
@@ -80,11 +80,19 @@ plot(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all
 title("a)  Accumulated damages through 2020", adj = 0)
 
 # now add the legend
-segments(x0 = 2010, x1 = 2012, y0 = 285, y1 = 285, col = "#8a5cb4", lwd = 3)
-segments(x0 = 2010, x1 = 2012, y0 = 265, y1 = 265, col = "#de3623", lwd = 3)
-segments(x0 = 2010, x1 = 2012, y0 = 245, y1 = 245, col = "#f0da32", lwd = 3)
-segments(x0 = 2010, x1 = 2012, y0 = 225, y1 = 225, col = "#2aa83f", lwd = 3)
-segments(x0 = 2010, x1 = 2012, y0 = 205, y1 = 205, col = "#023b70", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 285, y1 = 285, col = "#CCEAE3", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 265, y1 = 265, col = "#AADBD9", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 245, y1 = 245, col = "#88C1CC", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 225, y1 = 225, col = "#669DBC", lwd = 3)
+segments(x0 = 2010, x1 = 2012, y0 = 205, y1 = 205, col = "#150175", lwd = 3)
+
+"#150175" -> "#150175"
+"#669DBC" -> "#669DBC"
+"#88C1CC" -> "#88C1CC"
+"#AADBD9" -> "#AADBD9"
+"#CCEAE3" -> "#CCEAE3"
+
+
 # add to the legend
 text(2014, 285, " 1.5%")
 text(2014, 265, " 2%")
@@ -95,22 +103,22 @@ text(2009, 298, "Discount rates:", col = "black", cex = 1.2, adj = 0)
 # add the data 
 points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all$discount_rate == "5%"], 
        y = total_damages_by_pulse_2020_all$total_damages[total_damages_by_pulse_2020_all$discount_rate == "5%"],
-       pch = 3, col = "#2aa83f",
+       pch = 3, col = "#669DBC",
        lwd = 2)
 # add the data 
 points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all$discount_rate == "3%"], 
        y = total_damages_by_pulse_2020_all$total_damages[total_damages_by_pulse_2020_all$discount_rate == "3%"],
-       pch = 3, col = "#f0da32",
+       pch = 3, col = "#88C1CC",
        lwd = 2)
 # add the data 
 points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all$discount_rate == "2%"], 
        y = total_damages_by_pulse_2020_all$total_damages[total_damages_by_pulse_2020_all$discount_rate == "2%"],
-       pch = 3, col = "#de3623",
+       pch = 3, col = "#AADBD9",
        lwd = 2)
 # add the data 
 points(x = total_damages_by_pulse_2020_all$emitter[total_damages_by_pulse_2020_all$discount_rate == "1.5%"], 
        y = total_damages_by_pulse_2020_all$total_damages[total_damages_by_pulse_2020_all$discount_rate == "1.5%"],
-       pch = 3, col = "#8a5cb4",
+       pch = 3, col = "#CCEAE3",
        lwd = 2)
 
 # now plot 2b
@@ -118,7 +126,7 @@ plot(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all
      y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "7%"],
      # log = "y",
      ylim = range(c(0,2500)),
-     col = "#023b70",
+     col = "#150175",
      pch = 3, xlim = range(c(1990, 2021)),
      xlab = "Year of CO2 Pulse",  ylab = "Per tonne damages in 2020 $USD\n",
      las = 1, lwd = 2, cex.axis = 1.25, cex.lab = 1.5, 
@@ -130,22 +138,22 @@ title("b)  Accumulated damages 2021-2100", adj = 0)
 # add the data 
 points(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "5%"], 
        y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "5%"],
-       pch = 3, col = "#2aa83f",
+       pch = 3, col = "#669DBC",
        lwd = 2)
 # add the data 
 points(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "3%"], 
        y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "3%"],
-       pch = 3, col = "#f0da32",
+       pch = 3, col = "#88C1CC",
        lwd = 2)
 # add the data 
 points(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "2%"], 
        y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "2%"],
-       pch = 3, col = "#de3623",
+       pch = 3, col = "#AADBD9",
        lwd = 2)
 # add the data 
 points(x = total_damages_by_pulse_2100_all$emitter[total_damages_by_pulse_2100_all$discount_rate == "1.5%"], 
        y = total_damages_by_pulse_2100_all$total_damages[total_damages_by_pulse_2100_all$discount_rate == "1.5%"],
-       pch = 3, col = "#8a5cb4",
+       pch = 3, col = "#CCEAE3",
        lwd = 2)
 # add a label for sccco2
 segments(x0 = 2020, 

@@ -26,7 +26,7 @@ dev.off()
 ################################################################################
 ################################################################################
 # visualize data   
-pdf(file = paste0(getwd(), "/figures/", run_date, "/figED1_pre_illustrator.pdf"),   # The directory you want to save the file in
+pdf(file = paste0(getwd(), "/figures/", run_date, "/figED1.pdf"),   # The directory you want to save the file in
     width = 15.85, # The width of the plot in inches
     height = 8.85) # The height of the plot in inches
 
@@ -115,9 +115,6 @@ title("\n c", adj = 0, line =1, cex.main = 2.5)
 ################################################################################
 ################################################################################
 # 1d
-
-
-
 par(mar = c(4,10,4,2))  
 plot(x = annual_observed$year, y = annual_observed$observed,
      type = "l", lty = 1, xlim = range(c(1990, 2020)),

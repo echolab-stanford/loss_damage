@@ -3,7 +3,7 @@
 # This R script brings in the SCC numbers and calculate the carbon debt for 
 # specific emitters. the groups of emissions data include carbon majors and 
 # celebreities private jet usage/ This script prep data for figures 3a, 3b, 3c, 
-# ED12, and ED13
+# S2, and S3
 # Input(s): 
 # - "~/BurkeLab Dropbox/loss_damage/data/raw/emissions/carbon_majors_emms.csv"
 # - "~/BurkeLab Dropbox/loss_damage/data/raw/emissions/carbon_majors_emms_scope1.csv"
