@@ -55,7 +55,7 @@ Now that we have generated the annual change in temperature in our historical fu
 ###### II. ([2b_FaIR_deltaT_hist_fut.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/2b_FaIR_deltaT_hist_fut.R))
 ###### III. ([2c_FaIR_deltaT_hist_fut_disagg.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/2c_FaIR_deltaT_hist_fut_disagg.R)) 
 
-## 3. Generating country-year level dataset
+## 3. Generating country-year level dataset, BHM model coeffecients under different models & computing discounted damages
 #### a.  
 ###### 0. ([3a0_run_gdptemp_panel.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a0_run_gdptemp_panel.R)) 
 ###### 1.([3a1_run_gdptemp_panel_bhmbs.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a1_run_gdptemp_panel_bhmbs.R)) 
@@ -70,14 +70,7 @@ Now that we have generated the annual change in temperature in our historical fu
 - ###### i. ([3c2i_calc_total_damages_lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2i_calc_total_damages_lags.R)) 
 - ###### ii. ([3c2ii_calc_total_damages_5lags_w_rebound.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2ii_calc_total_damages_5lags_w_rebound.R)) 
 
-
-
-
-## 4. Generating BHM model coeffecients under different models
-## 5. Computing discounted damages 
-
 ## Scripts 
-
 - The pipeline for producing this paper's results rely on output dataframes produced through the run_scripts_ld.R script. Inside this script the needed custom functions are sourced from scripts in the same folders. Each with thier own job.
 - Some of the script are run through Stanford's Sherlock servers. These are batch scripts (R scripts) with shell files (.sh) specifying the resources needed from the servers to run the script. 
 
