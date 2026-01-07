@@ -57,14 +57,21 @@ Now that we have generated the annual change in temperature in our historical fu
 
 ## 3. Generating country-year level dataset
 #### a.  
-###### I.
-###### II.
+###### 0. ([3a0_run_gdptemp_panel.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a0_run_gdptemp_panel.R)) 
+###### 1.([3a1_run_gdptemp_panel_bhmbs.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a1_run_gdptemp_panel_bhmbs.R)) 
+###### 2.([3a2_run_gdptemp_panel_5lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a2_run_gdptemp_panel_5lags.R)) 
 #### b.  
-###### I.
-###### II.
+###### 0. ([3b0_run_bhm_model.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3b0_run_bhm_model.R)) 
+###### 1. ([3b1_run_gdptemp_panel_5lag.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3b1_run_gdptemp_panel_5lag.R)) 
 #### c.  
-###### I.
-###### II.
+###### 0.([3c0_calc_total_damages_bilateral.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c0_calc_total_damages_bilateral.R)) 
+###### 1.([3c1_calc_total_damages.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c1_calc_total_damages.R)) 
+###### 2.([3c2_calc_total_damages_5lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2_calc_total_damages_5lags.R)) 
+- ###### i. ([3c2i_calc_total_damages_lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2i_calc_total_damages_lags.R)) 
+- ###### ii. ([3c2ii_calc_total_damages_5lags_w_rebound.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2ii_calc_total_damages_5lags_w_rebound.R)) 
+
+
+
 
 ## 4. Generating BHM model coeffecients under different models
 ## 5. Computing discounted damages 
@@ -75,24 +82,6 @@ Now that we have generated the annual change in temperature in our historical fu
 - Some of the script are run through Stanford's Sherlock servers. These are batch scripts (R scripts) with shell files (.sh) specifying the resources needed from the servers to run the script. 
 
 ### Processing scripts 
-
-### Analysis scripts 
-
-- run_scripts_ld.R
-- 0_read_libs.R
-- 1_r_cgm.R
-- 2a_FaIR_deltaT_hist.R
-- 2b_FaIR_deltaT_hist_fut.R
-- 2c_FaIR_deltaT_hist_fut_disagg.R
-- 3a0_run_gdptemp_panel.R
-- 3a1_run_gdptemp_panel_bhmbs.R
-- 3a2_run_gdptemp_panel_5lags.R
-- 3b0_run_bhm_model.R
-- 3b1_run_gdptemp_panel_5lag.R
-- 3c0_calc_total_damages_bilateral.R
-- 3c1_calc_total_damages.R
-- 3c2_calc_total_damages_5lags.R
-
 
 ### Analysis scripts 
 - run_scripts_ld.R
