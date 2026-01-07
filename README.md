@@ -71,8 +71,8 @@ Now that we have generated the annual change in temperature in our historical fu
 
 ## Scripts 
 
-- The pipeline for producing this paper's results rely on output dataframes produced through the run_scripts_ld.R script. Inside this script teh needed custom functions are sourced from scripts in the same folders. Each with thier own job.
-- Some of the script are run through sherlock. These are batch scripts (R scripts) with shell files (.sh) specifiying the resources needed to run the script. 
+- The pipeline for producing this paper's results rely on output dataframes produced through the run_scripts_ld.R script. Inside this script the needed custom functions are sourced from scripts in the same folders. Each with thier own job.
+- Some of the script are run through Stanford's Sherlock servers. These are batch scripts (R scripts) with shell files (.sh) specifying the resources needed from the servers to run the script. 
 
 ### Processing scripts 
 
@@ -93,7 +93,55 @@ Now that we have generated the annual change in temperature in our historical fu
 - 3c1_calc_total_damages.R
 - 3c2_calc_total_damages_5lags.R
 
-### Figures scripts
+
+### Analysis scripts 
+- run_scripts_ld.R
+- 0_read_libs.R
+- 1_r_cgm.R
+- 2a_FaIR_deltaT_hist.R
+- 2b_FaIR_deltaT_hist_fut.R
+- 2c_FaIR_deltaT_hist_fut_disagg.R
+- 3a0_run_gdptemp_panel.R
+- 3a1_run_gdptemp_panel_bhmbs.R
+- 3a2_run_gdptemp_panel_5lags.R
+- 3b0_run_bhm_model.R
+- 3b1_run_gdptemp_panel_5lag.R
+- 3c0_calc_total_damages_bilateral.R
+- 3c1_calc_total_damages.R
+- 3c2_calc_total_damages_5lags.R
+- 3c2i_calc_total_damages_lags.R
+- 3c2ii_calc_total_damages_5lags_w_rebound.R
+
+### Batch scripts 
+- run_5lag_k80_scc_sherlock2.R
+- run_5lag_scc_sherlock2.R
+
+### Figures preparation scripts
+- fig2a_b_c_d_ED5_ED7.R	
+- figED1.R	
+- figED8.R
+- fig2e.R	
+- figED10.R		
+- figED9.R
+- fig3_S2_S3.R	
+- figED6.R	
+- figS12.R
+- fig4_S4_S5_S6_S7.R	
+- figED6c.R
+
+### Figures plotting scripts
+- fig2a_b_ED5_plot.R	
+- fig4_S4_S5_S6_S7_plot.R	
+- figED6c_plot.R
+- fig2c_d_ED7_plot.R	
+- figED1_plot.R		
+- figED8_plot.R
+- fig2e_plot.R		
+- figED10_plot.R		
+- figED9_plot.R
+- fig3_S2_S3_plot.R	
+- figED6_plot.R		
+- figS12_plot.R
 
 ## Data
 
