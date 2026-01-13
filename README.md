@@ -38,12 +38,13 @@ Now that you have installed FaIR, you can import it in other scripts and call th
 - related figures ()
 
 ###### II.([2_calc_FaIR_deltat_bilateral.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_bilateral.ipynb))
-country-level historical emissions preturbation (1990, 1980, and 1960 start years) 
+country-level historical emissions preturbation (1990, 1980, and 1960 start years and consumption vs. production emissions) 
 - related figures ([fig4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig4.pdf), [figS4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS6](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS7.pdf))
 
 ###### III. ([2_calc_FaIR_deltat_cc.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_cc.ipynb))
 carbon capture experiment  
-- related figures ()
+- related figures ([figED10](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED10.pdf))
+
 ###### IV. ([2_calc_pulse_marginals.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_pulse_marginals.ipynb))
 marginal emissions preturbation experiment 
 - related figures ()

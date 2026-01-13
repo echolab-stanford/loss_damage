@@ -1,6 +1,6 @@
 ##############################################################################
 # Mustafa Zahid, January 7th, 2023
-# This R script prepares the data for plotting figure S6 (carbon capture)
+# This R script prepares the data for plotting figure ED10 (carbon capture)
 #############################################################################
 remove(list=ls())
 gc()
