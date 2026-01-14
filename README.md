@@ -75,10 +75,18 @@ Now that we have generated the annual change in temperature in our historical fu
 ###### 1. ([3b1_run_gdptemp_panel_5lag.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3b1_run_gdptemp_panel_5lag.R)) 
 #### c.  
 ###### 0.([3c0_calc_total_damages_bilateral.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c0_calc_total_damages_bilateral.R)) 
+- related figures ([fig4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig4.pdf), [figS4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS6](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS7.pdf))
+
 ###### 1.([3c1_calc_total_damages.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c1_calc_total_damages.R)) 
-###### 2.([3c2_calc_total_damages_5lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2_calc_total_damages_5lags.R)) 
+- related figures ([figED8](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED8.pdf))
+
+###### 2.([3c2_calc_total_damages_5lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2_calc_total_damages_5lags.R))
+- related figures ([fig2](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig2.pdf), 
+[figED5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig2.pdf), 
+[figED7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig2.pdf))
 - ###### i. ([3c2i_calc_total_damages_lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2i_calc_total_damages_lags.R)) 
 - ###### ii. ([3c2ii_calc_total_damages_5lags_w_rebound.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2ii_calc_total_damages_5lags_w_rebound.R)) 
+- related figures ([figED8](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED8_post_illustrator.pdf))
 
 ## Scripts 
 - The pipeline for producing this paper's results rely on output dataframes produced through the run_scripts_ld.R script. Inside this script the needed custom functions are sourced from scripts in the same folders. Each with thier own job.
@@ -142,6 +150,8 @@ Now that we have generated the annual change in temperature in our historical fu
 ## Processes 
 
 ### Reproduce figures from the paper 
+To reproduce the figures from the paper, you can either re run the scripts preparing the data "[prepating_data](https://github.com/echolab-stanford/loss_damage/tree/5lag_pipeline_r2/scripts/working/figures/preparing_data/)" to be plotted and the scripts plotting the figures themselves "[plotting_data](https://github.com/echolab-stanford/loss_damage/tree/5lag_pipeline_r2/scripts/working/figures/plotting_data/)". 
 
 ### Reproduce data under different paramters 
+You can also regenerate the data underlying the figures by tweaking some of the paramters which are specified in the built in functions fro the scripts above. For example you can generate an alternative FaIR preturbation as demonstrated in the FaIR scripts above and use the resulting dataset to process the change in temperature due to that preturbation. 
 

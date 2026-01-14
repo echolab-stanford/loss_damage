@@ -572,7 +572,6 @@ total_damages_1000tco2_k90 <- calculate_damages_pulse_5lag(median_raster,
                                                            F,
                                                            F)
 
-
 # ok let us start with the 1mtco2 experiment 
 total_damages_1mtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
                                                          fair_exps_1Mtco2_2100_k90, 
@@ -586,7 +585,6 @@ total_damages_1mtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
                                                          F,
                                                          F)
 
-# ok let us start with the 1gtco2 experiment 
 # ok let us start with the 1gtco2 experiment (6 mins)  # fig2ab, fig2cd, fig3a, fig3b, 
 total_damages_1gtco2_k90 <- calculate_damages_pulse_5lag(median_raster,
                                                          fair_exps_1gtco2_2100_k90, 
