@@ -35,7 +35,8 @@ Now that you have installed FaIR, you can import it in other scripts and call th
 ###### I.  ([2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb))
 1 GtCO<sub>2</sub>/tCO<sub>2</sub> experiment. This experiment is used to generate temperature changes due to GtCO<sub>2</sub> or tCO<sub>2</sub> preturbation to historical emissions. The preturbation is taken from each year between 1990 and 2020. The temperature changes generated from preturbing 2020 emissions is used to calculate the SCC (Social Cost of Carbon).
 
-- related figures ()
+- related figures ([fig2](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig2_post_illustrator.pdf), [fig3](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig3_post_illustrator.pdf), [fig3](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig3_post_illustrator.pdf), 
+[figED1](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED1_post_illustrator.pdf))
 
 ###### II.([2_calc_FaIR_deltat_bilateral.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_bilateral.ipynb))
 country-level historical emissions preturbation (1990, 1980, and 1960 start years and consumption vs. production emissions) 
@@ -47,14 +48,22 @@ carbon capture experiment
 
 ###### IV. ([2_calc_pulse_marginals.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_pulse_marginals.ipynb))
 marginal emissions preturbation experiment 
-- related figures ()
+- related figures ([figS12](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS12.pdf))
 
 #### c. Calculating the change in temperature between both scenarios
-Now that we have generated the annual change in temperature in our historical full emissions scenario and our preturbed scenario, we can take the median change in temperature between 
+Now that we have generated the annual change in temperature in our historical full emissions scenario and our preturbed scenario, we can take the median change in temperature between the two scenarios.
 
 ###### I. ([2a_FaIR_deltaT_hist.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/2a_FaIR_deltaT_hist.R)) 
+- related figures ([figED1](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED1_post_illustrator.pdf))
 ###### II. ([2b_FaIR_deltaT_hist_fut.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/2b_FaIR_deltaT_hist_fut.R))
+- related figures ([figED5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED5_post_illustrator.pdf),
+[figED7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED7_post_illustrator.pdf),
+[figED8](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED8_post_illustrator.pdf))
 ###### III. ([2c_FaIR_deltaT_hist_fut_disagg.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/2c_FaIR_deltaT_hist_fut_disagg.R)) 
+- related figures ([figED6](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED6_post_illustrator.pdf),
+[fig2e](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig2e.pdf), 
+[figS2](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS2.pdf),
+[figS3](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS3.pdf))
 
 ## 3. Generating country-year level dataset, BHM model coeffecients under different models & computing discounted damages
 #### a.  
@@ -133,49 +142,6 @@ Now that we have generated the annual change in temperature in our historical fu
 ## Processes 
 
 ### Reproduce figures from the paper 
-
-- Figure 2:
-    - before running the scripts sync the following files in your desktop:
-        - "~/BurkeLab Dropbox/projects/loss_damage/FaIR/"
-        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/world_gdp_pop/"
-        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/future_forecast/"
-        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/bhm/"
-        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/r_cgm/"
-        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/wdi_dat.rds"
-        - "~/BurkeLab Dropbox/projects/loss_damage/data/processed/minmax_data.rds"        
-        - downloads the github 'loss_damage' repo from the lab directory (5lag_pipeline or 5lag_pipeline_r2 branch NOT main)
-    - panels a-b:
-        - output dataframes through run_scripts_ld.R found under "~/GitHub/loss_damage/scripts/working/analysis/run_scripts_ld.R"
-            1. set up the directories to access the input data and to output the outcome data by syncing the above folders
-            2. run the set up code chunks and read the main dataframes (lines 22-93). Those lines will produce the following:
-                a. country-year data with population from the WDI
-                b. a median raster from the 30 CGMs ensemble
-                c. population raster to calculate weighted ratios
-                d. a country level global shapefile
-                e. a dataframe with minimum and maximum observed growth to bound future growth                
-            3. run (line 190) to produce the fair temperature response to emissions preturbation. Specifically, this will return $' \delta{T}_t '$ used in equation (12)
-            4. run (line 230) to read in the SSP3.70 scenario forecast data
-            5. run (line 253-255) to read the GDP-temperature panel. This data will be used to calculate the damages attributed to the emissions preturbation 
-            6. run (line 285) to read in the number of years to loop over to produce the damages per emissions in a given year 
-            7. Finally, run lines (292-304) this will run the custom function that would calculate the damages following equations (12-16) and then the last linee is to output the dataset. The paramaters to specify:
-                - NOTE: the script that contains the function that calculate the damages is '3c2_calc_total_damages_5lags.R'
-                a. warming ratio raster
-                b. fair temperature response to emissions preturbation 
-                c. year(s) to loop over to calculate the damages per that year 
-                d. year k when damages start to accumulate 
-                e. future growth forecast per the SSP3.70 
-                f. GDP-temperature panel 
-                g. temperature data used. Default is ERA. Alternative is CRU but pipeline is not set up to switch yet (as of 03/14/24)
-                h. settlement year. Default is 2020. This is important for discount rates
-                i. indicating whether to turn on the growth-post-2100 poarameter. Default is 'F' to turn on just change that to '0'
-                j. indicating whether to turn on the adaptation mechanism. Default is 'F', to turn it on change to 'T'
-                k. indicating whether to use the temperature-growth coeffeceints from base model or bootstrapped estimates
-        - run figure preparation and plotting scripts
-            - run the script fig2a_b_c_d.R found under "~/GitHub/loss_damage/scripts/working/figures/preparing_data/fig2a_b_c_d.R"
-                - Before running the scripts make sure to adjust the 'run_date' paramter uptop so that the script can pull the data you have just produced above for panels a-d. This script will save the dataset in the github repo "~/GitHub/loss_damage/data/figures/{run_date}/".
-            - now run the scripts 'fig2a_b_plot.R' and can be found here:  "~/GitHub/loss_damage/scripts/working/figures/plotting_data/". Also make sure you have updated the 'run_date' parameter up top. 
-
-
 
 ### Reproduce data under different paramters 
 

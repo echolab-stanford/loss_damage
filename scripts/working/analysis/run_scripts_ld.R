@@ -189,7 +189,7 @@ fair_exps_1gtco2_disagg_k80_2100 <- process_disagg_exp_data("20230821","1tCO2_hi
 ####################### Experiment (Carbon Capture): ########################
 # this experiment is to estimate the damages if we are to capture 1 tCO2 
 # years after emitting it
-fair_exps_cc <- process_exp_data_hist_fut("20230822", "cc_hist", 2020, aggregating = T) # figED19cd
+fair_exps_cc <- process_exp_data_hist_fut("20230822", "cc_hist", 2020, aggregating = T) #figED10
 # we will need this data saved for plotting figED19
 #write_rds(fair_exps_cc, paste0(output_path, "/fair_exps_cc.rds"))
 
@@ -197,15 +197,15 @@ fair_exps_cc <- process_exp_data_hist_fut("20230822", "cc_hist", 2020, aggregati
 # this experiment is to estimate the country level damages attributed to each 
 # of the countries.
 # for year_k = 1980
-fair_exps_isos_k80 <- process_exp_data_hist("20230523", "hist_bi_v2022", 1980, aggregating = T) # figED15
+fair_exps_isos_k80 <- process_exp_data_hist("20230523", "hist_bi_v2022", 1980, aggregating = T) # figS4
 # for year_k = 1990
 fair_exps_isos_k90 <- process_exp_data_hist("20230523", "hist_bi_v2022", 1990, aggregating = T) # fig4
 #for year_k = 1990 and only consumption emissions
-fair_exps_isos_k90_consump <- process_exp_data_hist("20230523", "hist_biconsump_v2022", 1990, aggregating = T) # figED17
+fair_exps_isos_k90_consump <- process_exp_data_hist("20230523", "hist_biconsump_v2022", 1990, aggregating = T) # figS6
 #for year_k = 1990 and only production emissions
-fair_exps_isos_k90_prod <- process_exp_data_hist("20230523", "hist_biprod_v2022", 1990, aggregating = T) # figED18
+fair_exps_isos_k90_prod <- process_exp_data_hist("20230523", "hist_biprod_v2022", 1990, aggregating = T) # figS7
 # for year_k = 1960 (11/2024 addition)
-fair_exps_isos_k60 <- process_exp_data_hist("20241112", "hist_bi_2100", 1960, aggregating = T) # figED16
+fair_exps_isos_k60 <- process_exp_data_hist("20241112", "hist_bi_2100", 1960, aggregating = T) # figS5
 
 ####################### Experiment (1/10/1000/1M/1G/10G/100G/tCO2/yr): ######################## figED9a
 # this experiment is run to estimate the temperature effects of pulsing 
@@ -216,7 +216,7 @@ fair_exps_1Mtco2_2100_k90 <- process_exp_data_hist_fut("20230807","1MtCO2_hist_2
 fair_exps_10Gtco2_2100_k90 <- process_exp_data_hist_fut("20230807","10GtCO2_hist_2300",1990,aggregating = T) 
 fair_exps_100Gtco2_2100_k90 <- process_exp_data_hist_fut("20230807","100GtCO2_hist_2300",1990,aggregating = T) 
 
-####################### Experiment (30%, 50%, 70%, and 90% of emissions): ######################### figED9b
+####################### Experiment (30%, 50%, 70%, and 90% of emissions): ######################### figS12b
 # this experiment is to run the emissions damage calculation for 1gtco2 under 
 # different baseline emissions
 fair_exps_isos_usa_k90_10pct <- process_exp_data_hist("20231206", "hist_bi_2100_10pct", 1990, aggregating = T)
@@ -512,7 +512,7 @@ write_rds(total_damages_1gtco2_k90_10lag, paste0("data/output/",
 
 
 
-################################################################################  # fig3, figED12, figED13
+################################################################################  # fig3, figS2, figS3
 total_damages_1tco2_k80 <- calculate_damages_pulse_5lag(median_raster,
                                                         fair_exps_1tco2_2100_k80, 
                                                         years_of_exps_1980_2022,
@@ -530,7 +530,7 @@ write_rds(total_damages_1tco2_k80, paste0("data/output/",
                                        "/total_damages_1tco2_k80.rds"))
 
 
-##################### 1/10/1000/1M/1G/10G/100G/tCO2yr experiment ########################### figED9
+##################### 1/10/1000/1M/1G/10G/100G/tCO2yr experiment ########################### figS12
 # The data produced under this section is used for the following 
 # figures 
 # ok let us start with the 1tco2 experiment 
@@ -646,7 +646,7 @@ write_rds(total_damages_100gtco2_k90, paste0("data/output/", run_date, "/total_d
 
 
 
-######################## SCC Uncertainty Sources ############################ figED11
+######################## SCC Uncertainty Sources ############################ figED6C
 ######################## Response function uncertainty
 # we need to begin with generating country panel with the bootstraps
 # NOTE: currently we produce this data using sherlock (the stanford server)
@@ -788,7 +788,7 @@ total_damages_k90 <- calculate_bidamages_bilateral(median_raster,
 # write the dataframe
 #write_rds(total_damages_k90, paste0(output_path, "/total_damages_k90_v2022.rds"))
 
-################################################################################ figED17
+################################################################################ figS6
 # now let us just do consumption emissions 
 #gdp_temp_data_k90 <- subset(gdp_temp_data_k90, year <= 2020) 
 fair_exps_isos_k90_consump <- subset(fair_exps_isos_k90_consump, !is.na(median_deltat))
@@ -802,7 +802,7 @@ total_damages_k90_consump <- calculate_bidamages_bilateral(median_raster,
                                                    2020)
 #write_rds(total_damages_k90_consump, paste0(output_path, "/total_damages_k90_consump_v2022.rds"))
 
-################################################################################ figED18
+################################################################################ figS7
 # now let us just do production emissions 
 fair_exps_isos_k90_prod <- subset(fair_exps_isos_k90_prod, !is.na(median_deltat))
 total_damages_k90_prod <- calculate_bidamages_bilateral(median_raster, 
@@ -815,7 +815,7 @@ total_damages_k90_prod <- calculate_bidamages_bilateral(median_raster,
                                                         2020)
 write_rds(total_damages_k90_prod, paste0(output_path, "/total_damages_k90_prod_v2022.rds"))
 
-################################################################################ figED16
+################################################################################ figS7
 # let's do k = 1960 
 gdp_temp_data_k60_2020 <- subset(gdp_temp_data_k60, year <= 2020)
 # we need to back-extrapolate the dataset to 1960 to calculate damages
@@ -866,7 +866,7 @@ total_damages_k60 <- calculate_bidamages_bilateral(median_raster,
 write_rds(total_damages_k60, paste0(output_path, "/total_damages_k60_v2022.rds"))
 
 
-############# 30%,50%,70%,90% emissions baseline experiment #################### figED9
+############# 30%,50%,70%,90% emissions baseline experiment #################### figS12b
 
 ## first we need to calculate delta T and damages under baseline emissions
 ### 10%
@@ -983,7 +983,7 @@ write_rds(usa_damages_70pct, paste0(output_path, "/usa_damages_70pct.rds"))
 
 
 ######################## SCC Under Diff Scenarios ############################
-################################################################################ figED10
+################################################################################ figED8
 scc_2300_2100_growth <- calculate_damages_pulse(median_raster,
                                                 fair_exps_1tco2_2300_k90,
                                                 2020,
@@ -1179,7 +1179,7 @@ scc_2100_2300_adaptation <- calculate_damages_pulse(median_raster,
                                                     T)
 write_rds(scc_2100_2300_adaptation, paste0(output_path, "/scc_2300_adaptation.rds"))
 
-##################### Carbon Capture experiment ########################### figED19
+##################### Carbon Capture experiment ########################### figED10
 total_damages_cc <- calculate_damages_pulse(median_raster,
                                             fair_exps_cc,
                                             years_of_exps_2020_2100,

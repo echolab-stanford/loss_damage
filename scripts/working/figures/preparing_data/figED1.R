@@ -38,7 +38,6 @@ source("scripts/working/analysis/3c1_calc_total_damages.R")
 source("scripts/working/analysis/3c2_calc_total_damages_5lags.R")
 source("scripts/working/analysis/3c2i_calc_total_damages_lags.R")
 
-
 setwd(dropbox_path)
 
 ################################################################################
