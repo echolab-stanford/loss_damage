@@ -143,10 +143,6 @@ Now that we have generated the annual change in temperature in our historical fu
 - figED6_plot.R		
 - figS12_plot.R
 
-## Data
-
-## Output and figures 
-
 ## Processes 
 
 ### Reproduce figures from the paper 
@@ -155,3 +151,30 @@ To reproduce the figures from the paper, you can either re run the scripts prepa
 ### Reproduce data under different paramters 
 You can also regenerate the data underlying the figures by tweaking some of the paramters which are specified in the built in functions fro the scripts above. For example you can generate an alternative FaIR preturbation as demonstrated in the FaIR scripts above and use the resulting dataset to process the change in temperature due to that preturbation. 
 
+## Data
+
+- The country-year level GDP data is from the World Bank.
+    - The World Bank. World development indicators., 2022. URL http://data.worldbank.
+org/data-catalog/world-development-indicators.
+-  SSP data is downloaded from the IIASA.
+    - Riahi, K., van Vuuren, D. P., Kriegler, E., Edmonds, J., O’Neill, B. C., Fujimori, S., Bauer, N., Calvin, K., Dellink, R., Fricko, O., Lutz, W., Popp, A., Cuaresma, J. C., KC, S., Leimbach, M., Jiang, L., Kram, T., Rao, S., Emmerling, J., … Tavoni, M. (2017). The Shared Socioeconomic Pathways and their energy, land use, and greenhouse gas emissions implications: An overview. Global Environmental Change, 42, 153–168. https://doi.org/10.1016/j.gloenvcha.2016.05.009
+- Carbon Majors database 
+    - Paul Griffin and CR Heede. The carbon majors database. CDP carbon majors report 2017,
+14, 2017.
+    - Richard Heede. Tracing anthropogenic carbon dioxide and methane emissions to fossil fuel
+and cement producers, 1854–2010. Climatic change, 122(1):229–241, 2014.
+- Country-level carbon data 
+    - Global Carbon Budget. Global carbon budget 2022. Earth System Science Data, 14:4811–
+4900, 2022.
+- ERA5-Land data
+    - Joaqu´ın Mu˜noz-Sabater, Emanuel Dutra, Anna Agust´ı-Panareda, Cl´ement Albergel,
+Gabriele Arduini, Gianpaolo Balsamo, Souhail Boussetta, Margarita Choulga, Shaun Harrigan,
+Hans Hersbach, et al. Era5-land: A state-of-the-art global reanalysis dataset for land
+applications. Earth system science data, 13(9):4349–4383, 2021.
+- Companies' revenues 
+    - Macrotrends LLC. Macrotrends. https://www.macrotrends.net/, 2025. Accessed:
+2025-01.
+- Population data 
+    - CIESIN. Gridded population of the world, version 4 (gpwv4): Population count, revision
+11., 2018.
+## Output and figures 
