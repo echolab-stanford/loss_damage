@@ -1,5 +1,5 @@
 # Repository for the "Estimating climate change loss and damage consistent with a social cost of greenhouse gasses" paper
-A Repo supporting project on estimating global loss and damage from emissions. This repo contains updated scripts to process, clean, analyze, and reproduce the figures in the loss and damage paper. The scripts are run through the github repository but raw data are stored in the BurkeLab Dropbox directory due to size limitations. The scripts written so that they pull the raw data from the dropbox and outpout intermediate dataframes used for figures into the github repo. The scripts used to plot the figures are then run from the github repo and directly pull the needed data from the github repo. Current preprint not publicly available. Public earlier drafts can be found here (https://www.nber.org/papers/w31658)
+A Repo supporting project on estimating global loss and damage from emissions. This repo contains updated scripts to process, clean, analyze, and reproduce the figures in the loss and damage paper. The scripts are run through the github repository but raw data are stored in the BurkeLab Dropbox directory due to size limitations. The scripts written so that they pull the raw data from the dropbox and output intermediate dataframes used for figures into the github repo. The scripts used to plot the figures are then run from the github repo and directly pull the needed data from the github repo. Current preprint not publicly available. Public earlier drafts can be found here (https://www.nber.org/papers/w31658)
 
 # Description
 
@@ -7,7 +7,7 @@ Broadly, the workflow incorporates the simulation and estimation of four general
 
 1. generating the global warming ratio (at the pixel level) using the CGM models.
 2. Generating changes in temperature due to full emissions scenario (current historical emissions) and preturbed emissions using the FaIR model.
-3. generating country-year level datasets with temperature under full emissions and under preturbed emissions, BHM model coeffecients under different models (5-lag, levels model with rebound), and computing discounted damages under preturbed scenario. 
+3. generating country-year level datasets with temperature under full emissions and under preturbed emissions, BHM model coeffecients under different models (5-lag, 0-lag, [t]_lags, levels model with rebound), and computing discounted damages under preturbed scenario. 
 
 ## User suitability 
 You can use your PC to generate temperature changes from the FaIR model. In order to generate the numbers reported in figures (), we suggest using a remote server with the required number of CPUs. The software needed to process and analyze the data are R and Python. Multuple Rstudio Versions were used (the latest being 2024.12.1+563 (2024.12.1+563)) for the R scripts, and Jupyter Notebook (via Anacondda base environment) was used for the Python part of the scripts.
