@@ -1,21 +1,21 @@
 # Repository for the "Estimating climate change loss and damage consistent with a social cost of greenhouse gasses" paper
-A Repo supporting project on estimating global loss and damage from emissions. This repo contains updated scripts to process, clean, analyze, and reproduce the figures in the loss and damage paper. The scripts are run through the github repository but raw data are stored in the BurkeLab Dropbox directory due to size limitations. The scripts written so that they pull the raw data from the dropbox and output intermediate dataframes used for figures into the github repo. The scripts used to plot the figures are then run from the github repo and directly pull the needed data from the github repo. Current preprint not publicly available. Public earlier drafts can be found here (https://www.nber.org/papers/w31658)
+A Repo supporting project on estimating global loss and damage from emissions. This repo contains updated scripts to process, clean, analyze, and reproduce the figures in the loss and damage paper. The scripts are run through the github repository but raw data are stored in the BurkeLab Dropbox directory due to size limitations. The scripts written so that they pull the raw data from the dropbox and output intermediate dataframes used for figures into the github repo. The scripts used to plot the figures are then run from the github repo and directly pull the needed data from the github repo. 
 
 # Description
-
 Broadly, the workflow incorporates the simulation and estimation of four general processes. **1) temperature changed due to preturbed emissions**, **2) local warming ratio globally**, **3) temperature-growth response function**, and **4) generating country-year level dataset of temperature changes and growth impacts**. The aformentioned steps allow us then to calculate hoistorical and/or future damages due to historical emissions. The code workflow for the paper is divided into 3 main steps.
 
-1. generating the global warming ratio (at the pixel level) using the CGM models.
+1. Generating the global warming ratio (at the pixel level) using CGM models.
 2. Generating changes in temperature due to full emissions scenario (current historical emissions) and preturbed emissions using the FaIR model.
-3. generating country-year level datasets with temperature under full emissions and under preturbed emissions, BHM model coeffecients under different models (5-lag, 0-lag, [t]_lags, levels model with rebound), and computing discounted damages under preturbed scenario. 
+3. Generating country-year level datasets with temperature under full emissions and under preturbed emissions, BHM model coeffecients under different models (5-lag, 0-lag, [t]-lags, levels model with rebound), and computing discounted damages under preturbed scenario. 
 
 ## User suitability 
-You can use your PC to generate temperature changes from the FaIR model. In order to generate the numbers reported in figures (), we suggest using a remote server with the required number of CPUs. The software needed to process and analyze the data are R and Python. Multuple Rstudio Versions were used (the latest being 2024.12.1+563 (2024.12.1+563)) for the R scripts, and Jupyter Notebook (via Anacondda base environment) was used for the Python part of the scripts.
+You can use your PC to generate temperature changes from the FaIR model. In order to generate the numbers reported in figures ([figED6](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED6_post_illustrator.pdf),
+[fig2e](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig2e.pdf), 
+[figS2](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS2_post_illustrator.pdf)), we suggest using a remote server with the required number of CPUs. The software needed to process and analyze the data are R and Python. Multuple Rstudio Versions were used (the latest being 2024.12.1+563 (2024.12.1+563)) for the R scripts, and Jupyter Notebook (via Anacondda base environment) was used for the Python part of the scripts.
 
 # Workflow
 
 ## 0. Preamble
-
 To install and call the needed libraries to call user-created functions, and to set up the directories for processed data and outputted data ([0_read_libs.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/0_read_libs.R)).
 
 
@@ -25,7 +25,7 @@ In this step, we generate a global spatially continuous dataset of warming ratio
 ## 2. Generating changes in temperature from FaIR
 In this step we generate the temperature changes under the full emissions scenario (historical emissions) and the preturbed emissions scenario using the FaIR v2.0 model (Finite Amplitude Impulse Response simple climate model). Below are the detailed steps for installing FaIR and generating the temperature changes due to preturbed scenarios.
 
-**NOTE**: To generate the below temperature change responses to emissions preturbation, we generate 1000 runs with random combinations of parameter values sampled from established distribution in the literature (see: Ashwin et al, 2019). We have sampled from the distribution and saved the sampled paramteres to be used across the different scripts. The specific file can be accessed here (~/BurkeLab Dropbox/projects/loss_damage/FaIR/fair_params/')
+**NOTE**: To generate the below temperature change responses to emissions preturbation, we generate 1000 runs with random combinations of parameter values sampled from established distribution in the literature (see: Ashwin et al, 2019). We have sampled from the distribution and saved the sampled parameters to be used across the different scripts. The specific file can be accessed here (~/BurkeLab Dropbox/projects/loss_damage/FaIR/fair_params/')
 
 #### a. Installing FaIR 
 To install fair, navigate to [install_fair.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/Install_fair%20.ipynb). Make sure [REQUIREMENTS.txt](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/REQUIREMENTS.txt) is in your repository before running the install_fair.ipynb script. 
@@ -155,8 +155,8 @@ This script generates the total damages per each preturbation under various numb
 ### Reproduce figures from the paper 
 To reproduce the figures from the paper, you can either re run the scripts preparing the data "[prepating_data](https://github.com/echolab-stanford/loss_damage/tree/5lag_pipeline_r2/scripts/working/figures/preparing_data/)" to be plotted and the scripts plotting the figures themselves "[plotting_data](https://github.com/echolab-stanford/loss_damage/tree/5lag_pipeline_r2/scripts/working/figures/plotting_data/)". 
 
-### Reproduce data under different paramters 
-You can also regenerate the data underlying the figures by tweaking some of the paramters which are specified in the custom functions from the scripts above. For example you can generate an alternative FaIR preturbation as demonstrated in the FaIR scripts above and use the resulting dataset to process the change in temperature due to that preturbation. 
+### Reproduce data under different parameters 
+You can also regenerate the data underlying the figures by tweaking some of the parameters which are specified in the custom functions from the scripts above. For example you can generate an alternative FaIR preturbation as demonstrated in the FaIR scripts above and use the resulting dataset to process the change in temperature due to that preturbation. 
 
 ## Data
 
