@@ -70,8 +70,7 @@ Now that we have generated the annual change in temperature in our historical fu
 ###### 0. ([3a0_run_gdptemp_panel.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a0_run_gdptemp_panel.R)) 
 This script is used to generate the gdp-temp panel to be used for analysis of the 0-lag model.
 ###### 1.([3a1_run_gdptemp_panel_bhmbs.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a1_run_gdptemp_panel_bhmbs.R)) 
-This script generates the country-year temperature and gdp dataset with 
-# the bootstrapped BHM regression coeffecients 
+This script generates the country-year temperature and gdp dataset with the bootstrapped BHM regression coeffecients 
 ###### 2.([3a2_run_gdptemp_panel_5lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a2_run_gdptemp_panel_5lags.R)) 
 This script is used to generate the gdp-temp panel to be used for analysis of the 5-lag model.
 
