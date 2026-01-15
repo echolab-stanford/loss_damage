@@ -35,12 +35,12 @@ Now that you have installed FaIR, you can import it in other scripts and call th
 ###### I.  ([2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_1Gt_tCO2_2300.ipynb))
 1 GtCO<sub>2</sub>/tCO<sub>2</sub> experiment. This experiment is used to generate temperature changes due to GtCO<sub>2</sub> or tCO<sub>2</sub> preturbation to historical emissions. The preturbation is taken from each year between 1990 and 2020. The temperature changes generated from preturbing 2020 emissions is used to calculate the SCC (Social Cost of Carbon).
 
-- related figures ([fig2](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig2_post_illustrator.pdf), [fig3](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig3_post_illustrator.pdf), [fig3](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig3_post_illustrator.pdf), 
+- related figures ([fig2](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig2_post_illustrator.pdf), [fig3](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig3_post_illustrator.pdf),
 [figED1](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED1_post_illustrator.pdf))
 
 ###### II.([2_calc_FaIR_deltat_bilateral.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_bilateral.ipynb))
 country-level historical emissions preturbation (1990, 1980, and 1960 start years and consumption vs. production emissions) 
-- related figures ([fig4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig4.pdf), [figS4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS6](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS7.pdf))
+- related figures ([fig4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig4.pdf), [figS4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4_post_illustrator.pdf), [figS6](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4_post_illustrator.pdf), [figS7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS7_post_illustrator.pdf))
 
 ###### III. ([2_calc_FaIR_deltat_cc.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_FaIR_deltat_cc.ipynb))
 carbon capture experiment  
@@ -48,7 +48,7 @@ carbon capture experiment
 
 ###### IV. ([2_calc_pulse_marginals.ipynb](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/FaIR/2_calc_pulse_marginals.ipynb))
 marginal emissions preturbation experiment 
-- related figures ([figS12](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS12.pdf))
+- related figures ([figS12](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS12_post_illustrator.pdf))
 
 #### c. Calculating the change in temperature between both scenarios
 Now that we have generated the annual change in temperature in our historical full emissions scenario and our preturbed scenario, we can take the median change in temperature between the two scenarios.
@@ -56,13 +56,13 @@ Now that we have generated the annual change in temperature in our historical fu
 ###### I. ([2a_FaIR_deltaT_hist.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/2a_FaIR_deltaT_hist.R)) 
 - related figures ([figED1](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED1_post_illustrator.pdf))
 ###### II. ([2b_FaIR_deltaT_hist_fut.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/2b_FaIR_deltaT_hist_fut.R))
-- related figures ([figED5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED5_post_illustrator.pdf),
+- related figures ([figED5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED5.png),
 [figED7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED7_post_illustrator.pdf),
-[figED8](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED8_post_illustrator.pdf))
+[figED8](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED8.png))
 ###### III. ([2c_FaIR_deltaT_hist_fut_disagg.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/2c_FaIR_deltaT_hist_fut_disagg.R)) 
 - related figures ([figED6](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED6_post_illustrator.pdf),
 [fig2e](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig2e.pdf), 
-[figS2](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS2.pdf),
+[figS2](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS2_post_illustrator.pdf),
 [figS3](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS3.pdf))
 
 ## 3. Generating country-year level dataset, BHM model coeffecients under different models & computing discounted damages
@@ -70,9 +70,13 @@ Now that we have generated the annual change in temperature in our historical fu
 ###### 0. ([3a0_run_gdptemp_panel.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a0_run_gdptemp_panel.R)) 
 ###### 1.([3a1_run_gdptemp_panel_bhmbs.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a1_run_gdptemp_panel_bhmbs.R)) 
 ###### 2.([3a2_run_gdptemp_panel_5lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a2_run_gdptemp_panel_5lags.R)) 
+This script is used to generate the gdp-temp panel to be used for analysis.
+
 #### b.  
 ###### 0. ([3b0_run_bhm_model.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3b0_run_bhm_model.R)) 
+This script is used to geneerate the BHM 0-lag model estimates.
 ###### 1. ([3b1_run_gdptemp_panel_5lag.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3b1_run_gdptemp_panel_5lag.R)) 
+This script is used to geneerate the BHM 5-lag model estimates.
 #### c.  
 ###### 0.([3c0_calc_total_damages_bilateral.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c0_calc_total_damages_bilateral.R)) 
 - related figures ([fig4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig4.pdf), [figS4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS6](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS7.pdf))
@@ -82,11 +86,11 @@ Now that we have generated the annual change in temperature in our historical fu
 
 ###### 2.([3c2_calc_total_damages_5lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2_calc_total_damages_5lags.R))
 - related figures ([fig2](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig2.pdf), 
-[figED5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig2.pdf), 
-[figED7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig2.pdf))
+[figED5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED5.png), 
+[figED7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED7_post_illustrator.pdf))
 - ###### i. ([3c2i_calc_total_damages_lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2i_calc_total_damages_lags.R)) 
 - ###### ii. ([3c2ii_calc_total_damages_5lags_w_rebound.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2ii_calc_total_damages_5lags_w_rebound.R)) 
-- related figures ([figED8](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED8_post_illustrator.pdf))
+- related figures ([figED8](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED8.png))
 
 ## Scripts 
 - The pipeline for producing this paper's results rely on output dataframes produced through the run_scripts_ld.R script. Inside this script the needed custom functions are sourced from scripts in the same folders. Each with thier own job.
@@ -149,7 +153,7 @@ Now that we have generated the annual change in temperature in our historical fu
 To reproduce the figures from the paper, you can either re run the scripts preparing the data "[prepating_data](https://github.com/echolab-stanford/loss_damage/tree/5lag_pipeline_r2/scripts/working/figures/preparing_data/)" to be plotted and the scripts plotting the figures themselves "[plotting_data](https://github.com/echolab-stanford/loss_damage/tree/5lag_pipeline_r2/scripts/working/figures/plotting_data/)". 
 
 ### Reproduce data under different paramters 
-You can also regenerate the data underlying the figures by tweaking some of the paramters which are specified in the built in functions fro the scripts above. For example you can generate an alternative FaIR preturbation as demonstrated in the FaIR scripts above and use the resulting dataset to process the change in temperature due to that preturbation. 
+You can also regenerate the data underlying the figures by tweaking some of the paramters which are specified in the built in functions from the scripts above. For example you can generate an alternative FaIR preturbation as demonstrated in the FaIR scripts above and use the resulting dataset to process the change in temperature due to that preturbation. 
 
 ## Data
 
@@ -178,3 +182,4 @@ applications. Earth system science data, 13(9):4349–4383, 2021.
     - CIESIN. Gridded population of the world, version 4 (gpwv4): Population count, revision
 11., 2018.
 ## Output and figures 
+Plots and tables can be found under the [figures folder](https://github.com/echolab-stanford/loss_damage/tree/5lag_pipeline_r2/figures/loss_damage_r1). Some of the raw outputted 
