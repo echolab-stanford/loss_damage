@@ -68,9 +68,12 @@ Now that we have generated the annual change in temperature in our historical fu
 ## 3. Generating country-year level dataset, BHM model coeffecients under different models & computing discounted damages
 #### a.  
 ###### 0. ([3a0_run_gdptemp_panel.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a0_run_gdptemp_panel.R)) 
+This script is used to generate the gdp-temp panel to be used for analysis of the 0-lag model.
 ###### 1.([3a1_run_gdptemp_panel_bhmbs.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a1_run_gdptemp_panel_bhmbs.R)) 
+This script generates the country-year temperature and gdp dataset with 
+# the bootstrapped BHM regression coeffecients 
 ###### 2.([3a2_run_gdptemp_panel_5lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3a2_run_gdptemp_panel_5lags.R)) 
-This script is used to generate the gdp-temp panel to be used for analysis.
+This script is used to generate the gdp-temp panel to be used for analysis of the 5-lag model.
 
 #### b.  
 ###### 0. ([3b0_run_bhm_model.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3b0_run_bhm_model.R)) 
@@ -89,6 +92,7 @@ This script is used to geneerate the BHM 5-lag model estimates.
 [figED5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED5.png), 
 [figED7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED7_post_illustrator.pdf))
 - ###### i. ([3c2i_calc_total_damages_lags.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2i_calc_total_damages_lags.R)) 
+This script generates the total damages per each preturbation under various number of lags.
 - ###### ii. ([3c2ii_calc_total_damages_5lags_w_rebound.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c2ii_calc_total_damages_5lags_w_rebound.R)) 
 - related figures ([figED8](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED8.png))
 
