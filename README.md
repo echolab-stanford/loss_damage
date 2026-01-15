@@ -81,7 +81,7 @@ This script is used to geneerate the BHM 0-lag model estimates.
 This script is used to geneerate the BHM 5-lag model estimates.
 #### c.  
 ###### 0.([3c0_calc_total_damages_bilateral.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c0_calc_total_damages_bilateral.R)) 
-- related figures ([fig4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig4.pdf), [figS4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS6](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS7.pdf))
+- related figures ([fig4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/fig4.pdf), [figS4](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS4.pdf), [figS5](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS5.pdf), [figS6](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS6.pdf), [figS7](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figS7.pdf))
 
 ###### 1.([3c1_calc_total_damages.R](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/scripts/working/analysis/3c1_calc_total_damages.R)) 
 - related figures ([figED8](https://github.com/echolab-stanford/loss_damage/blob/5lag_pipeline_r2/figures/loss_damage_r1/figED8.pdf))
@@ -156,7 +156,7 @@ This script generates the total damages per each preturbation under various numb
 To reproduce the figures from the paper, you can either re run the scripts preparing the data "[prepating_data](https://github.com/echolab-stanford/loss_damage/tree/5lag_pipeline_r2/scripts/working/figures/preparing_data/)" to be plotted and the scripts plotting the figures themselves "[plotting_data](https://github.com/echolab-stanford/loss_damage/tree/5lag_pipeline_r2/scripts/working/figures/plotting_data/)". 
 
 ### Reproduce data under different paramters 
-You can also regenerate the data underlying the figures by tweaking some of the paramters which are specified in the built in functions from the scripts above. For example you can generate an alternative FaIR preturbation as demonstrated in the FaIR scripts above and use the resulting dataset to process the change in temperature due to that preturbation. 
+You can also regenerate the data underlying the figures by tweaking some of the paramters which are specified in the custom functions from the scripts above. For example you can generate an alternative FaIR preturbation as demonstrated in the FaIR scripts above and use the resulting dataset to process the change in temperature due to that preturbation. 
 
 ## Data
 
