@@ -1,4 +1,5 @@
-# Repository for the "Estimating climate change loss and damage consistent with a social cost of greenhouse gasses" paper
+# Repository for the "Quantifying climate loss and damage consistent with a social cost of carbon" paper
+
 A Repo supporting project on estimating global loss and damage from emissions. This repo contains updated scripts to process, clean, analyze, and reproduce the figures in the loss and damage paper. The scripts are run through the github repository but raw data are stored in the BurkeLab Dropbox directory due to size limitations. The scripts written so that they pull the raw data from the dropbox and output intermediate dataframes used for figures into the github repo. The scripts used to plot the figures are then run from the github repo and directly pull the needed data from the github repo. 
 
 # Description
